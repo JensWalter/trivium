@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>infiniup resource editor</title>
+    <link rel="stylesheet" href="css/codemirror-4.7.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/codemirror-4.7.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/jsx">
+      /** @jsx React.DOM */
+      var StatusLine = React.createClass({
+          render: function(){
+                    return (<div style={{paddingTop:"2px",paddingLeft:"10px"}}>{this.props.status}</div>)
+          }
+      });
+      var EditorPane = React.createClass({
+          getInitialState: function(){
+            return {codemirror:""};
+          },
+          componentDidMount: function(){
+            //hook codemirror
+            var codemirror = CodeMirror(this.getDOMNode(),{lineNumbers: true});
+            this.setState({codemirror:codemirror});
+          },
+          render: function(){
+                    return (<div style={{paddingTop:"2px",height:this.props.height}}></div>)
+          }
+      });
+
+      var Editor = React.createClass({
+          getInitialState: function() {
+            return { value:"",statusHistory:["ok"]}
+          },
+          uriChange: function(event) {
+            this.setState({value: event.target.value});
+          },
+          render: function() {
+          //22px for header bar
+          //22px for bottom status line
+            var editorPaneHeight = window.innerHeight-44;
+            var status = this.state.statusHistory[this.state.statusHistory.length-1];
+            return (
+                <div>
+                <input type="text" value={this.state.value} style={{"width":"350px"}} onChange={this.uriChange}></input>
+                <input type="button" value="compile" />
+                <input type="button" value="save" />
+                <EditorPane height={editorPaneHeight}/>
+                <StatusLine status={status} />
+                </div>
+            );
+          }
+        });
+
+      React.renderComponent(<Editor />,
+              document.getElementById("container"));
+    </script>
+</head>
+<body style="margin: 0 0 0 0;">
+	<div id="container"></div>
+</body>
+</html>

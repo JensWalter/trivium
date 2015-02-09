@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="lib-apache-http" exported="" />
+    <orderEntry type="module" module-name="lib-apache-commons" exported="" />
+    <orderEntry type="module" module-name="lib-guava" exported="" />
+    <orderEntry type="module" module-name="lib-leveldb" exported="" />
+    <orderEntry type="module" module-name="lib-log4j" exported="" />
+    <orderEntry type="module" module-name="lib-javolution" exported="" />
+    <orderEntry type="module" module-name="lib-chronicle" exported="" />
+  </component>
+</module>

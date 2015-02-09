@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>infiniup registry</title>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/jsx">
+      /** @jsx React.DOM */
+      var all = {};
+      var ExtensionList = React.createClass({
+          getInitialState: function () {
+            var that = this;
+            $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({"command":"list"}),
+                success: function(data){
+        all=data;
+                        that.setState({task: data.task});
+                        that.setState({binding: data.binding});
+                        that.setState({type: data.type});
+                    }
+                });
+            return {};
+          },
+          render: function() {
+            return (<div>
+                    {this.state.task ? <Task id={this.state.task} /> : ''}
+                    {this.state.binding ? <Binding id={this.state.binding} /> :''}
+                    {this.state.type ? <Type id={this.state.type} /> : ''}
+                    </div>);
+          }
+      });
+      var Type = React.createClass({
+      	  getInitialState: function(){
+      	  	return {};
+      	  },
+          render: function() {
+          var elements = this.props.id.map(function(e){
+                return (<li>{all[e]}</li>);
+            });
+            return (<div>Type: <ul>{elements}</ul></div>);
+          }
+      });
+      var Binding = React.createClass({
+      	  getInitialState: function(){
+      	     var that = this;
+            $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({id:this.props.id,command:"status"}),
+                success: function(data){
+                        that.setState({state:data.state});
+                    }
+                });
+      	  	return {};
+      	  },
+      	  deploy: function(){
+      	  var that = this;
+      	    $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({id:this.props.id,command:"deploy"}),
+                success: function(data){
+                        console.log(data.trim());
+                        if(data.trim()=="true")
+                            that.setState({state:"deployed"});
+                    }
+                });
+      	  },
+      	  start: function(){
+      	  var that = this;
+              $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({id:this.props.id,command:"start"}),
+                success: function(data){
+                        console.log(data.trim());
+                        if(data.trim()=="true")
+                             that.setState({state:"running"});
+                    }
+                });
+
+      	  },
+      	  stop: function(){
+      	  var that = this;
+      	    $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({id:this.props.id,command:"stop"}),
+                success: function(data){
+                        console.log(data.trim());
+                        if(data.trim()=="true")
+                             that.setState({state:"deployed"});
+                    }
+                });
+      	  },
+          render: function() {
+            return (<div>Binding: {all[this.props.id]} =&gt; {this.state.state}
+                    <div style={{marginLeft:'50px'}}>
+                        {this.state.state=="undeployed"?<button onClick={this.deploy}>deploy</button>:''}
+                        {this.state.state=="deployed"?<button onClick={this.start}>start</button>:''}
+                        {this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
+                     </div></div>);
+          }
+      });
+      var Task = React.createClass({
+      	  getInitialState: function(){
+      	  	return {};
+      	  },
+          render: function() {
+            var elements = this.props.id.map(function(e){
+                return (<li>{all[e]}</li>);
+            });
+            return (<div>Task: <ul>{elements}</ul></div>);
+          }
+      });
+
+      React.renderComponent(<ExtensionList />,
+              document.getElementById("container"));
+    </script>
+</head>
+<body>
+	<h1>infiniup registry</h1>
+	<div id="container"></div>
+</body>
+</html>

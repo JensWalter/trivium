@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>infiniup testing site</title>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/highcharts.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/jsx">
+      /** @jsx React.DOM */
+      var TestNumberSetting = React.createClass({
+          getInitialState: function () {
+              return {value:this.props.value};
+          },
+          changeValue: function(event){
+          	this.setState({"value":event.target.value});
+          	if(this.props.cbValue){
+          		this.props.cbValue(this.props.name,event.target.value);
+          	}
+          },
+          render: function() {
+            return (<div>
+            	<span>{this.props.title}</span><br/>
+            	<span style={{paddingLeft:'60px'}}><input type='number' value={this.state.value} onChange={this.changeValue} min={this.props.minValue} max={this.props.maxValue}/></span>
+            		</div>);
+          }
+      });
+      var TestSettings = React.createClass({
+      	  getInitialState: function(){
+      	  	return {"domainCount":1,
+      	  			"deploymentCount":10,
+      	  			"processCount":100,
+      	  			"messageCount":1000000
+      	  			};
+      	  },
+      	  valueChanged: function(name,val){
+      	  	var obj={};
+      	  	obj[name]=val;
+      	  	this.setState(obj);
+      	  },
+          submit:function(){
+            //send to server
+            var tc = {}
+            tc.domainCount=this.state.domainCount;
+            tc.deploymentCount=this.state.deploymentCount;
+            tc.processCount=this.state.processCount;
+            tc.messageCount=this.state.messageCount;
+            console.log(JSON.stringify(tc));
+            $.ajax({
+                type: "POST",
+                url: '/ui/TestRequestHandler',
+                data: JSON.stringify(tc),
+                success: function(data){
+                        console.log('done');
+                    }
+                });
+          },
+          render: function() {
+            var all = this.state.domainCount*this.state.deploymentCount*this.state.processCount;
+          	return (<span><span>
+            	<TestNumberSetting title="domain count" name="domainCount" value={this.state.domainCount} minValue="1" maxValue="20" cbValue={this.valueChanged}/>
+            	<TestNumberSetting title="deployment count" name="deploymentCount" value={this.state.deploymentCount} minValue="1" maxValue="100" cbValue={this.valueChanged}/>
+            	<TestNumberSetting title="process count" name="processCount" value={this.state.processCount} minValue="1" maxValue="1000" cbValue={this.valueChanged}/>
+            		</span>
+            	<div>domain objects: {all}</div>
+            	<br/>
+				<TestNumberSetting title="message count" name="messageCount" value={this.state.messageCount} minValue="1" maxValue="100000000" cbValue={this.valueChanged}/>
+            	<br/>
+            	<input type='button' onClick={this.submit} value='start'></input>
+            	</span>);
+          }
+      });
+
+      React.renderComponent(<TestSettings/>,
+              document.getElementById("container"));
+    </script>
+</head>
+<body>
+	<h1>infiniup testing site</h1>
+	<div id="container"></div>
+</body>
+</html>

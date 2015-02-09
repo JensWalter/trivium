@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>infiniup stats</title>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/highcharts.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/jsx">
+      /** @jsx React.DOM */
+      var updateInterval = 60000;
+
+      var TimeSeriesLineChart = React.createClass({
+          componentDidMount: function(){
+            this.redrawChart();
+          },
+          componentWillReceiveProps: function(nextProps){
+            this.redrawChart();
+          },
+          redrawChart: function(){
+            $(this.getDOMNode()).highcharts({
+            chart: {
+                zoomType: 'x'
+            },
+            title: {
+                text: this.props.title
+            },
+            xAxis: {
+                type: 'datetime',
+                minRange: this.state.timerange
+            },
+            yAxis: {
+                title: {
+                    text: 'size'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+            series: [{
+                type: 'area',
+                name: 'size',
+            pointInterval: 3600 * 1000,
+            pointStart: Date.now()-(48 * 3600 * 1000),
+            data: this.props.data
+            }]
+              });
+          },
+          getInitialState: function () {
+              var opts={};
+              if(this.props.timerange)
+                opts.timerange=this.props.timerange;
+              else
+                opts.timerange=3600000;
+              return opts;
+          },
+          render: function() {
+            return (<span>TimeSeriesLineChart</span>);
+          }
+      });
+      var StackedTimeSeriesLineChart = React.createClass({
+          componentDidMount: function(){
+            this.redrawChart();
+          },
+          componentWillReceiveProps: function(nextProps){
+            this.redrawChart();
+          },
+          redrawChart: function(){
+            $(this.getDOMNode()).highcharts({
+            chart: {
+                type: 'area'
+            },
+            title: {
+                text: this.props.title
+            },
+            xAxis: {
+                type: 'datetime',
+                minRange: this.state.timerange
+            },
+            yAxis: {
+                title: {
+                    text: 'size'
+                }
+            },
+            tooltip: {
+              shared: true
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    stacking: 'normal',
+                    lineColor: '#666666',
+                    lineWidth: 1,
+                    marker: {
+                        lineWidth: 1,
+                        lineColor: '#666666'
+                    }
+                }
+            },
+
+            series: [{
+                name: this.props.name1,
+                data: this.props.data1
+            },{
+                name: this.props.name2,
+                data: this.props.data2
+            },{
+                name: this.props.name3,
+                data: this.props.data3
+            }]
+              });
+          },
+          getInitialState: function () {
+              var opts={};
+              if(this.props.timerange)
+                opts.timerange=this.props.timerange;
+              else
+                opts.timerange=3600000;
+              return opts;
+          },
+          render: function() {
+            return (<span>TimeSeriesLineChart</span>);
+          }
+      });
+var AnystoreSize = React.createClass({
+        componentDidMount: function(){
+          this.refresh();
+          var that=this;
+          window.setTimeout(function(){
+            var id = window.setInterval(that.refresh,updateInterval);
+            that.setState({"timeoutid":id });
+          },Math.floor(Math.random()*10000));
+        },
+        componentWillUnmount: function(){
+          window.clearInterval(this.state.timeoutid);
+        },
+        refresh: function(){
+          var that=this;
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397142","datapoint":"anystore_size"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  else
+                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"data":arr});
+              that.forceUpdate();
+             }
+          });
+        },
+        getInitialState: function () {
+          this.refresh();
+          var opts={};
+          if(this.props.timerange)
+            opts.timerange=this.props.timerange;
+          else
+            opts.timerange=3600000;
+          opts.data=[];
+          opts.timeoutid=0;
+          return opts;
+      },
+      render: function() {
+        return (<span><TimeSeriesLineChart title={"anystore size (objects)"} data={this.state.data}/></span>);
+      }
+  });
+var AnystoreQueueSize = React.createClass({
+        componentDidMount: function(){
+          this.refresh();
+          var that=this;
+          window.setTimeout(function(){
+            var id = window.setInterval(that.refresh,updateInterval);
+            that.setState({"timeoutid":id });
+          },Math.floor(Math.random()*10000));
+        },
+        componentWillUnmount: function(){
+          window.clearInterval(this.state.timeoutid);
+        },
+        refresh: function(){
+          var that=this;
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397142","datapoint":"anystore_queue_size"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  else
+                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"data":arr});
+              that.forceUpdate();
+             }
+          });
+        },
+        getInitialState: function () {
+          this.refresh();
+          var opts={};
+          if(this.props.timerange)
+            opts.timerange=this.props.timerange;
+          else
+            opts.timerange=3600000;
+          opts.data=[];
+          opts.timeoutid=0;
+          return opts;
+      },
+      render: function() {
+        return (<span><TimeSeriesLineChart title={"anystore queue size (objects)"} data={this.state.data}/></span>);
+      }
+  });
+var AnystoreQueueIn = React.createClass({
+        componentDidMount: function(){
+          this.refresh();
+          var that=this;
+          window.setTimeout(function(){
+            var id = window.setInterval(that.refresh,updateInterval);
+            that.setState({"timeoutid":id });
+          },Math.floor(Math.random()*10000));
+        },
+        componentWillUnmount: function(){
+          window.clearInterval(this.state.timeoutid);
+        },
+        refresh: function(){
+          var that=this;
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397141","datapoint":"anystore_queue_in"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  else
+                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)/60];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"data":arr});
+              that.forceUpdate();
+             }
+          });
+        },
+        getInitialState: function () {
+          this.refresh();
+          var opts={};
+          if(this.props.timerange)
+            opts.timerange=this.props.timerange;
+          else
+            opts.timerange=3600000;
+          opts.data=[];
+          opts.timeoutid=0;
+          return opts;
+      },
+      render: function() {
+        return (<span><TimeSeriesLineChart title={"anystore queue in (objects)"} data={this.state.data}/></span>);
+      }
+  });
+var AnystoreQueueOut = React.createClass({
+        componentDidMount: function(){
+          this.refresh();
+          var that=this;
+          window.setTimeout(function(){
+            var id = window.setInterval(that.refresh,updateInterval);
+            that.setState({"timeoutid":id });
+          },Math.floor(Math.random()*10000));
+        },
+        componentWillUnmount: function(){
+          window.clearInterval(this.state.timeoutid);
+        },
+        refresh: function(){
+          var that=this;
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397141","datapoint":"anystore_queue_out"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  else
+                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)/60];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"data":arr});
+              that.forceUpdate();
+             }
+          });
+        },
+        getInitialState: function () {
+          this.refresh();
+          var opts={};
+          if(this.props.timerange)
+            opts.timerange=this.props.timerange;
+          else
+            opts.timerange=3600000;
+          opts.data=[];
+          opts.timeoutid=0;
+          return opts;
+      },
+      render: function() {
+        return (<span><TimeSeriesLineChart title={"anystore queue out (objects)"} data={this.state.data}/></span>);
+      }
+  });
+var CpuUsage = React.createClass({
+        componentDidMount: function(){
+          this.refresh();
+          var that=this;
+          window.setTimeout(function(){
+            var id = window.setInterval(that.refresh,updateInterval);
+            that.setState({"timeoutid":id });
+          },Math.floor(Math.random()*10000));
+        },
+        componentWillUnmount: function(){
+          window.clearInterval(this.state.timeoutid);
+        },
+        refresh: function(){
+          var that=this;
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397143","datapoint":"os_cpu_usage"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  else
+                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"data":arr});
+              that.forceUpdate();
+             }
+          });
+        },
+        getInitialState: function () {
+          this.refresh();
+          var opts={};
+          if(this.props.timerange)
+            opts.timerange=this.props.timerange;
+          else
+            opts.timerange=3600000;
+          opts.data=[];
+          opts.timeoutid=0;
+          return opts;
+      },
+      render: function() {
+        return (<span><TimeSeriesLineChart title={"cpu usage"} data={this.state.data}/></span>);
+      }
+  });
+var AnystoreWriteDuration = React.createClass({
+        componentDidMount: function(){
+          this.refresh();
+          var that=this;
+          window.setTimeout(function(){
+            var id = window.setInterval(that.refresh,updateInterval);
+            that.setState({"timeoutid":id });
+          },Math.floor(Math.random()*10000));
+        },
+        componentWillUnmount: function(){
+          window.clearInterval(this.state.timeoutid);
+        },
+        refresh: function(){
+          var that=this;
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397143","datapoint":"anystore_index_write_duration"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = Math.round(new Date(data[i].statisticData.timestamp).getTime() /60000)*60000;
+                  else
+                      var ts = Math.round(new Date(data[i].statisticData.timeFrameStart).getTime()/60000)*60000;
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"index":arr});
+              that.forceUpdate();
+             }
+          });
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397143","datapoint":"anystore_data_write_duration"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = Math.round(new Date(data[i].statisticData.timestamp).getTime()/60000)*60000;
+                  else
+                      var ts = Math.round(new Date(data[i].statisticData.timeFrameStart).getTime()/60000)*60000;
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"data":arr});
+              that.forceUpdate();
+             }
+          });
+          $.ajax({
+            type: "POST",
+            url: '/object/query',
+            data: JSON.stringify({"typeId":"e53042cb-ab0b-4489-9583-49320e397143","datapoint":"anystore_meta_write_duration"}),
+            success: function(data){ 
+              var arr=[];
+              for(var i=0;i<data.length;i++){
+                  if(data[i].statisticData.timestamp)
+                      var ts = Math.round(new Date(data[i].statisticData.timestamp).getTime()/60000)*60000;
+                  else
+                      var ts = Math.round(new Date(data[i].statisticData.timeFrameStart).getTime()/60000)*60000;
+                  arr[arr.length]=[ts,
+                                   Number(data[i].statisticData.value)];
+              }
+              arr.sort(function(a,b){return a[0]-b[0];});
+              that.setState({"meta":arr});
+              that.forceUpdate();
+             }
+          });
+        },
+        getInitialState: function () {
+          this.refresh();
+          var opts={};
+          if(this.props.timerange)
+            opts.timerange=this.props.timerange;
+          else
+            opts.timerange=3600000;
+          opts.data=[];
+          opts.timeoutid=0;
+          return opts;
+      },
+      render: function() {
+        return (<span><StackedTimeSeriesLineChart title={"anystore write duration (avg per object)"} data1={this.state.index} name1="index" data2={this.state.meta} name2="meta" data3={this.state.data} name3="data"/></span>);
+      }
+  });
+       React.renderComponent(<AnystoreSize />,
+              document.getElementById("anystoresize"));
+       React.renderComponent(<AnystoreQueueSize />,
+              document.getElementById("anystorequeuesize"));
+       React.renderComponent(<AnystoreQueueIn />,
+              document.getElementById("anystorequeuein"));
+       React.renderComponent(<AnystoreQueueOut />,
+              document.getElementById("anystorequeueout"));
+       React.renderComponent(<CpuUsage />,
+              document.getElementById("cpuusage"));
+       React.renderComponent(<AnystoreWriteDuration />,
+              document.getElementById("anystorewriteduration"));
+    </script>
+</head>
+<body>
+<div id="anystoresize" style="height:400px"></div>
+<div id="anystorequeuesize" style="height:400px"></div>
+<div id="anystorequeuein" style="height:400px"></div>
+<div id="anystorequeueout" style="height:400px"></div>
+<div id="cpuusage" style="height:400px"></div>
+<div id="anystorewriteduration" style="height:400px"></div>
+</body>
+</html>
