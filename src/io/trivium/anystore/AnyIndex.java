@@ -1,7 +1,8 @@
 package io.trivium.anystore;
 
+import com.google.common.hash.Funnels;
 import com.google.common.primitives.Bytes;
-import io.trivium.BloomFilter;
+import com.google.common.hash.BloomFilter;
 import io.trivium.Central;
 import io.trivium.NVPair;
 import javolution.util.FastList;
@@ -11,6 +12,7 @@ import org.iq80.leveldb.impl.Iq80DBFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -61,8 +63,13 @@ public class AnyIndex{
         }
 
         double falsePositiveProbability = 0.1;
-        valueBloomFilter = new BloomFilter<String>(path + name+"_value.bloomfilter",falsePositiveProbability, hashSize);
-        vrBloomFilter = new BloomFilter<String>(path + name+"_valref.bloomfilter",falsePositiveProbability, hashSize);
+
+        //TODO create file persistence
+        valueBloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()),1000000,falsePositiveProbability);
+        vrBloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()),1000000,falsePositiveProbability);
+        
+        //valueBloomFilter = new BloomFilter<String>(path + name+"_value.bloomfilter",falsePositiveProbability, hashSize);
+        //vrBloomFilter = new BloomFilter<String>(path + name+"_valref.bloomfilter",falsePositiveProbability, hashSize);
 
         ALL.put(name,this);
     }
@@ -71,9 +78,9 @@ public class AnyIndex{
         entries++;
 
         if (indexEnabled) {
-            boolean isNew = ! valueBloomFilter.contains(pair.getValue());
-            valueBloomFilter.add(pair.getValue());
-            vrBloomFilter.add(pair.getValue() + ref.toString());
+            boolean isNew = ! valueBloomFilter.mightContain(pair.getValue());
+            valueBloomFilter.put(pair.getValue());
+            vrBloomFilter.put(pair.getValue() + ref.toString());
 
             if (isNew) {
                 bloomCount += 1;
@@ -156,7 +163,7 @@ public class AnyIndex{
         if(idx!=null){
             idx.queries+=1;
             if(idx.indexEnabled) {
-                return idx.valueBloomFilter.contains(value);
+                return idx.valueBloomFilter.mightContain(value);
             }else{
                 return true;
             }
