@@ -1,6 +1,7 @@
 package io.trivium.extension._e53042cbab0b4479958349320e397141.v1;
 
 import io.trivium.NVList;
+import io.trivium.anystore.ObjectType;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.glue.InfiniObject;
 import io.trivium.glue.om.Element;
@@ -8,8 +9,8 @@ import io.trivium.anystore.ObjectRef;
 
 public class FileTypeFactory implements TypeFactory {
     @Override
-    public ObjectRef getTypeId() {
-        return ObjectRef.getInstance("e53042cb-ab0b-4479-9583-49320e397141");
+    public ObjectType getTypeId() {
+        return ObjectType.getInstance("e53042cb-ab0b-4479-9583-49320e397141","v1");
     }
 
     @Override

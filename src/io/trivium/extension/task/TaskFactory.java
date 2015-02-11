@@ -1,6 +1,7 @@
 package io.trivium.extension.task;
 
 import io.trivium.Central;
+import io.trivium.anystore.ObjectType;
 import io.trivium.extension.annotation.INPUT;
 import io.trivium.extension.type.Type;
 import io.trivium.extension.type.Typed;
@@ -23,7 +24,7 @@ import java.util.Set;
 
 public abstract class TaskFactory implements Typed {
     private boolean scanned = false;
-    private FastMap<ObjectRef, InputType[]> inputFields = new FastMap<ObjectRef, InputType[]>();
+    private FastMap<ObjectType, InputType[]> inputFields = new FastMap<ObjectType, InputType[]>();
 
     public abstract String getName();
 
@@ -38,9 +39,10 @@ public abstract class TaskFactory implements Typed {
             for (Field field : fields) {
                 INPUT input = field.getAnnotation(INPUT.class);
                 if (input != null) {
-                    String inputType = input.typeId();
+                    //FIXME derive type from package name
+                    String inputType = "";
                     String condition = input.condition();
-                    ObjectRef typeId = ObjectRef.getInstance(inputType);
+                    ObjectType typeId = ObjectType.getInstance(inputType,"v1");
                     InputType it = new InputType();
                     it.condition = condition;
                     it.typeId = typeId;
@@ -62,12 +64,12 @@ public abstract class TaskFactory implements Typed {
         scanned = true;
     }
 
-    public FastList<ObjectRef> getInputTypes() {
+    public FastList<ObjectType> getInputTypes() {
         if (!scanned) {
             scanClass();
         }
-        Set<ObjectRef> keyset = inputFields.keySet();
-        return new FastList<ObjectRef>(keyset);
+        Set<ObjectType> keyset = inputFields.keySet();
+        return new FastList<ObjectType>(keyset);
     }
 
     public boolean isApplicable(InfiniObject po) {

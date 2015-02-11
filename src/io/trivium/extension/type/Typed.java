@@ -1,7 +1,7 @@
 package io.trivium.extension.type;
 
-import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.ObjectType;
 
 public interface Typed {
-    public ObjectRef getTypeId();
+    public ObjectType getTypeId();
 }

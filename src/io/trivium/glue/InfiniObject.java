@@ -5,6 +5,7 @@ import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.ObjectType;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.om.Element;
@@ -28,7 +29,7 @@ public class InfiniObject implements Typed {
     public static byte typeByte = 1;
 
 	ObjectRef id;
-    ObjectRef typeId;
+    ObjectType typeId;
 	NVList metadata;
     byte[] b_metadata;
 	Element data;
@@ -36,7 +37,7 @@ public class InfiniObject implements Typed {
 
     public InfiniObject(){
         id = ObjectRef.getInstance();
-        typeId = ObjectRef.INVALID;
+        typeId = ObjectType.INVALID;
         metadata = new NVList();
         replaceMeta("id", id.toString());
         data = Element.EMPTY;
@@ -44,7 +45,7 @@ public class InfiniObject implements Typed {
 
     public InfiniObject(ObjectRef id){
         this.id = id;
-        typeId = ObjectRef.INVALID;
+        typeId = ObjectType.INVALID;
         metadata = new NVList();
         replaceMeta("id",id.toString());
         data = Element.EMPTY;
@@ -60,11 +61,11 @@ public class InfiniObject implements Typed {
     }
 
     @Override
-    public ObjectRef getTypeId(){
+    public ObjectType getTypeId(){
         return typeId;
     }
 
-    public void setTypeId(ObjectRef newType){
+    public void setTypeId(ObjectType newType){
         typeId = newType;
         metadata.replace(new NVPair("typeId",newType.toString()));
     }
@@ -98,7 +99,8 @@ public class InfiniObject implements Typed {
             setId(ObjectRef.getInstance(value));
         }
         if(name.equals("typeId")){
-            setTypeId(ObjectRef.getInstance(value));
+            //FIXME implement version
+            setTypeId(ObjectType.getInstance(value,"v1"));
         }
     }
 
@@ -197,7 +199,7 @@ public class InfiniObject implements Typed {
     }
 
     public <T> T getTypedData(){
-        ObjectRef typeId = this.getTypeId();
+        ObjectType typeId = this.getTypeId();
         try {
             TypeFactory<T> tf = Registry.INSTANCE.typeFactory.get(typeId);
             T obj = tf.getInstance(this);
@@ -241,9 +243,10 @@ public class InfiniObject implements Typed {
                 id = ObjectRef.getInstance();
             }
         }
-        if (typeId == null || typeId == ObjectRef.INVALID) {
+        //FIXME make == work again
+        if (typeId == null || typeId == ObjectType.INVALID) {
             if (metadata!=null && metadata.hasKey("typeId")) {
-                typeId = ObjectRef.getInstance(metadata.findValue("typeId"));
+                typeId = ObjectType.getInstance(metadata.findValue("typeId"),"v1");
             }
         }
         NVList meta = metadata;

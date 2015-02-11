@@ -31,7 +31,7 @@ public class Central {
     public static FastList<String> peers = new FastList<String>();
     public static AtomicInteger currentPeer = new AtomicInteger(0);
 
-    public static Logger logger = LogManager.getLogger("core");
+    public static Logger logger = LogManager.getLogger(Central.class);
 
     public static boolean isRunning = false;
 

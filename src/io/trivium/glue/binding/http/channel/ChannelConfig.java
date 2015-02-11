@@ -2,6 +2,7 @@ package io.trivium.glue.binding.http.channel;
 
 import com.google.gson.Gson;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.ObjectType;
 import io.trivium.extension.type.Typed;
 import javolution.util.FastMap;
 
@@ -10,7 +11,7 @@ public class ChannelConfig implements Typed{
 	private static FastMap<ObjectRef, ChannelConfig> knownConfigs = new FastMap<ObjectRef, ChannelConfig>().shared();
 
 	public ObjectRef id;
-	private ObjectRef typeId;
+	private ObjectType typeId;
 	public String name;
 	public long retention =432000000;//5 days in ms
 	public String className;
@@ -30,11 +31,11 @@ public class ChannelConfig implements Typed{
 	}
 
 	@Override
-	public ObjectRef getTypeId(){
+	public ObjectType getTypeId(){
 		return typeId;
 	}
 
-	public void setTypeId(ObjectRef newType){
+	public void setTypeId(ObjectType newType){
 		typeId=newType;
 	}
 

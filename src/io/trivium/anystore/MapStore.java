@@ -346,7 +346,8 @@ public class MapStore{
                 }
                 NVList meta = Json.JsonToNVPairs(data);
                 po.setMetadata(meta);
-                po.setTypeId(ObjectRef.getInstance(meta.findValue("typeId")));
+                //FIXME find correct version
+                po.setTypeId(ObjectType.getInstance(meta.findValue("typeId"),"v1"));
             }
         }else{
             Central.logger.error("no meta store for id {}",key.toString());

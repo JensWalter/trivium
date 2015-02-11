@@ -1,6 +1,7 @@
 package io.trivium.extension._e53042cbab0b4479958349320e397141.v1;
 
 import io.trivium.NVList;
+import io.trivium.anystore.ObjectType;
 import io.trivium.extension.type.Type;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.TypeIds;
@@ -28,7 +29,7 @@ public class FileType implements Type {
     public NVList metadata;
 
     @Override
-    public ObjectRef getTypeId() {
+    public ObjectType getTypeId() {
         return TypeIds.FILE;
     }
 }

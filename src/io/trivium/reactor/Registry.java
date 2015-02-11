@@ -2,6 +2,7 @@ package io.trivium.reactor;
 
 import io.trivium.Central;
 import io.trivium.InfiniLoader;
+import io.trivium.anystore.ObjectType;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.glue.InfiniObject;
@@ -22,25 +23,25 @@ import java.util.ServiceLoader;
 public class Registry {
     public static Registry INSTANCE = new Registry();
 
-    public FastMap<ObjectRef, TaskFactory> taskFactory = null;
-    public FastMap<ObjectRef, FastList<TaskFactory>> taskSubscription = null;
+    public FastMap<ObjectType, TaskFactory> taskFactory = null;
+    public FastMap<ObjectType, FastList<TaskFactory>> taskSubscription = null;
     ServiceLoader<TaskFactory> activityLoader = ServiceLoader.load(TaskFactory.class);
 
-    public FastMap<ObjectRef,TypeFactory> typeFactory = null;
+    public FastMap<ObjectType,TypeFactory> typeFactory = null;
     ServiceLoader<TypeFactory> typeLoader = ServiceLoader.load(TypeFactory.class);
 
-    public FastMap<ObjectRef,Binding> bindings= null;
+    public FastMap<ObjectType,Binding> bindings= null;
     ServiceLoader<Binding> bindingLoader = ServiceLoader.load(Binding.class,new InfiniLoader(ClassLoader.getSystemClassLoader()));
 
     public Registry(){
-        taskFactory = new FastMap<ObjectRef, TaskFactory>();
+        taskFactory = new FastMap<ObjectType, TaskFactory>();
         taskFactory.shared();
-        taskSubscription = new FastMap<ObjectRef,FastList<TaskFactory>>().shared();
+        taskSubscription = new FastMap<ObjectType,FastList<TaskFactory>>().shared();
 
-        typeFactory = new FastMap<ObjectRef,TypeFactory>();
+        typeFactory = new FastMap<ObjectType,TypeFactory>();
         typeFactory.shared();
 
-        bindings = new FastMap<ObjectRef,Binding>();
+        bindings = new FastMap<ObjectType,Binding>();
         bindings.shared();
     }
 
@@ -93,8 +94,8 @@ public class Registry {
 
     private void refreshSubscriptions(){
         for(TaskFactory activity : taskFactory.values()){
-            FastList<ObjectRef> inputTypes = activity.getInputTypes();
-            for(ObjectRef ref : inputTypes){
+            FastList<ObjectType> inputTypes = activity.getInputTypes();
+            for(ObjectType ref : inputTypes){
                 FastList<TaskFactory> a = taskSubscription.get(ref);
                 if(a== null){
                     FastList<TaskFactory> all = new FastList<TaskFactory>();
@@ -111,13 +112,13 @@ public class Registry {
     }
 
     public void notify(InfiniObject po){
-        ObjectRef ref = po.getTypeId();
+        ObjectType ref = po.getTypeId();
         FastList<TaskFactory> list = taskSubscription.get(ref);
         //calculate activity
         if(list!=null) {
             for (TaskFactory factory : list) {
-                FastList<ObjectRef> types = factory.getInputTypes();
-                for (ObjectRef type : types) {
+                FastList<ObjectType> types = factory.getInputTypes();
+                for (ObjectType type : types) {
                     if(factory.isApplicable( po))
                     {
                         try {

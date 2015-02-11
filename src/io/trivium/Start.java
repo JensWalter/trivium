@@ -1,6 +1,7 @@
 package io.trivium;
 
 import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.ObjectType;
 import io.trivium.glue.binding.http.channel.ChannelConfig;
 
 import javax.tools.JavaCompiler;
@@ -23,7 +24,7 @@ public class Start {
 		c.name="dummy channel";
 		c.className="JsonChannel";
 		c.retention =4320000000L;//50 days in ms
-		c.setTypeId(ObjectRef.getInstance("8a7d067a-0feb-4a7f-9636-1df269999cbb"));
+		c.setTypeId(ObjectType.getInstance("8a7d067a-0feb-4a7f-9636-1df269999cbb","v1"));
 		ChannelConfig.addConfig(c);
 
         JavaCompiler jc = ToolProvider.getSystemJavaCompiler();
