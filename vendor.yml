@@ -2,6 +2,6 @@
 # statistics.
 #
 ## Bundled web interface ##
-webinterface:
-- (^|/)webui/.*?\.js$
-- (^|/)webui/.*?\.css$
+name: webinterface
+- *.js$
+- *.css$
