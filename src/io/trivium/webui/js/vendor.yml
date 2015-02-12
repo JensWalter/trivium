@@ -1,6 +1,0 @@
-# Vendored files and directories are excluded from language
-# statistics.
-#
-## Bundled web interface ##
-- *.js$
-- *.css$
