@@ -2,4 +2,5 @@
 # statistics.
 #
 ## Bundled web interface ##
-- src/io/trivium/webui
+- (^|/)webui/.*?\.js$
+- (^|/)webui/.*?\.css$
