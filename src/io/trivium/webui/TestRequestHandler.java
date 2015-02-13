@@ -2,22 +2,10 @@ package io.trivium.webui;
 
 import io.trivium.Central;
 import io.trivium.NVList;
-import io.trivium.glue.InfiniObject;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
-import io.trivium.glue.om.Json;
-import io.trivium.test.NjamsTestData;
-import io.trivium.test.NjamsTestDataGenerator;
-import io.trivium.Central;
-import io.trivium.NVList;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.InfiniObject;
-import io.trivium.glue.binding.http.HttpUtils;
-import io.trivium.glue.binding.http.Session;
-import io.trivium.glue.om.Json;
-import io.trivium.test.NjamsTestData;
-import io.trivium.test.NjamsTestDataGenerator;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
@@ -57,24 +45,24 @@ public class TestRequestHandler implements HttpAsyncRequestHandler<HttpRequest> 
         Runnable r = () -> {
             AnyClient c = AnyClient.INSTANCE;
 
-            NjamsTestDataGenerator gen = new NjamsTestDataGenerator(domainCount, deploymentCount, processCount);
-            long iterCount = messageCount/threadCount;
-            for (long i = 1; i < iterCount; i++) {
-                NjamsTestData n = gen.getNJAMSData();
-                InfiniObject po = new InfiniObject();
-                po.addMetadata("domain", n.domain);
-                po.addMetadata("deployment", n.deployment);
-                po.addMetadata("process", n.process);
-                po.addMetadata("duration", String.valueOf(n.duration));
-                po.addMetadata("jobstart", n.jobstart);
-                po.addMetadata("jobend", n.jobend);
-                po.addMetadata("status", n.status);
-                po.addMetadata("logid", n.logid);
-
-                po.setData(Json.JsonToInternal(n.toString()));
-
-                c.storeObject(po);
-            }
+//            NjamsTestDataGenerator gen = new NjamsTestDataGenerator(domainCount, deploymentCount, processCount);
+//            long iterCount = messageCount/threadCount;
+//            for (long i = 1; i < iterCount; i++) {
+//                NjamsTestData n = gen.getNJAMSData();
+//                InfiniObject po = new InfiniObject();
+//                po.addMetadata("domain", n.domain);
+//                po.addMetadata("deployment", n.deployment);
+//                po.addMetadata("process", n.process);
+//                po.addMetadata("duration", String.valueOf(n.duration));
+//                po.addMetadata("jobstart", n.jobstart);
+//                po.addMetadata("jobend", n.jobend);
+//                po.addMetadata("status", n.status);
+//                po.addMetadata("logid", n.logid);
+//
+//                po.setData(Json.JsonToInternal(n.toString()));
+//
+//                c.storeObject(po);
+//            }
 
         };
         for(int i=0;i<threadCount;i++) {
