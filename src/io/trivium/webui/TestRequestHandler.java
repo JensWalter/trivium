@@ -44,7 +44,7 @@ public class TestRequestHandler implements HttpAsyncRequestHandler<HttpRequest> 
 
         Runnable r = () -> {
             AnyClient c = AnyClient.INSTANCE;
-
+//TODO implement new load generator
 //            NjamsTestDataGenerator gen = new NjamsTestDataGenerator(domainCount, deploymentCount, processCount);
 //            long iterCount = messageCount/threadCount;
 //            for (long i = 1; i < iterCount; i++) {
