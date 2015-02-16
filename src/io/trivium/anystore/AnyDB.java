@@ -31,7 +31,6 @@ public class AnyDB extends AnyAbstract {
     @Override
     public AnyDB cloneStore() {
         AnyDB newMap = new AnyDB();
-        newMap.valueSize = this.valueSize;
         newMap.type = this.type;
         newMap.path = this.path;
         newMap.generate();
@@ -62,7 +61,6 @@ public class AnyDB extends AnyAbstract {
 
     private void persist(){
         NVList list = new NVList();
-        list.add(new NVPair("valueSize", String.valueOf(valueSize)));
         list.add(new NVPair("fileName", fileName));
         list.add(new NVPair("path", path));
         list.add(new NVPair("id", id));

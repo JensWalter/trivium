@@ -32,7 +32,6 @@ public class AnyMap extends AnyAbstract {
     @Override
     public AnyMap cloneStore() {
         AnyMap newMap = new AnyMap();
-        newMap.valueSize = this.valueSize;
         newMap.type = this.type;
         newMap.path = this.path;
         newMap.generate();
@@ -46,10 +45,9 @@ public class AnyMap extends AnyAbstract {
                     ChronicleMapBuilder.of(byte[].class, byte[].class);
             builder.keySize(16);
             builder.immutableKeys();
-            builder.valueSize(valueSize);
             //use 5% of ram
             long memSize = Hardware.memSize;
-            builder.entries(Math.round(memSize*0.05)/(valueSize+16));
+            //builder.entries(Math.round(memSize*0.05)/(valueSize+16));
             builder.putReturnsNull(true);
             builder.removeReturnsNull(true);
             map = builder.create(file);
@@ -62,7 +60,6 @@ public class AnyMap extends AnyAbstract {
 
     private void persist(){
         NVList list = new NVList();
-        list.add(new NVPair("valueSize", String.valueOf(valueSize)));
         list.add(new NVPair("fileName", fileName));
         list.add(new NVPair("path", path));
         list.add(new NVPair("id", id));

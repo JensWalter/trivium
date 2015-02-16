@@ -1,7 +1,6 @@
 package io.trivium.anystore;
 
 public abstract class AnyAbstract {
-    public int valueSize;
     public String fileName;
     public String path;
     public String id;
