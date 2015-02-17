@@ -53,7 +53,7 @@ public class AnyMap extends AnyAbstract {
             map = builder.create(file);
             persist();
         }catch (Exception ex){
-            Central.logger.error("creating file store failed",ex);
+            log.error("creating file store failed",ex);
             System.exit(0);
         }
     }
@@ -69,7 +69,7 @@ public class AnyMap extends AnyAbstract {
             fos.write(str.getBytes());
             fos.close();
         }catch(Exception ex){
-            Central.logger.error("creating store meta information failed",ex);
+            log.error("creating store meta information failed",ex);
         }
     }
 

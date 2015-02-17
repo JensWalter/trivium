@@ -12,6 +12,8 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -22,6 +24,8 @@ public class ChannelRequestHandler implements
 	private final static Pattern uuidpattern = Pattern
 			.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
+    Logger log = LogManager.getLogger(getClass());
+    
 	@Override
 	public void handle(HttpRequest request, HttpAsyncExchange httpexchange,
 			HttpContext context) {
@@ -67,7 +71,7 @@ public class ChannelRequestHandler implements
 				return;
 			}
 		} catch (Exception ex) {
-			Central.logger.error(ex);
+			log.error(ex);
 			s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR,
 					ex.toString());
 			return;
@@ -80,7 +84,7 @@ public class ChannelRequestHandler implements
 		Channel channel = Channel.getChannel(channelId);
 		channel.process(session, sourceId);
 		}catch(Exception ex){
-			Central.logger.error(ex);
+			log.error(ex);
 			return false;
 		}
 		return true;

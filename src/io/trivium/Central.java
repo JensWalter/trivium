@@ -6,8 +6,6 @@ import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.StoreUtils;
 import io.trivium.glue.binding.http.Node;
 import io.trivium.reactor.Registry;
-import io.trivium.profile.Profiler;
-import io.trivium.profile.TimeUtils;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import org.apache.commons.cli.*;
@@ -31,7 +29,7 @@ public class Central {
     public static FastList<String> peers = new FastList<String>();
     public static AtomicInteger currentPeer = new AtomicInteger(0);
 
-    public static Logger logger = LogManager.getLogger(Central.class);
+    Logger log = LogManager.getLogger(getClass());
 
     public static boolean isRunning = false;
 

@@ -1,6 +1,11 @@
 package io.trivium.anystore;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public abstract class AnyAbstract {
+    Logger log = LogManager.getLogger(getClass());
+    
     public String fileName;
     public String path;
     public String id;

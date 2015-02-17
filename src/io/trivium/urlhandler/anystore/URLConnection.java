@@ -8,6 +8,8 @@ import io.trivium.anystore.query.Value;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.v1.FileType;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.v1.FileTypeFactory;
 import javolution.util.FastList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.net.URL;
 import java.util.Base64;
 
 public class URLConnection extends java.net.URLConnection {
+    Logger log = LogManager.getLogger(getClass());
+    
     /**
      * Constructs a URL connection to the specified URL. A connection to
      * the object referenced by the URL is not created.
@@ -33,7 +37,7 @@ public class URLConnection extends java.net.URLConnection {
 
     synchronized public InputStream getInputStream()
             throws IOException {
-        Central.logger.debug("looking for url {}",url.toString());
+        log.debug("looking for url {}",url.toString());
         //query anystore
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));

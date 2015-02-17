@@ -7,6 +7,8 @@ import io.trivium.Central;
 import io.trivium.NVPair;
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Logger;
 import org.iq80.leveldb.*;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 
@@ -18,6 +20,7 @@ import java.util.stream.Stream;
 
 public class AnyIndex{
     private static FastMap<String,AnyIndex> ALL = new FastMap<String,AnyIndex>().shared();
+    Logger log = LogManager.getLogger(getClass());
     private String name;
     private long entries;
     private DB index;
@@ -39,7 +42,7 @@ public class AnyIndex{
     }
 
     private AnyIndex(String name){
-        Central.logger.debug("creating index for field {}",name);
+        log.debug("creating index for field {}",name);
         this.name=name;
         entries=0;
 
@@ -58,7 +61,7 @@ public class AnyIndex{
             Iq80DBFactory factory = Iq80DBFactory.factory;
             index = factory.open(new File(path + name+".leveldb"), options);
         } catch (Exception e) {
-            Central.logger.error("cannot initialize index {}", name, e);
+            log.error("cannot initialize index {}", name, e);
             System.exit(0);
         }
 
@@ -113,7 +116,7 @@ public class AnyIndex{
                     }
                     valueBloomFilter =null;
                     vrBloomFilter = null;
-                    Central.logger.debug("disabling index for column {} with variance {}", name,variance);
+                    log.debug("disabling index for column {} with variance {}", name,variance);
                 }
             }
         }

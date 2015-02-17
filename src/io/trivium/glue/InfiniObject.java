@@ -12,6 +12,8 @@ import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Infinup;
 import io.trivium.glue.om.Json;
 import io.trivium.reactor.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.iq80.snappy.Snappy;
 
 import java.security.MessageDigest;
@@ -27,7 +29,7 @@ public class InfiniObject implements Typed {
      * 1 snappy compressed json
      */
     public static byte typeByte = 1;
-
+    Logger log = LogManager.getLogger(getClass());
 	ObjectRef id;
     ObjectType typeId;
 	NVList metadata;
@@ -205,7 +207,7 @@ public class InfiniObject implements Typed {
             T obj = tf.getInstance(this);
             return obj;
         }catch(Exception ex){
-            Central.logger.error("error constructing object",ex);
+            log.error("error constructing object",ex);
             return null;
         }
     }

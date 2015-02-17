@@ -10,6 +10,8 @@ import io.trivium.profile.Ticker;
 import javolution.util.FastList;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class AnyClient {
 
 	public static AnyClient INSTANCE = new AnyClient();
 	private ExcerptAppender pipeIn;
+    Logger log = LogManager.getLogger(getClass());
 
 	public AnyClient() {
 		String locPipeIn = Central.getProperty("basePath") + "queues"
@@ -28,7 +31,7 @@ public class AnyClient {
             chronicle = new IndexedChronicle(locPipeIn);
 			pipeIn = chronicle.createAppender();
 		} catch (IOException e) {
-			Central.logger.error(e);
+			log.error(e);
 		}
         //init profiler
         Profiler.INSTANCE.initTicker(new Ticker(DataPoints.ANYSTORE_QUEUE_IN));

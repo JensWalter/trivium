@@ -3,6 +3,8 @@ package io.trivium;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 import io.trivium.profile.WeightedAverage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.management.MBeanServerConnection;
 import java.io.BufferedReader;
@@ -68,7 +70,8 @@ public class Hardware {
             isr.close();
             return result.toString().trim();
         } catch (Exception e) {
-            Central.logger.error("error exists with the current command", e);
+            Logger log = LogManager.getLogger(Hardware.class);
+            log.error("error exists with the current command", e);
         }
         return "";
     }
@@ -84,7 +87,8 @@ public class Hardware {
             if (i > 0)
                 memSize = i;
         } catch (Exception e) {
-            Central.logger.error(e);
+            Logger log = LogManager.getLogger(Hardware.class);
+            log.error(e);
         }
     }
 
@@ -94,14 +98,15 @@ public class Hardware {
 
         // get memory size
         String size = runInOS(new String[] { "/bin/sh", "-c", "/usr/bin/awk '/MemTotal:/ { print $2 }' /proc/meminfo" });
-
+        Logger log = LogManager.getLogger(Hardware.class);
+        
         try {
             try {
                 long i = Long.parseLong(size);
                 if (i > 0)
                     memSize = i * 1024L;
             } catch (Exception e) {
-                Central.logger.error("cannot read memory size", e);
+                log.error("cannot read memory size", e);
             }
             String basePath = Central.getProperty("basePath");
             // checking filesystem
@@ -109,13 +114,13 @@ public class Hardware {
             fsType = runInOS(new String[] { "/bin/sh", "-c", cmd });
 
             Central.setProperty("fsType", fsType);
-            Central.logger.info("system is running on linux.");
-            Central.logger.info("cpu count is {}", cpuCount);
-            Central.logger.info("memory size is {}", memSize);
-            Central.logger.info("anystore path is {}", basePath);
-            Central.logger.info("anystore filesystem type is {}", fsType);
+            log.info("system is running on linux.");
+            log.info("cpu count is {}", cpuCount);
+            log.info("memory size is {}", memSize);
+            log.info("anystore path is {}", basePath);
+            log.info("anystore filesystem type is {}", fsType);
         } catch (Exception e) {
-            Central.logger.error("os discovery failed", e);
+            log.error("os discovery failed", e);
         }
     }
 }

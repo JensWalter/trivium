@@ -8,13 +8,15 @@ import io.trivium.profile.Profiler;
 import io.trivium.profile.Ticker;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.IndexedChronicle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
 public class AnyServer implements Runnable {
 
 	public static AnyServer INSTANCE = new AnyServer();
-
+    Logger log = LogManager.getLogger(getClass());
 	private MapStore store = null;
 	
 	public void init(){
@@ -28,7 +30,7 @@ public class AnyServer implements Runnable {
 
 	@Override
 	public void run() {
-	    Central.logger.info("starting anystore server");
+	    log.info("starting anystore server");
 	    if(store==null) init();
 		String pipeIn = Central.getProperty("basePath")+"queues"+File.separator+"anystore"+File.separator+"queueIn";
 		StoreUtils.createIfNotExists(pipeIn);
@@ -36,7 +38,7 @@ public class AnyServer implements Runnable {
 		try {
 			chronicle = new IndexedChronicle(pipeIn);
 		}catch(Exception ex){
-			Central.logger.error("cannot init anystore chronicle",ex);
+			log.error("cannot init anystore chronicle",ex);
 		}
 		try {
 			ExcerptTailer et = chronicle.createTailer();
@@ -73,7 +75,7 @@ public class AnyServer implements Runnable {
 				}
 			}
 		} catch (Exception e1) {
-			Central.logger.error("error while writing to backend",e1);
+			log.error("error while writing to backend",e1);
 		} finally{
 			try {
 				chronicle.close();

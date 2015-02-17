@@ -12,6 +12,8 @@ import javolution.xml.sax.Attributes;
 import javolution.xml.stream.XMLStreamConstants;
 import javolution.xml.stream.XMLStreamException;
 import javolution.xml.stream.XMLStreamReaderImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Xml {
 
@@ -60,7 +62,8 @@ public class Xml {
 				}
 			}
 		} catch (XMLStreamException e) {
-			Central.logger.error(e);
+            Logger log = LogManager.getLogger(Xml.class);
+			log.error(e);
 		}
 		return root;
 	}

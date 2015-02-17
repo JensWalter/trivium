@@ -4,6 +4,8 @@ import javolution.lang.MathLib;
 import javolution.lang.Reusable;
 import javolution.util.FastCollection;
 import javolution.util.Index;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.RandomAccessFile;
 import java.nio.LongBuffer;
@@ -15,6 +17,7 @@ public class FileBackedBitSet extends FastCollection<Index> implements Set<Index
 
         LongBuffer bits = null;
         private int _length;
+        Logger log = LogManager.getLogger(getClass());
 
         public FileBackedBitSet(String filename, int bitSize) {
             this._length = (bitSize - 1 >> 6) + 1;
@@ -26,7 +29,7 @@ public class FileBackedBitSet extends FastCollection<Index> implements Set<Index
                 MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize*8);
                 bits = mem.asLongBuffer();
             }catch (Exception ex){
-                Central.logger.error("error while creating bitset",ex);
+                log.error("error while creating bitset",ex);
             }
 
         }

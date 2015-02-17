@@ -13,10 +13,14 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
 public class TestRequestHandler implements HttpAsyncRequestHandler<HttpRequest> {
+    Logger log = LogManager.getLogger(getClass());
+    
     @Override
     public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
@@ -24,7 +28,7 @@ public class TestRequestHandler implements HttpAsyncRequestHandler<HttpRequest> 
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
-        Central.logger.debug("test request handler");
+        log.debug("test request handler");
         NVList test = HttpUtils.getInputAsNVList(request);
         /**
          var tc = {}

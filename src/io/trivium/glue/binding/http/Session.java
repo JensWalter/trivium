@@ -10,6 +10,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
 import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Session {
 
@@ -17,6 +19,7 @@ public class Session {
 	HttpAsyncExchange httpexchange;
 	HttpContext context;
 	ObjectRef id;
+    Logger log = LogManager.getLogger(getClass());
 
 	public Session(HttpRequest request, HttpAsyncExchange httpexchange,
 			HttpContext context, ObjectRef id) {
@@ -49,7 +52,7 @@ public class Session {
 
 			httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
 		} catch (Exception ex) {
-			Central.logger.error(ex);
+			log.error(ex);
 		}
 	}
 
@@ -64,7 +67,7 @@ public class Session {
 
 			httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
 		} catch (Exception ex) {
-			Central.logger.error(ex);
+			log.error(ex);
 		}
 	}
 
@@ -76,7 +79,7 @@ public class Session {
             response.setEntity(entity);
             httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
         } catch (Exception ex) {
-            Central.logger.error(ex);
+            log.error(ex);
         }
     }
 }

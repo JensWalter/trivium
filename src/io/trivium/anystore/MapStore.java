@@ -13,6 +13,8 @@ import io.trivium.profile.Profiler;
 import io.trivium.profile.WeightedAverage;
 import io.trivium.reactor.Registry;
 import javolution.util.FastList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.iq80.snappy.Snappy;
 
 import java.io.File;
@@ -20,7 +22,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MapStore{
-
+    Logger log = LogManager.getLogger(getClass());
     protected String path;
     AnyAbstract dataMap = null;
     AnyAbstract metaMap = null;
@@ -61,7 +63,7 @@ public class MapStore{
         //create primary key index - just in case
         new AnyIndex("id",true);
 
-        Central.logger.info("MapStore initialized on " + path);
+        log.info("MapStore initialized on " + path);
 
         Central.isRunning=true;
     }
@@ -80,7 +82,7 @@ public class MapStore{
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_META_WRITE_DURATION, end - start);
         } catch (Exception e) {
-            Central.logger.error("error while writing to store", e);
+            log.error("error while writing to store", e);
         }
         //write data
         try {
@@ -90,7 +92,7 @@ public class MapStore{
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_DATA_WRITE_DURATION, end - start);
         } catch (Exception e) {
-            Central.logger.error("error while writing to store", e);
+            log.error("error while writing to store", e);
         }
         //update indices
         try {
@@ -101,13 +103,13 @@ public class MapStore{
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_INDEX_WRITE_DURATION, end - start);
         } catch (Exception e) {
-            Central.logger.error("error updating index", e);
+            log.error("error updating index", e);
         }
         //trigger notify
         try{
             Registry.INSTANCE.notify(po);
         }catch(Exception ex){
-            Central.logger.error("error notifying activities",ex);
+            log.error("error notifying activities",ex);
         }
     }
 

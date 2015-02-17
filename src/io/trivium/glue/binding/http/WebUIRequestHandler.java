@@ -11,12 +11,15 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class WebUIRequestHandler implements HttpAsyncRequestHandler<HttpRequest>{
+    Logger log = LogManager.getLogger(getClass());
 
 	@Override
 	public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
@@ -29,7 +32,7 @@ public class WebUIRequestHandler implements HttpAsyncRequestHandler<HttpRequest>
 			 uri= "io/trivium/webui/index.html";
 		 else
 			 uri= "com/infiniup/webui"+uri.substring(3);
-		 Central.logger.debug("receiving request for uri: {} => {}",origURI,uri);
+		 log.debug("receiving request for uri: {} => {}",origURI,uri);
 		 ClassLoader cl = ClassLoader.getSystemClassLoader();
         try{
             Class<?> clazz = cl.loadClass(uri.replace('/','.'));

@@ -27,9 +27,11 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Node {
-
+    Logger log = LogManager.getLogger(getClass());
 	private int port = 8734;
 	
 	public Node(){
@@ -62,10 +64,10 @@ public class Node {
             ioReactor.listen(new InetSocketAddress(port));
             ioReactor.execute(ioEventDispatch);
         } catch (InterruptedIOException ex) {
-            Central.logger.error(ex);
+            log.error(ex);
         } catch (IOException e) {
-        	Central.logger.error(e);
+        	log.error(e);
         }
-        Central.logger.info("shutting down http node on port {}",port);
+        log.info("shutting down http node on port {}",port);
     }
 }

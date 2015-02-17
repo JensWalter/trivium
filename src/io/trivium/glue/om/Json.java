@@ -7,6 +7,8 @@ import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import javolution.util.FastList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -107,7 +109,8 @@ public class Json {
 			}
 			reader.close();
 		} catch (Exception ex) {
-			Central.logger.error("error in json serializer",ex);
+            Logger log = LogManager.getLogger(Json.class);
+			log.error("error in json serializer", ex);
 		}
 		return root;
 	}
@@ -124,7 +127,8 @@ public class Json {
 			jw.endObject();
 			jw.close();
 		} catch (Exception ex) {
-			Central.logger.error("error in json serializer",ex);
+            Logger log = LogManager.getLogger(Json.class);
+			log.error("error in json serializer",ex);
 		}
 		return sw.toString();
 	}
@@ -203,7 +207,8 @@ public class Json {
 			writer.close();
 			rslt = sw.toString();
 		} catch (Exception e) {
-			Central.logger.error(e);
+            Logger log = LogManager.getLogger(Json.class);
+			log.error(e);
 		}
 		return rslt;
 	}
@@ -256,7 +261,8 @@ public class Json {
 			}
 			reader.close();
 		} catch (Exception e) {
-			Central.logger.error(e);
+            Logger log = LogManager.getLogger(Json.class);
+			log.error(e);
 		}
 		return rslt;
 	}

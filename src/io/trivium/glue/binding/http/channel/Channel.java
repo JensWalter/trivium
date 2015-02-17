@@ -5,10 +5,13 @@ import io.trivium.glue.binding.http.Session;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.glue.binding.http.Session;
 import javolution.util.FastMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Channel {
 
-	protected static FastMap<ObjectRef, Channel> all = new FastMap<ObjectRef, Channel>().shared();
+    protected static FastMap<ObjectRef, Channel> all = new FastMap<ObjectRef, Channel>().shared();
+    
 	final protected ChannelConfig config;
 	
 	public Channel(ObjectRef id){
@@ -25,7 +28,8 @@ public abstract class Channel {
 				c = (Channel) t.getDeclaredConstructor(ObjectRef.class).newInstance(id);
 				all.put(id, c);
 			} catch (Exception e) {
-				Central.logger.error(e);
+                Logger log = LogManager.getLogger(Channel.class);
+				log.error(e);
 			}
 		}
 		return c;

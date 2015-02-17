@@ -50,11 +50,11 @@ public class AnyDB extends AnyAbstract {
                 Iq80DBFactory factory = Iq80DBFactory.factory;
                 map = factory.open(file, options);
             } catch (Exception e) {
-                Central.logger.error("cannot initialize leveldb store {}", fileName, e);
+                log.error("cannot initialize leveldb store {}", fileName, e);
             }
             persist();
         }catch (Exception ex){
-            Central.logger.error("creating file store failed",ex);
+            log.error("creating file store failed",ex);
             System.exit(0);
         }
     }
@@ -70,7 +70,7 @@ public class AnyDB extends AnyAbstract {
             fos.write(str.getBytes());
             fos.close();
         }catch(Exception ex){
-            Central.logger.error("creating store meta information failed",ex);
+            log.error("creating store meta information failed",ex);
         }
     }
 

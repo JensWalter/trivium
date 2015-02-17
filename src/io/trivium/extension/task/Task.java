@@ -4,9 +4,12 @@ import io.trivium.extension.binding.State;
 import io.trivium.extension.type.Typed;
 import io.trivium.extension.binding.State;
 import io.trivium.extension.type.Typed;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Task implements Typed {
-
+    protected Logger log = LogManager.getLogger(getClass());
+    
     private State state;
     public abstract String getName();
 

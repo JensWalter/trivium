@@ -17,6 +17,8 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +29,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest> {
+    Logger log = LogManager.getLogger(getClass());
+    
     @Override
     public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
         return new BasicAsyncRequestConsumer();
@@ -34,7 +38,7 @@ public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
-        Central.logger.debug("upload request handler");
+        log.debug("upload request handler");
         NVList upload = HttpUtils.getInputAsNVList(request);
         /**
          {
@@ -60,7 +64,7 @@ public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest
                 processFile(fileName,size,type,lastModified,data);
             }
         } catch (Exception ex) {
-            Central.logger.error("error while processing file upload {}", ex);
+            log.error("error while processing file upload {}", ex);
         }
         s.ok();
     }
@@ -91,7 +95,7 @@ public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest
             zis.close();
             bis.close();
         }catch(Exception ex){
-            Central.logger.error("error while processing file upload {}", ex);
+            log.error("error while processing file upload {}", ex);
         }
     }
 
@@ -131,7 +135,7 @@ public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest
         file.addChild(new Element("contentType", type));
         file.addChild(new Element("lastModified", Instant.ofEpochMilli(lastModified).toString()));
 
-        Central.logger.debug("inserting file into anystore {}",fileName);
+        log.debug("inserting file into anystore {}",fileName);
 
 
         po.setData(file);

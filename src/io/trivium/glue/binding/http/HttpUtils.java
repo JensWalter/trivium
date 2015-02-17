@@ -6,6 +6,8 @@ import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Json;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -29,7 +31,8 @@ public class HttpUtils {
                 bos.close();
                 result = bos.toString("UTF-8");
             } catch (IOException e) {
-                Central.logger.error("error while decoding http input stream", e);
+                Logger log = LogManager.getLogger(HttpUtils.class);
+                log.error("error while decoding http input stream", e);
             }
             return result;
         }else{

@@ -10,6 +10,8 @@ import com.google.gson.stream.JsonWriter;
 import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Infinup {
 
@@ -22,7 +24,8 @@ public class Infinup {
 
 			reader.close();
 		} catch (Exception ex) {
-			Central.logger.error(ex);
+            Logger log = LogManager.getLogger(Infinup.class);
+			log.error(ex);
 		}
 		return root;
 	}
@@ -38,7 +41,8 @@ public class Infinup {
 			writer.close();
 			rslt = sw.toString();
 		} catch (Exception ex) {
-			Central.logger.error(ex);
+            Logger log = LogManager.getLogger(Infinup.class);
+			log.error(ex);
 		}
 		return rslt;
 	}

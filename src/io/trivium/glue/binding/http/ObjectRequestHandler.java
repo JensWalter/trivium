@@ -23,6 +23,8 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -35,6 +37,8 @@ public class ObjectRequestHandler implements
     private final static Pattern uuidpattern = Pattern
             .compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
+    Logger log = LogManager.getLogger(getClass());
+    
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpexchange,
                        HttpContext context) {
@@ -82,7 +86,7 @@ public class ObjectRequestHandler implements
                 return;
             }
         } catch (Exception ex) {
-            Central.logger.error("error processing object request", ex);
+            log.error("error processing object request", ex);
             s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR,
                     ex.toString());
             return;

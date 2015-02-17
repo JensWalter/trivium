@@ -16,6 +16,8 @@ import io.trivium.extension.type.TypeFactory;
 import io.trivium.glue.InfiniObject;
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -23,6 +25,8 @@ import java.util.ServiceLoader;
 public class Registry {
     public static Registry INSTANCE = new Registry();
 
+    Logger log = LogManager.getLogger(getClass());
+    
     public FastMap<ObjectType, TaskFactory> taskFactory = null;
     public FastMap<ObjectType, FastList<TaskFactory>> taskSubscription = null;
     ServiceLoader<TaskFactory> activityLoader = ServiceLoader.load(TaskFactory.class);
@@ -57,7 +61,7 @@ public class Registry {
         }
         //printing registered Types
         for(TypeFactory type : typeFactory.values()){
-            Central.logger.debug("registered type factory for '{}'", type.getName());
+            log.debug("registered type factory for '{}'", type.getName());
         }
 
         //activity
@@ -71,7 +75,7 @@ public class Registry {
         }
         //printing registered Activities
         for(TaskFactory act : taskFactory.values()){
-            Central.logger.debug("registered task factory for '{}'", act.getName());
+            log.debug("registered task factory for '{}'", act.getName());
         }
         //prepare subscriptions
         refreshSubscriptions();
@@ -87,7 +91,7 @@ public class Registry {
         }
         //printing registered Bindings
         for(Binding binding : bindings.values()){
-            Central.logger.debug("registered type factory for '{}'", binding.getName());
+            log.debug("registered type factory for '{}'", binding.getName());
         }
 
     }
@@ -125,8 +129,8 @@ public class Registry {
                             Task task = factory.getInstance(po);
                             task.eval();
                         }catch(Exception ex){
-                            Central.logger.error("error while running activity '{}'",factory.getName());
-                            Central.logger.error("got exception",ex);
+                            log.error("error while running activity '{}'",factory.getName());
+                            log.error("got exception",ex);
                         }
                     }
                 }

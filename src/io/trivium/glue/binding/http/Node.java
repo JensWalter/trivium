@@ -13,12 +13,15 @@ import org.apache.http.nio.protocol.UriHttpAsyncRequestHandlerMapper;
 import org.apache.http.nio.reactor.IOEventDispatch;
 import org.apache.http.nio.reactor.ListeningIOReactor;
 import org.apache.http.protocol.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class Node {
 	private int port;
+    Logger log = LogManager.getLogger(getClass());
 	
 	public Node(){
 		port = Integer.parseInt(Central.getProperty("httpPort"));
@@ -64,14 +67,14 @@ public class Node {
 		            try {
 						ioReactor.execute(ioEventDispatch);
 					} catch (IOException e) {
-						Central.logger.error("failed to start http server on port "+port,e);
+						log.error("failed to start http server on port "+port,e);
                         System.exit(0);
 					}
 			}).start();
         } catch (Exception e) {
-        	Central.logger.error("failed to start http server on port "+port,e);
+        	log.error("failed to start http server on port "+port,e);
             System.exit(0);
         }
-        Central.logger.info("server listening on port {}",port);
+        log.info("server listening on port {}",port);
     }
 }

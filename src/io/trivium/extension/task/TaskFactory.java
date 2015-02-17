@@ -14,6 +14,8 @@ import io.trivium.extension.type.Typed;
 import io.trivium.glue.InfiniObject;
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -23,6 +25,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 public abstract class TaskFactory implements Typed {
+    Logger log = LogManager.getLogger(getClass());
     private boolean scanned = false;
     private FastMap<ObjectType, InputType[]> inputFields = new FastMap<ObjectType, InputType[]>();
 
@@ -58,8 +61,8 @@ public abstract class TaskFactory implements Typed {
                 }
             }
         } catch (Exception ex) {
-            Central.logger.error("failed to reflect on type {}", this.getTypeId().toString());
-            Central.logger.error("got exception", ex);
+            log.error("failed to reflect on type {}", this.getTypeId().toString());
+            log.error("got exception", ex);
         }
         scanned = true;
     }
@@ -104,7 +107,7 @@ public abstract class TaskFactory implements Typed {
                 }
             }
         } catch (Exception ex) {
-            Central.logger.error("condition check failed with ",ex);
+            log.error("condition check failed with ",ex);
         }
         return false;
     }
@@ -116,7 +119,7 @@ public abstract class TaskFactory implements Typed {
             try {
                 f.field.set(task, obj);
             } catch (Exception ex) {
-                Central.logger.error("error population activity input", ex);
+                log.error("error population activity input", ex);
             }
         }
     }
