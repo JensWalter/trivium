@@ -31,7 +31,7 @@ public class WebUIRequestHandler implements HttpAsyncRequestHandler<HttpRequest>
 		 if(uri.equals("/ui/"))
 			 uri= "io/trivium/webui/index.html";
 		 else
-			 uri= "com/infiniup/webui"+uri.substring(3);
+			 uri= "io/trivium/webui"+uri.substring(3);
 		 log.debug("receiving request for uri: {} => {}",origURI,uri);
 		 ClassLoader cl = ClassLoader.getSystemClassLoader();
         try{
