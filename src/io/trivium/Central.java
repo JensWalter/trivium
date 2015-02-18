@@ -75,13 +75,12 @@ public class Central {
         opts.addOption("cq", "cleanQueue", false, "re-initializes the local ingestion queue");
         opts.addOption("a", "autosize", false, "sizes the jvm according to the environment");
         opts.addOption("t", "test", true, "starts test mode with {x} dummy messages");
-        opts.addOption("se", "storageEngine", true, "choose between file and map backend");
         opts.addOption("c", "compress", true, "enable/disbale snappy comrepssion (default=true)");
 
         CommandLine cmd = parser.parse(opts, args);
         if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("inifniup", opts);
+            formatter.printHelp("trivium", opts);
             return;
         }
         if (cmd.hasOption("loglevel")) {
@@ -98,12 +97,6 @@ public class Central {
             }
         }else{
             Central.setProperty("compression","true");
-        }
-        if (cmd.hasOption("storageEngine")) {
-            String val = cmd.getOptionValue("storageEngine");
-            if (val.equals("file") || val.equals("map")) {
-                Central.setProperty("storageEngine", val);
-            }
         }
         if (cmd.hasOption("test")) {
             String count = cmd.getOptionValue("test");
