@@ -1,19 +1,13 @@
 package io.trivium.reactor;
 
-import io.trivium.Central;
 import io.trivium.InfiniLoader;
 import io.trivium.anystore.ObjectType;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.glue.InfiniObject;
-import io.trivium.Central;
-import io.trivium.InfiniLoader;
-import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.task.Task;
 import io.trivium.extension.task.TaskFactory;
-import io.trivium.extension.binding.Binding;
-import io.trivium.extension.type.TypeFactory;
-import io.trivium.glue.InfiniObject;
+import io.trivium.test.TestCase;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +31,9 @@ public class Registry {
     public FastMap<ObjectType,Binding> bindings= null;
     ServiceLoader<Binding> bindingLoader = ServiceLoader.load(Binding.class,new InfiniLoader(ClassLoader.getSystemClassLoader()));
 
+    public FastMap<ObjectType,TestCase> testcases= null;
+    ServiceLoader<TestCase> testcaseLoader = ServiceLoader.load(TestCase.class,new InfiniLoader(ClassLoader.getSystemClassLoader()));
+
     public Registry(){
         taskFactory = new FastMap<ObjectType, TaskFactory>();
         taskFactory.shared();
@@ -47,6 +44,9 @@ public class Registry {
 
         bindings = new FastMap<ObjectType,Binding>();
         bindings.shared();
+
+        testcases = new FastMap<ObjectType,TestCase>();
+        testcases.shared();
     }
 
     public void reload(){
@@ -73,10 +73,6 @@ public class Registry {
                 taskFactory.put(activity.getTypeId(), activity);
             }
         }
-        //printing registered Activities
-        for(TaskFactory act : taskFactory.values()){
-            log.debug("registered task factory for '{}'", act.getName());
-        }
         //prepare subscriptions
         refreshSubscriptions();
 
@@ -89,11 +85,16 @@ public class Registry {
                 bindings.put(binding.getTypeId(),binding);
             }
         }
-        //printing registered Bindings
-        for(Binding binding : bindings.values()){
-            log.debug("registered type factory for '{}'", binding.getName());
-        }
 
+        //testcases
+        testcaseLoader.reload();
+        Iterator<TestCase> testIter = testcaseLoader.iterator();
+        while(testIter.hasNext()){
+            TestCase testcase = testIter.next();
+            if(!testcases.containsKey(testcase.getTypeId())){
+                testcases.put(testcase.getTypeId(),testcase);
+            }
+        }
     }
 
     private void refreshSubscriptions(){

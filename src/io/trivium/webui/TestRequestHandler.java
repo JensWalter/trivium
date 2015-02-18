@@ -6,6 +6,7 @@ import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.reactor.Registry;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
@@ -39,6 +40,19 @@ public class TestRequestHandler implements HttpAsyncRequestHandler<HttpRequest> 
          */
         Session s = new Session(request, httpexchange, context, ObjectRef.getInstance());
 
+        //use command structure
+        String cmd = test.findValue("command");
+        switch(cmd){
+            case "list":
+                Registry registry = Registry.INSTANCE;
+                registry.reload();
+                
+                break;
+            default:
+                //nothing happens
+                s.ok();
+                break;
+        }
         final int domainCount = Integer.parseInt(test.findValue("domainCount"));
         final int deploymentCount = Integer.parseInt(test.findValue("deploymentCount"));
         final int processCount = Integer.parseInt(test.findValue("processCount"));
