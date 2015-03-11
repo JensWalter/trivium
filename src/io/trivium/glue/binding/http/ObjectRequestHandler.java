@@ -1,21 +1,15 @@
 package io.trivium.glue.binding.http;
 
 import com.google.common.base.Joiner;
-import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.glue.om.Json;
-import io.trivium.Central;
-import io.trivium.NVList;
-import io.trivium.NVPair;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.ContentTypes;
-import io.trivium.glue.InfiniObject;
-import io.trivium.glue.om.Json;
 import javolution.util.FastList;
 import org.apache.http.*;
 import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
@@ -68,9 +62,9 @@ public class ObjectRequestHandler implements
                 for (NVPair pair : criteria) {
                     q.criteria.add(new Value(pair.getName(), pair.getValue()));
                 }
-                FastList<InfiniObject> objects = AnyClient.INSTANCE.loadObjects(q);
+                FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q);
                 FastList<String> sb = new FastList<String>();
-                for (InfiniObject po : objects) {
+                for (TriviumObject po : objects) {
                     if (po != null) {
                         sb.add(Json.InternalToJson(po.getData()));
                     }
@@ -119,7 +113,7 @@ public class ObjectRequestHandler implements
             bos.close();
 
             // send object to backend
-            InfiniObject po = new InfiniObject();
+            TriviumObject po = new TriviumObject();
             po.setId(id);
 
             String contentType = "application/octet-stream";
@@ -129,9 +123,9 @@ public class ObjectRequestHandler implements
             }
             po.addMetadata("contentType", contentType);
 
-            // if header starts with infinup - copy value
+            // if header starts with trivium - copy value
             for (Header h : headers) {
-                if (h.getName().startsWith("infiniup-")) {
+                if (h.getName().startsWith("trivium-")) {
                     po.addMetadata(h.getName().substring(9), h.getValue());
                 }
             }

@@ -2,7 +2,7 @@ package io.trivium.anystore;
 
 import io.trivium.Central;
 import io.trivium.anystore.query.Query;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Differential;
 import io.trivium.profile.Profiler;
@@ -38,13 +38,13 @@ public class AnyClient {
         Profiler.INSTANCE.initDifferential(new Differential(DataPoints.ANYSTORE_QUEUE_SIZE));
     }
 
-    public synchronized void storeObject(InfiniObject po) {
+    public synchronized void storeObject(TriviumObject po) {
         Profiler.INSTANCE.tick(DataPoints.ANYSTORE_QUEUE_IN);
         Profiler.INSTANCE.increment(DataPoints.ANYSTORE_QUEUE_SIZE);
         //pre serialize
         byte[] id = po.getId().toBytes();
         //FIXME implement version
-        byte[] typeId = po.getTypeId().getObjectRef().toBytes();
+        byte[] typeId = po.getTypeId().toBytes();
         byte[] metadata = po.getMetadataBinary();
         byte[] data = po.getDataBinary();
 
@@ -64,7 +64,7 @@ public class AnyClient {
         AnyServer.INSTANCE.getStore().delete(query);
 	}
 
-	public FastList<InfiniObject> loadObjects(Query query) {
+	public FastList<TriviumObject> loadObjects(Query query) {
 		return AnyServer.INSTANCE.getStore().loadObjects(query);
 	}
 }

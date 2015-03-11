@@ -1,10 +1,9 @@
 package io.trivium.anystore.query;
 
-import io.trivium.Central;
 import io.trivium.anystore.AnyIndex;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import javolution.util.FastList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +12,7 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class QueryExecutor implements Supplier<InfiniObject> {
+public class QueryExecutor implements Supplier<TriviumObject> {
     Logger log = LogManager.getLogger(getClass());
     
     ObjectRef id;
@@ -67,11 +66,11 @@ public class QueryExecutor implements Supplier<InfiniObject> {
         return keys.size();
     }
 
-    public InfiniObject get() {
+    public TriviumObject get() {
         if (iterator.hasNext()) {
             ObjectRef ref = iterator.next();
             try {
-                InfiniObject po = AnyServer.INSTANCE.getStore().loadObject(ref);
+                TriviumObject po = AnyServer.INSTANCE.getStore().loadObject(ref);
                 //check for correct value
                 boolean valid = true;
                 for (Criteria crit : query.criteria) {

@@ -31,7 +31,7 @@ public class Node {
         // Create HTTP protocol processing chain
         HttpProcessor httpproc = HttpProcessorBuilder.create()
                 .add(new ResponseDate())
-                .add(new ResponseServer("infiniup"))
+                .add(new ResponseServer("trivium"))
                 .add(new ResponseContent())
                 .add(new ResponseConnControl()).build();
  

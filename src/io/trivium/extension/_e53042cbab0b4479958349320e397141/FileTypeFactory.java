@@ -1,20 +1,19 @@
-package io.trivium.extension._e53042cbab0b4479958349320e397141.v1;
+package io.trivium.extension._e53042cbab0b4479958349320e397141;
 
 import io.trivium.NVList;
-import io.trivium.anystore.ObjectType;
 import io.trivium.extension.type.TypeFactory;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.anystore.ObjectRef;
 
 public class FileTypeFactory implements TypeFactory {
     @Override
-    public ObjectType getTypeId() {
-        return ObjectType.getInstance("e53042cb-ab0b-4479-9583-49320e397141","v1");
+    public ObjectRef getTypeId() {
+        return ObjectRef.getInstance("e53042cb-ab0b-4479-9583-49320e397141");
     }
 
     @Override
-    public FileType getInstance(InfiniObject po) {
+    public FileType getInstance(TriviumObject po) {
         FileType file = new FileType();
         NVList metadata = po.getMetadata();
         Element root = po.getData();
@@ -30,10 +29,10 @@ public class FileTypeFactory implements TypeFactory {
     }
 
     @Override
-    public InfiniObject getPersistenceObject(Object instance) {
+    public TriviumObject getTriviumObject(Object instance) {
         if(instance instanceof FileType) {
             FileType inst = (FileType)instance;
-            InfiniObject po = new InfiniObject();
+            TriviumObject po = new TriviumObject();
             po.replaceMeta("name", inst.name);
             po.replaceMeta("size", inst.size);
             po.replaceMeta("contentType", inst.contentType);
@@ -55,7 +54,7 @@ public class FileTypeFactory implements TypeFactory {
 
     @Override
     public String getName(){
-        return "infiniup-file factory";
+        return "trivium-file factory";
     }
 
 }

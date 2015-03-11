@@ -1,10 +1,10 @@
 package io.trivium.reactor;
 
-import io.trivium.InfiniLoader;
-import io.trivium.anystore.ObjectType;
+import io.trivium.TriviumLoader;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.type.TypeFactory;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.extension.task.Task;
 import io.trivium.extension.task.TaskFactory;
 import io.trivium.test.TestCase;
@@ -21,31 +21,31 @@ public class Registry {
 
     Logger log = LogManager.getLogger(getClass());
     
-    public FastMap<ObjectType, TaskFactory> taskFactory = null;
-    public FastMap<ObjectType, FastList<TaskFactory>> taskSubscription = null;
+    public FastMap<ObjectRef, TaskFactory> taskFactory = null;
+    public FastMap<ObjectRef, FastList<TaskFactory>> taskSubscription = null;
     ServiceLoader<TaskFactory> activityLoader = ServiceLoader.load(TaskFactory.class);
 
-    public FastMap<ObjectType,TypeFactory> typeFactory = null;
+    public FastMap<ObjectRef,TypeFactory> typeFactory = null;
     ServiceLoader<TypeFactory> typeLoader = ServiceLoader.load(TypeFactory.class);
 
-    public FastMap<ObjectType,Binding> bindings= null;
-    ServiceLoader<Binding> bindingLoader = ServiceLoader.load(Binding.class,new InfiniLoader(ClassLoader.getSystemClassLoader()));
+    public FastMap<ObjectRef,Binding> bindings= null;
+    ServiceLoader<Binding> bindingLoader = ServiceLoader.load(Binding.class,new TriviumLoader(ClassLoader.getSystemClassLoader()));
 
-    public FastMap<ObjectType,TestCase> testcases= null;
-    ServiceLoader<TestCase> testcaseLoader = ServiceLoader.load(TestCase.class,new InfiniLoader(ClassLoader.getSystemClassLoader()));
+    public FastMap<ObjectRef,TestCase> testcases= null;
+    ServiceLoader<TestCase> testcaseLoader = ServiceLoader.load(TestCase.class,new TriviumLoader(ClassLoader.getSystemClassLoader()));
 
     public Registry(){
-        taskFactory = new FastMap<ObjectType, TaskFactory>();
+        taskFactory = new FastMap<ObjectRef, TaskFactory>();
         taskFactory.shared();
-        taskSubscription = new FastMap<ObjectType,FastList<TaskFactory>>().shared();
+        taskSubscription = new FastMap<ObjectRef,FastList<TaskFactory>>().shared();
 
-        typeFactory = new FastMap<ObjectType,TypeFactory>();
+        typeFactory = new FastMap<ObjectRef,TypeFactory>();
         typeFactory.shared();
 
-        bindings = new FastMap<ObjectType,Binding>();
+        bindings = new FastMap<ObjectRef,Binding>();
         bindings.shared();
 
-        testcases = new FastMap<ObjectType,TestCase>();
+        testcases = new FastMap<ObjectRef,TestCase>();
         testcases.shared();
     }
 
@@ -99,8 +99,8 @@ public class Registry {
 
     private void refreshSubscriptions(){
         for(TaskFactory activity : taskFactory.values()){
-            FastList<ObjectType> inputTypes = activity.getInputTypes();
-            for(ObjectType ref : inputTypes){
+            FastList<ObjectRef> inputTypes = activity.getInputTypes();
+            for(ObjectRef ref : inputTypes){
                 FastList<TaskFactory> a = taskSubscription.get(ref);
                 if(a== null){
                     FastList<TaskFactory> all = new FastList<TaskFactory>();
@@ -116,14 +116,14 @@ public class Registry {
         }
     }
 
-    public void notify(InfiniObject po){
-        ObjectType ref = po.getTypeId();
+    public void notify(TriviumObject po){
+        ObjectRef ref = po.getTypeId();
         FastList<TaskFactory> list = taskSubscription.get(ref);
         //calculate activity
         if(list!=null) {
             for (TaskFactory factory : list) {
-                FastList<ObjectType> types = factory.getInputTypes();
-                for (ObjectType type : types) {
+                FastList<ObjectRef> types = factory.getInputTypes();
+                for (ObjectRef type : types) {
                     if(factory.isApplicable( po))
                     {
                         try {

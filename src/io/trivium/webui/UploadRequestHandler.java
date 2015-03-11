@@ -1,10 +1,9 @@
 package io.trivium.webui;
 
-import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.glue.binding.http.HttpUtils;
@@ -118,7 +117,7 @@ public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest
             type = ContentTypes.getMimeType(ending);
         }
 
-        InfiniObject po = new InfiniObject();
+        TriviumObject po = new TriviumObject();
 
         po.addMetadata("name", fileName);
         po.addMetadata("contentType", type);

@@ -1,12 +1,11 @@
 package io.trivium.urlhandler.anystore;
 
-import io.trivium.Central;
 import io.trivium.anystore.AnyClient;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.v1.FileType;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.v1.FileTypeFactory;
+import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
+import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
 import javolution.util.FastList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,10 +40,10 @@ public class URLConnection extends java.net.URLConnection {
         //query anystore
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));
-        FastList<InfiniObject> objects = AnyClient.INSTANCE.loadObjects(query);
+        FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
         FileTypeFactory factory = new FileTypeFactory();
         byte[] b=new byte[0];
-        for(InfiniObject po : objects){
+        for(TriviumObject po : objects){
             FileType file = factory.getInstance(po);
             b = Base64.getDecoder().decode(file.data);
         }

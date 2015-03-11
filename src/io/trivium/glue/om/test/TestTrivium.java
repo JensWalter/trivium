@@ -2,11 +2,9 @@ package io.trivium.glue.om.test;
 
 import io.trivium.NVPair;
 import io.trivium.glue.om.Element;
-import io.trivium.glue.om.Infinup;
-import io.trivium.glue.om.Element;
-import io.trivium.glue.om.Infinup;
+import io.trivium.glue.om.Trivium;
 
-public class TestInfiniup {
+public class TestTrivium {
 
 	public static void main(String[] args) {
 		elem2Iup();
@@ -27,8 +25,8 @@ public class TestInfiniup {
 		complex.addMetadata(new NVPair("meta1", "val2"));
 		
 		e.addChild(complex);
-		String str  = Infinup.internalToInfiniup(e);
-		Element elem = Infinup.infiniupToInternal(str);
+		String str  = Trivium.internalToTrivium(e);
+		Element elem = Trivium.triviumToInternal(str);
 		System.out.println(e.toString());
 		System.out.println(elem.getChild(0).toString());
 		/*
@@ -51,13 +49,13 @@ public class TestInfiniup {
 		complex.addMetadata(new NVPair("meta1", "val2"));
 		
 		e.addChild(complex);
-		String str  = Infinup.internalToInfiniup(e);
+		String str  = Trivium.internalToTrivium(e);
 		System.out.println(str);
 	}
 	
 	public static void iup2Elem(){
 		String str ="{\"root\":{\"children\":[{\"sub1\":{\"value\":\"value1\"}},{\"sub2\":{\"value\":\"value2\"}},{\"complex1\":{\"metadata\":[{\"meta1\":\"val1\"},{\"meta1\":\"val2\"}],\"value\":\"value2\"}}]}}";
-		Element elem = Infinup.infiniupToInternal(str);
+		Element elem = Trivium.triviumToInternal(str);
 		System.out.println(elem.toString());
 	}
 }

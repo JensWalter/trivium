@@ -1,7 +1,7 @@
 package io.trivium.test.cases;
 
 import io.trivium.NVPair;
-import io.trivium.anystore.ObjectType;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
@@ -33,8 +33,8 @@ public class _edf4efa27b874e9a82b66f35be116429 implements TestCase{
     }
 
     @Override
-    public ObjectType getTypeId() {
-        return ObjectType.getInstance("edf4efa2-7b87-4e9a-82b6-6f35be116429","v1");
+    public ObjectRef getTypeId() {
+        return ObjectRef.getInstance("edf4efa2-7b87-4e9a-82b6-6f35be116429");
     }
 }
 

@@ -11,7 +11,7 @@ public class ContentTypes {
         add("css","text/css");
         add("htm","text/html");
         add("html","text/html");
-        add("infiniup","application/infiniup.com");
+        add("trivium","application/trivium.io");
         add("java","text/x-java-source");
         add("jar","application/java-archive");
         add("js","application/javascript");

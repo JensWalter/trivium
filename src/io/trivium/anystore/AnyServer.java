@@ -1,7 +1,7 @@
 package io.trivium.anystore;
 
 import io.trivium.Central;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Differential;
 import io.trivium.profile.Profiler;
@@ -44,7 +44,7 @@ public class AnyServer implements Runnable {
 			ExcerptTailer et = chronicle.createTailer();
 			while (true) {
 				if (et.nextIndex()) {
-                    InfiniObject po = new InfiniObject();
+                    TriviumObject po = new TriviumObject();
                     byte[] id = new byte[16];
 					et.read(id);
 					byte[] typeId = new byte[16];
@@ -57,7 +57,7 @@ public class AnyServer implements Runnable {
                     et.read(data);
                     po.setId(ObjectRef.getInstance(id));
                     //FIXME find correct version
-					po.setTypeId(ObjectType.getInstance(ObjectRef.getInstance(typeId).toString(),"v1"));
+					po.setTypeId(ObjectRef.getInstance(typeId));
                     po.setMetadataBinary(meta);
                     po.setDataBinary(data);
 

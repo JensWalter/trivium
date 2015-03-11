@@ -1,12 +1,10 @@
 package io.trivium.profile;
 
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
-import io.trivium.glue.InfiniObject;
-import io.trivium.glue.om.Element;
 import javolution.util.FastMap;
 
 import java.time.Instant;
@@ -56,7 +54,7 @@ public class Ticker implements Persistable {
         AtomicLong value = values.remove(timeframestart);
         if (value != null) {
             long val = value.get();
-            InfiniObject po = new InfiniObject();
+            TriviumObject po = new TriviumObject();
             po.addMetadata("contentType", ContentTypes.getMimeType("infinup"));
             po.addMetadata("type", "object");
             po.addMetadata("timeFrameStart", start.toString());

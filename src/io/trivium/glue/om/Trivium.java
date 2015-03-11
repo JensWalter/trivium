@@ -7,47 +7,46 @@ import java.io.StringWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Infinup {
+public class Trivium {
 
-	public static Element infiniupToInternal(String in) {
+	public static Element triviumToInternal(String in) {
 		Element root = new Element("dummy");
 		try {
 			JsonReader reader = new JsonReader(new StringReader(in));
 
-			iup2Elem(root, reader);
+			tvm2Elem(root, reader);
 
 			reader.close();
 		} catch (Exception ex) {
-            Logger log = LogManager.getLogger(Infinup.class);
+            Logger log = LogManager.getLogger(Trivium.class);
 			log.error(ex);
 		}
 		return root;
 	}
 
-	public static String internalToInfiniup(Element in) {
+	public static String internalToTrivium(Element in) {
 		String rslt = null;
 		try {
 			StringWriter sw = new StringWriter();
 			JsonWriter writer = new JsonWriter(sw);
 			writer.setIndent("  ");
-			elem2Iup(in, writer);
+			elem2Tvm(in, writer);
 
 			writer.close();
 			rslt = sw.toString();
 		} catch (Exception ex) {
-            Logger log = LogManager.getLogger(Infinup.class);
+            Logger log = LogManager.getLogger(Trivium.class);
 			log.error(ex);
 		}
 		return rslt;
 	}
 
-	private static void iup2Elem(Element elem, JsonReader reader)
+	private static void tvm2Elem(Element elem, JsonReader reader)
 			throws IOException {
 		// get root name
 		reader.beginObject();
@@ -68,7 +67,7 @@ public class Infinup {
 				// process children
 				reader.beginArray();
 				while (reader.peek() != JsonToken.END_ARRAY) {
-					iup2Elem(e, reader);
+					tvm2Elem(e, reader);
 				}
 				reader.endArray();
 			}
@@ -92,7 +91,7 @@ public class Infinup {
 		reader.endObject();
 	}
 
-	private static void elem2Iup(Element elem, JsonWriter writer)
+	private static void elem2Tvm(Element elem, JsonWriter writer)
 			throws IOException {
 		// begin elem
 		writer.beginObject();
@@ -123,7 +122,7 @@ public class Infinup {
 			writer.name("children");
 			writer.beginArray();
 			for (Element e : elem.getAllChildren()) {
-				elem2Iup(e, writer);
+				elem2Tvm(e, writer);
 			}
 			writer.endArray();
 		}

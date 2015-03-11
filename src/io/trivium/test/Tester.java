@@ -34,10 +34,10 @@ public class Tester {
         Iterator<TestCase> iter = typeLoader.iterator();
         while(iter.hasNext()){
             TestCase tc = iter.next();
-            logger.info("test {}: {} {}",tc.getTypeId().getObjectRef().toString(),tc.getClassName(),tc.getMethodName());
+            logger.info("test {}: {} {}",tc.getTypeId().toString(),tc.getClassName(),tc.getMethodName());
             try {
                 tc.run();
-                logger.info("test {}: succeeded", tc.getTypeId().getObjectRef().toString());
+                logger.info("test {}: succeeded", tc.getTypeId().toString());
             }catch(Exception ex){
                 logger.error("test {}: failed with exception {}", ex);
             }

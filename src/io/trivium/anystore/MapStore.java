@@ -5,8 +5,8 @@ import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.QueryExecutor;
-import io.trivium.glue.InfiniObject;
-import io.trivium.glue.om.Infinup;
+import io.trivium.glue.TriviumObject;
+import io.trivium.glue.om.Trivium;
 import io.trivium.glue.om.Json;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
@@ -41,7 +41,7 @@ public class MapStore{
         StoreUtils.createIfNotExists(path + StoreUtils.local);
 
         //check for compression flag
-        InfiniObject.typeByte = Central.getProperty("compression").equals("true") ? (byte)1 : (byte)0;
+        TriviumObject.typeByte = Central.getProperty("compression").equals("true") ? (byte)1 : (byte)0;
 
         //init profiler
         Profiler.INSTANCE.initAverage(new WeightedAverage(DataPoints.ANYSTORE_DATA_WRITE_DURATION));
@@ -68,7 +68,7 @@ public class MapStore{
         Central.isRunning=true;
     }
 
-    public void storeObject(InfiniObject po) {
+    public void storeObject(TriviumObject po) {
         AnyAbstract current=null;
         ObjectRef refid = po.getId();
         byte[] id=refid.toBytes();
@@ -113,11 +113,11 @@ public class MapStore{
         }
     }
 
-    public FastList<InfiniObject> loadObjects(Query query) {
+    public FastList<TriviumObject> loadObjects(Query query) {
         QueryExecutor qr = new QueryExecutor(query);
         boolean hasResult = qr.execute();
 
-        FastList<InfiniObject> result = new FastList<InfiniObject>();
+        FastList<TriviumObject> result = new FastList<TriviumObject>();
         if(hasResult) {
             int size = qr.getSize();
             for(int i=0;i<size;i++){
@@ -127,8 +127,8 @@ public class MapStore{
         return result;
     }
 
-    public InfiniObject loadObject(ObjectRef key) throws Exception {
-        InfiniObject po = new InfiniObject(key);
+    public TriviumObject loadObject(ObjectRef key) throws Exception {
+        TriviumObject po = new TriviumObject(key);
 
         byte[] b_metadata = metaMap.get(key.toBytes());
         String data;
@@ -142,15 +142,15 @@ public class MapStore{
         NVList meta = Json.JsonToNVPairs(data);
         po.setMetadata(meta);
         //FIXME find correct version
-        po.setTypeId(ObjectType.getInstance(meta.findValue("typeId"), "v1"));
+        po.setTypeId(ObjectRef.getInstance(meta.findValue("typeId")));
 
         byte[] b_data = dataMap.get(key.toBytes());
         if (b_data[0] == 1) {
             //decompress
             byte[] in = Snappy.uncompress(b_data, 1, b_data.length - 1);
-            po.setData(Infinup.infiniupToInternal(new String(in)));
+            po.setData(Trivium.triviumToInternal(new String(in)));
         } else {
-            po.setData(Infinup.infiniupToInternal(new String(Arrays.copyOfRange(b_data, 1, b_data.length))));
+            po.setData(Trivium.triviumToInternal(new String(Arrays.copyOfRange(b_data, 1, b_data.length))));
         }
 
         return po;

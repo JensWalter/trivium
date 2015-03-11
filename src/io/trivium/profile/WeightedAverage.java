@@ -1,13 +1,11 @@
 package io.trivium.profile;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
-import io.trivium.glue.InfiniObject;
-import io.trivium.glue.om.Element;
 
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
@@ -38,9 +36,9 @@ public class WeightedAverage implements Persistable {
     @Override
     public void persist() {
         Instant now = Instant.now();
-        InfiniObject po = new InfiniObject();
+        TriviumObject po = new TriviumObject();
 
-        po.addMetadata("contentType", ContentTypes.getMimeType("infiniup"));
+        po.addMetadata("contentType", ContentTypes.getMimeType("trivium"));
         po.addMetadata("type", "object");
         po.addMetadata("created", now.toString());
         po.addMetadata("datapoint", datapoint);

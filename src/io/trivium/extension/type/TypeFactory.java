@@ -1,10 +1,9 @@
 package io.trivium.extension.type;
 
-import io.trivium.glue.InfiniObject;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 
 public interface TypeFactory<T> extends Typed{
     public String getName();
-    public T getInstance(InfiniObject po);
-    public InfiniObject getPersistenceObject(T instance);
+    public T getInstance(TriviumObject tvm);
+    public TriviumObject getTriviumObject(T instance);
 }

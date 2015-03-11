@@ -1,15 +1,11 @@
 package io.trivium.glue.binding.http.channel;
 
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.InfiniObject;
-import io.trivium.glue.binding.http.Session;
-import io.trivium.glue.om.Element;
-import io.trivium.glue.om.Json;
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 
@@ -40,14 +36,14 @@ public class JsonChannel extends Channel {
 			bos.close();
 
 			//construct persistence object
-			InfiniObject po = new InfiniObject();
+			TriviumObject po = new TriviumObject();
 
-			po.addMetadata("contentType", "application/infiniup.com");
+			po.addMetadata("contentType", "application/trivium.io");
 
 			// if header starts with infinup - copy value
 			Header[] headers = session.getRequest().getAllHeaders();
 			for (Header h : headers) {
-				if (h.getName().startsWith("infiniup-")) {
+				if (h.getName().startsWith("trivium-")) {
 					po.addMetadata(h.getName().substring(9), h
 							.getValue());
 				}

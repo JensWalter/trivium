@@ -1,14 +1,13 @@
 package io.trivium;
 
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.v1.FileType;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.v1.FileTypeFactory;
-import io.trivium.glue.InfiniObject;
+import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
+import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import org.jetbrains.annotations.Nullable;
@@ -23,14 +22,14 @@ import java.util.*;
 /**
  * Our custom implementation of the ClassLoader.
  * For any of classes from "javablogging" package
- * it will use its {@link InfiniLoader#getClass()}
+ * it will use its {@link TriviumLoader#getClass()}
  * method to load it from the specific .class file. For any
  * other class it will use the super.loadClass() method
  * from ClassLoader, which will eventually pass the
  * request to the parent.
  *
  */
-public class InfiniLoader extends ClassLoader {
+public class TriviumLoader extends ClassLoader {
 
     private FastMap<String,Class<?>> classes = new FastMap<String,Class<?>>();
     /**
@@ -41,7 +40,7 @@ public class InfiniLoader extends ClassLoader {
      * @param parent Parent ClassLoader
      *              (may be from getClass().getClassLoader())
      */
-    public InfiniLoader(ClassLoader parent) {
+    public TriviumLoader(ClassLoader parent) {
         super(parent);
     }
 
@@ -60,7 +59,7 @@ public class InfiniLoader extends ClassLoader {
         // and we have to convert it into the .class file name
         // like javablogging/package/ClassToLoad.class
         try {
-//            Central.logger.debug("InfiniLoader getClass '{}'", name);
+//            Central.logger.debug("TriviumLoader getClass '{}'", name);
         }catch(Exception ex){}
         String file = name.replace('.', File.separatorChar)
                 + ".class";
@@ -75,9 +74,9 @@ public class InfiniLoader extends ClassLoader {
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType", ContentTypes.getMimeType("class")));
-                FastList<InfiniObject> objects = AnyClient.INSTANCE.loadObjects(query);
+                FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
                 FileTypeFactory factory = new FileTypeFactory();
-                for(InfiniObject po : objects){
+                for(TriviumObject po : objects){
                     FileType memFile = factory.getInstance(po);
 //                    Central.logger.info("found class {}",memFile.metadata.findValue("canonicalName"));
                     b = Base64.getDecoder().decode(memFile.data);
@@ -98,7 +97,7 @@ public class InfiniLoader extends ClassLoader {
     @Override
     public URL getResource(String name) {
         try{
-//            Central.logger.debug("InfiniLoader getResource '{}'",name);
+//            Central.logger.debug("TriviumLoader getResource '{}'",name);
         }catch(Exception ex){}
         return super.getResource(name);
     }
@@ -116,9 +115,9 @@ public class InfiniLoader extends ClassLoader {
             Query query = new Query();
             query.criteria.add(new Value("name", name));
             query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-            FastList<InfiniObject> objects = AnyClient.INSTANCE.loadObjects(query);
+            FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
             FileTypeFactory factory = new FileTypeFactory();
-            for(InfiniObject po : objects){
+            for(TriviumObject po : objects){
                 String uri = "anystore://"+po.getId().toString();
                 URL url = new URL(uri);
 //                Central.logger.debug("adding url '{}'",uri);
@@ -126,7 +125,7 @@ public class InfiniLoader extends ClassLoader {
             }
         }
         try{
-//            Central.logger.debug("InfiniLoader getResources '{}'",name);
+//            Central.logger.debug("TriviumLoader getResources '{}'",name);
         }catch(Exception ex){}
         return result.elements();
     }
@@ -134,7 +133,7 @@ public class InfiniLoader extends ClassLoader {
     @Override
     public InputStream getResourceAsStream(String name) {
         try{
-//            Central.logger.debug("InfiniLoader getResourceAsStream '{}'",name);
+//            Central.logger.debug("TriviumLoader getResourceAsStream '{}'",name);
         }catch(Exception ex){}
         return super.getResourceAsStream(name);
     }
@@ -143,7 +142,7 @@ public class InfiniLoader extends ClassLoader {
             throws IOException
     {
         try{
-//            Central.logger.debug("InfiniLoader getSystemResources '{}'",name);
+//            Central.logger.debug("TriviumLoader getSystemResources '{}'",name);
         }catch(Exception ex){}
         return ClassLoader.getSystemResources(name);
     }
@@ -151,7 +150,7 @@ public class InfiniLoader extends ClassLoader {
     public Class<?> fromBytes(String name, byte[] input){
         try{
             try{
-//            Central.logger.debug("InfiniLoader fromBytes '{}'",name);
+//            Central.logger.debug("TriviumLoader fromBytes '{}'",name);
             }catch(Exception ex){}
             Class<?> c = defineClass(name,input,0,input.length);
             return c;
@@ -165,7 +164,7 @@ public class InfiniLoader extends ClassLoader {
      * Every request for a class passes through this method.
      * If the requested class is in "javablogging" package,
      * it will load it using the
-     * {@link InfiniLoader#getClass()} method.
+     * {@link TriviumLoader#getClass()} method.
      * If not, it will use the super.loadClass() method
      * which in turn will pass the request to the parent.
      *
@@ -176,7 +175,7 @@ public class InfiniLoader extends ClassLoader {
     public Class<?> loadClass(String name)
             throws ClassNotFoundException {
         try{
-//        Central.logger.debug("InfiniLoader loadClass '{}'",name);
+//        Central.logger.debug("TriviumLoader loadClass '{}'",name);
             //look up anystore
             if(Central.isRunning) {
                 if(classes.containsKey(name)){
@@ -186,16 +185,16 @@ public class InfiniLoader extends ClassLoader {
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType","application/java-vm"));
-                FastList<InfiniObject> objects = AnyClient.INSTANCE.loadObjects(query);
+                FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
                 FileTypeFactory factory = new FileTypeFactory();
 //                Central.logger.info("found {} entries",objects.size());
-                for(InfiniObject po : objects){
+                for(TriviumObject po : objects){
                     FileType file = factory.getInstance(po);
 //                    Central.logger.info("found {} {}",file.name,file.contentType);
                     if(file.contentType.equals(ContentTypes.getMimeType("class"))
                             && file.name.replace('/','.').equals(name + ".class")) {
                         byte[] bytes = Base64.getDecoder().decode(file.data);
-//                        Central.logger.debug("InfiniLoader returning class definition '{}'", name);
+//                        Central.logger.debug("TriviumLoader returning class definition '{}'", name);
                         Class<?> c= defineClass(name, bytes, 0, bytes.length);
                         classes.put(name,c);
                         return c;

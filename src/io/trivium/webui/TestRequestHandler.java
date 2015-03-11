@@ -67,7 +67,7 @@ public class TestRequestHandler implements HttpAsyncRequestHandler<HttpRequest> 
 //            long iterCount = messageCount/threadCount;
 //            for (long i = 1; i < iterCount; i++) {
 //                NjamsTestData n = gen.getNJAMSData();
-//                InfiniObject po = new InfiniObject();
+//                TriviumObject po = new TriviumObject();
 //                po.addMetadata("domain", n.domain);
 //                po.addMetadata("deployment", n.deployment);
 //                po.addMetadata("process", n.process);

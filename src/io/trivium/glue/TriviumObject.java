@@ -1,15 +1,13 @@
 package io.trivium.glue;
 
 import com.google.common.primitives.Bytes;
-import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.anystore.ObjectType;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.om.Element;
-import io.trivium.glue.om.Infinup;
+import io.trivium.glue.om.Trivium;
 import io.trivium.glue.om.Json;
 import io.trivium.reactor.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +19,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class InfiniObject implements Typed {
+public class TriviumObject implements Typed {
 
     /**
      * typeByte
@@ -31,23 +29,23 @@ public class InfiniObject implements Typed {
     public static byte typeByte = 1;
     Logger log = LogManager.getLogger(getClass());
 	ObjectRef id;
-    ObjectType typeId;
+    ObjectRef typeId;
 	NVList metadata;
     byte[] b_metadata;
 	Element data;
     byte[] b_data;
 
-    public InfiniObject(){
+    public TriviumObject(){
         id = ObjectRef.getInstance();
-        typeId = ObjectType.INVALID;
+        typeId = ObjectRef.INVALID;
         metadata = new NVList();
         replaceMeta("id", id.toString());
         data = Element.EMPTY;
     }
 
-    public InfiniObject(ObjectRef id){
+    public TriviumObject(ObjectRef id){
         this.id = id;
-        typeId = ObjectType.INVALID;
+        typeId = ObjectRef.INVALID;
         metadata = new NVList();
         replaceMeta("id",id.toString());
         data = Element.EMPTY;
@@ -63,11 +61,11 @@ public class InfiniObject implements Typed {
     }
 
     @Override
-    public ObjectType getTypeId(){
+    public ObjectRef getTypeId(){
         return typeId;
     }
 
-    public void setTypeId(ObjectType newType){
+    public void setTypeId(ObjectRef newType){
         typeId = newType;
         metadata.replace(new NVPair("typeId",newType.toString()));
     }
@@ -102,7 +100,7 @@ public class InfiniObject implements Typed {
         }
         if(name.equals("typeId")){
             //FIXME implement version
-            setTypeId(ObjectType.getInstance(value,"v1"));
+            setTypeId(ObjectRef.getInstance(value));
         }
     }
 
@@ -201,7 +199,7 @@ public class InfiniObject implements Typed {
     }
 
     public <T> T getTypedData(){
-        ObjectType typeId = this.getTypeId();
+        ObjectRef typeId = this.getTypeId();
         try {
             TypeFactory<T> tf = Registry.INSTANCE.typeFactory.get(typeId);
             T obj = tf.getInstance(this);
@@ -218,7 +216,7 @@ public class InfiniObject implements Typed {
     }
 
     private void data2Binary(){
-        byte[] b_data = Infinup.internalToInfiniup(data).getBytes();
+        byte[] b_data = Trivium.internalToTrivium(data).getBytes();
         if (typeByte==1) {
             byte[] compressed = new byte[Snappy.maxCompressedLength(b_data.length)];
             int count = Snappy.compress(b_data, 0, b_data.length, compressed, 0);
@@ -231,9 +229,9 @@ public class InfiniObject implements Typed {
         if(b_data[0]==1){
             //decompress
             byte[] in = Snappy.uncompress(b_data,1,b_data.length-1);
-            data = Infinup.infiniupToInternal(new String(in));
+            data = Trivium.triviumToInternal(new String(in));
         }else{
-            data= Infinup.infiniupToInternal(new String(Arrays.copyOfRange(b_data,1,b_data.length)));
+            data= Trivium.triviumToInternal(new String(Arrays.copyOfRange(b_data, 1, b_data.length)));
         }
     }
 
@@ -246,9 +244,9 @@ public class InfiniObject implements Typed {
             }
         }
         //FIXME make == work again
-        if (typeId == null || typeId == ObjectType.INVALID) {
+        if (typeId == null || typeId == ObjectRef.INVALID) {
             if (metadata!=null && metadata.hasKey("typeId")) {
-                typeId = ObjectType.getInstance(metadata.findValue("typeId"),"v1");
+                typeId = ObjectRef.getInstance(metadata.findValue("typeId"));
             }
         }
         NVList meta = metadata;

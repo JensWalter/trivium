@@ -3,7 +3,6 @@ package io.trivium.webui;
 import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
-import io.trivium.anystore.ObjectType;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.binding.State;
 import io.trivium.extension.task.TaskFactory;
@@ -69,21 +68,21 @@ public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpReque
                 Registry.INSTANCE.reload();
 
                 NVList list = new NVList();
-                FastMap<ObjectType, Binding> bindings = Registry.INSTANCE.bindings;
+                FastMap<ObjectRef, Binding> bindings = Registry.INSTANCE.bindings;
                 NVPair nvbind = new NVPair("binding");
                 for (Binding binding : bindings.values()) {
                     nvbind.addValue(binding.getTypeId().toString());
                     list.add(new NVPair(binding.getTypeId().toString(),binding.getName()));
                 }
                 list.add(nvbind);
-                FastMap<ObjectType, TypeFactory> types = Registry.INSTANCE.typeFactory;
+                FastMap<ObjectRef, TypeFactory> types = Registry.INSTANCE.typeFactory;
                 NVPair tybind = new NVPair("type");
                 for (TypeFactory t : types.values()) {
                     tybind.addValue(t.getTypeId().toString());
                     list.add(new NVPair(t.getTypeId().toString(),t.getName()));
                 }
                 list.add(tybind);
-                FastMap<ObjectType, TaskFactory> tasks = Registry.INSTANCE.taskFactory;
+                FastMap<ObjectRef, TaskFactory> tasks = Registry.INSTANCE.taskFactory;
                 NVPair tskpair = new NVPair("task");
                 for (TaskFactory f : tasks.values()) {
                     tskpair.addValue(f.getTypeId().toString());

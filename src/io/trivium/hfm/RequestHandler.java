@@ -2,11 +2,10 @@ package io.trivium.hfm;
 
 import io.trivium.NVList;
 import io.trivium.NVPair;
-import io.trivium.glue.InfiniObject;
+import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
-import io.trivium.glue.InfiniObject;
 import javolution.util.FastList;
 import org.apache.http.*;
 import org.apache.http.entity.ContentType;
@@ -43,9 +42,9 @@ public class RequestHandler implements HttpAsyncRequestHandler<HttpRequest>{
             for(NVPair pair:list){
                 q.criteria.add(new Value(pair.getName(), pair.getValue()));
             }
-			FastList<InfiniObject> all = AnyServer.INSTANCE.getStore().loadObjects(q);
+			FastList<TriviumObject> all = AnyServer.INSTANCE.getStore().loadObjects(q);
 			if(all.size()>0){
-				InfiniObject po = all.get(0);
+				TriviumObject po = all.get(0);
 				String type = po.findMetaValue("contentType");
 			}
 		}
