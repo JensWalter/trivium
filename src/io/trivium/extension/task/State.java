@@ -1,4 +1,4 @@
-package io.trivium.extension.binding;
+package io.trivium.extension.task;
 
 public enum State {
     stopped,

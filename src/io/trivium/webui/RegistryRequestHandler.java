@@ -101,11 +101,8 @@ public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpReque
                     State state = bind.getState();
                     NVList list = new NVList();
                     switch (state) {
-                        case undeployed:
-                            list.add(new NVPair("state", "undeployed"));
-                            break;
-                        case deployed:
-                            list.add(new NVPair("state", "deployed"));
+                        case stopped:
+                            list.add(new NVPair("state", "stopped"));
                             break;
                         case running:
                             list.add(new NVPair("state", "running"));
@@ -113,14 +110,9 @@ public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpReque
                     }
                     String json = Json.NVPairsToJson(list);
                     s.ok(ContentTypes.getMimeType("json"), json);
-                }else{
+                }else {
                     s.ok();
                 }
-            } else if (cmd.equals("deploy")) {
-                String id = params.findValue("id");
-                ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.bindings.get(ref).load();
-                s.ok();
             } else if (cmd.equals("start")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);

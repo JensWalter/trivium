@@ -7,24 +7,43 @@ import io.trivium.extension.type.TypeFactory;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.TriviumObject;
 import io.trivium.reactor.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public interface Binding extends Typed {
-    public String getName();
+public abstract class Binding implements Typed {
+    protected Logger log = LogManager.getLogger(getClass());
+    private State state = State.stopped;
 
-    public State getState();
+    public abstract void start();
 
-    public void load();
+    public abstract void stop();
 
-    public void unload();
+    public void check() throws Exception{}
 
-    public void start();
+    public State getState(){
+        return state;
+    }
 
-    public void stop();
+    protected void setState(State newState){
+        state=newState;
+    }
 
-    public default void emit(Type object){
+    public String getName(){
+        return this.getClass().getCanonicalName();
+    }
+
+    protected void emit(Type object){
         ObjectRef typeId = object.getTypeId();
         TypeFactory<Type> factory =  Registry.INSTANCE.typeFactory.get(typeId);
         TriviumObject obj = factory.getTriviumObject(object);
         AnyClient.INSTANCE.storeObject(obj);
+    }
+
+    public ObjectRef getTypeId(){
+        String path = this.getClass().getCanonicalName();
+        //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.BindingABC
+        String[] arr = path.split("\\.");
+        String typeId = arr[arr.length-2];
+        return ObjectRef.getInstance(typeId);
     }
 }
