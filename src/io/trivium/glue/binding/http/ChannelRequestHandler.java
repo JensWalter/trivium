@@ -71,7 +71,7 @@ public class ChannelRequestHandler implements
 				return;
 			}
 		} catch (Exception ex) {
-			log.error(ex);
+			log.error("error processing request",ex);
 			s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR,
 					ex.toString());
 			return;
@@ -84,7 +84,7 @@ public class ChannelRequestHandler implements
 		Channel channel = Channel.getChannel(channelId);
 		channel.process(session, sourceId);
 		}catch(Exception ex){
-			log.error(ex);
+			log.error("error processing request",ex);
 			return false;
 		}
 		return true;

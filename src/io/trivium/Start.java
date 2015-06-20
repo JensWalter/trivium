@@ -21,7 +21,7 @@ public class Start {
 		ChannelConfig c = new ChannelConfig();
 		c.id= ObjectRef.getInstance("1d26e2f1-7161-4d5c-b2ac-17ffb4f0a97d");
 		c.name="dummy channel";
-		c.className="JsonChannel";
+		c.className="io.trivium.glue.binding.http.channel.JsonChannel";
 		c.retention =4320000000L;//50 days in ms
 		c.setTypeId(ObjectRef.getInstance("8a7d067a-0feb-4a7f-9636-1df269999cbb"));
 		ChannelConfig.addConfig(c);

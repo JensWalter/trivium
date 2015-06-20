@@ -208,7 +208,7 @@ public class Json {
 			rslt = sw.toString();
 		} catch (Exception e) {
             Logger log = LogManager.getLogger(Json.class);
-			log.error(e);
+			log.error("exception thrown in json stringify",e);
 		}
 		return rslt;
 	}
@@ -262,7 +262,7 @@ public class Json {
 			reader.close();
 		} catch (Exception e) {
             Logger log = LogManager.getLogger(Json.class);
-			log.error(e);
+			log.error("exception thrown in json parse",e);
 		}
 		return rslt;
 	}

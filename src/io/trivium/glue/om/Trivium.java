@@ -24,7 +24,7 @@ public class Trivium {
 			reader.close();
 		} catch (Exception ex) {
             Logger log = LogManager.getLogger(Trivium.class);
-			log.error(ex);
+			log.error("exception thrown while transorming object to extenal structure",ex);
 		}
 		return root;
 	}
@@ -41,7 +41,7 @@ public class Trivium {
 			rslt = sw.toString();
 		} catch (Exception ex) {
             Logger log = LogManager.getLogger(Trivium.class);
-			log.error(ex);
+			log.error("exception thrown while transorming object to internal structure",ex);
 		}
 		return rslt;
 	}
@@ -91,8 +91,8 @@ public class Trivium {
 		reader.endObject();
 	}
 
-	private static void elem2Tvm(Element elem, JsonWriter writer)
-			throws IOException {
+	private static void elem2Tvm(Element elem, JsonWriter writer) throws IOException {
+		//TODO make this recursion free
 		// begin elem
 		writer.beginObject();
 		writer.name(elem.getName());

@@ -44,7 +44,7 @@ public class JsonChannel extends Channel {
 			Header[] headers = session.getRequest().getAllHeaders();
 			for (Header h : headers) {
 				if (h.getName().startsWith("trivium-")) {
-					po.addMetadata(h.getName().substring(9), h
+					po.addMetadata(h.getName().substring(8), h
 							.getValue());
 				}
 			}

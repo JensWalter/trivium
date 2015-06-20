@@ -43,7 +43,6 @@ public class AnyClient {
         Profiler.INSTANCE.increment(DataPoints.ANYSTORE_QUEUE_SIZE);
         //pre serialize
         byte[] id = po.getId().toBytes();
-        //FIXME implement version
         byte[] typeId = po.getTypeId().toBytes();
         byte[] metadata = po.getMetadataBinary();
         byte[] data = po.getDataBinary();
