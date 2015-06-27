@@ -17,14 +17,14 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
 
-public abstract class TaskFactory implements Typed {
+public abstract class TaskFactory<T extends Task> implements Typed {
     Logger log = LogManager.getLogger(getClass());
     private boolean scanned = false;
     private FastMap<ObjectRef, InputType[]> inputFields = new FastMap<ObjectRef, InputType[]>();
 
     public abstract String getName();
 
-    public abstract Task getInstance(TriviumObject po);
+    public abstract T getInstance(TriviumObject po);
 
     private void scanClass() {
         try {
@@ -105,7 +105,7 @@ public abstract class TaskFactory implements Typed {
         return false;
     }
 
-    protected void populateInput(TriviumObject po, Task task) {
+    protected void populateInput(TriviumObject po, T task) {
         InputType[] input = inputFields.get(po.getTypeId());
         for (InputType f : input) {
             Object obj = po.getTypedData();
