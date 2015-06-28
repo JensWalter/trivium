@@ -27,8 +27,4 @@ public class FileType implements Type {
     public String data;
     public NVList metadata;
 
-    @Override
-    public ObjectRef getTypeId() {
-        return TypeIds.FILE;
-    }
 }

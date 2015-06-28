@@ -8,11 +8,6 @@ import io.trivium.anystore.ObjectRef;
 
 public class FileTypeFactory implements TypeFactory {
     @Override
-    public ObjectRef getTypeId() {
-        return ObjectRef.getInstance("e53042cb-ab0b-4479-9583-49320e397141");
-    }
-
-    @Override
     public FileType getInstance(TriviumObject po) {
         FileType file = new FileType();
         NVList metadata = po.getMetadata();

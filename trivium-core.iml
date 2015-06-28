@@ -14,5 +14,10 @@
     <orderEntry type="module" module-name="lib-log4j" exported="" />
     <orderEntry type="module" module-name="lib-javolution" exported="" />
     <orderEntry type="module" module-name="lib-chronicle" exported="" />
+    <orderEntry type="module" module-name="bnd-timer" />
+    <orderEntry type="module" module-name="tpe-logentry" />
+    <orderEntry type="module" module-name="tpe-timertick" />
+    <orderEntry type="module" module-name="tsk-consoleLogger" />
+    <orderEntry type="module" module-name="tsk-TimerTick2LogEntryMapper" />
   </component>
 </module>
