@@ -57,19 +57,6 @@
                 });
       	  	return {};
       	  },
-      	  deploy: function(){
-      	  var that = this;
-      	    $.ajax({
-                type: "POST",
-                url: '/ui/RegistryRequestHandler',
-                data: JSON.stringify({id:this.props.id,command:"deploy"}),
-                success: function(data){
-                        console.log(data.trim());
-                        if(data.trim()=="true")
-                            that.setState({state:"deployed"});
-                    }
-                });
-      	  },
       	  start: function(){
       	  var that = this;
               $.ajax({
@@ -93,15 +80,14 @@
                 success: function(data){
                         console.log(data.trim());
                         if(data.trim()=="true")
-                             that.setState({state:"deployed"});
+                             that.setState({state:"stopped"});
                     }
                 });
       	  },
           render: function() {
             return (<div>Binding: {all[this.props.id]} =&gt; {this.state.state}
                     <div style={{marginLeft:'50px'}}>
-                        {this.state.state=="undeployed"?<button onClick={this.deploy}>deploy</button>:''}
-                        {this.state.state=="deployed"?<button onClick={this.start}>start</button>:''}
+                        {this.state.state=="stopped"?<button onClick={this.start}>start</button>:''}
                         {this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
                      </div></div>);
           }
