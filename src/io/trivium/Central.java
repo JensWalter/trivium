@@ -5,7 +5,6 @@ import io.trivium.profile.TimeUtils;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.StoreUtils;
 import io.trivium.glue.binding.http.Node;
-import io.trivium.reactor.Registry;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import org.apache.commons.cli.*;

@@ -9,7 +9,7 @@ import io.trivium.extension.type.Typed;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Trivium;
 import io.trivium.glue.om.Json;
-import io.trivium.reactor.Registry;
+import io.trivium.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iq80.snappy.Snappy;
@@ -70,21 +70,17 @@ public class TriviumObject implements Typed {
         metadata.replace(new NVPair("typeId",newType.toString()));
     }
 
-    /**
-     * find better way to provide access
-     * @return
-     */
-    @Deprecated
     public NVList getMetadata(){
         return metadata;
     }
 
-    @Deprecated
-    public void setMetadata(NVList list){
-        metadata=list;
-        checkMetadata();
-    }
     public void addMetadata(String name,String value){
+        if(name.equals("id")){
+            setId(ObjectRef.getInstance(value));
+        }else
+        if(name.equals("typeId")){
+            setTypeId(ObjectRef.getInstance(value));
+        }else
         // look for existing entry
         if(hasMetaKey(name)) {
             for (NVPair p : metadata) {
@@ -95,13 +91,7 @@ public class TriviumObject implements Typed {
         }else {
             metadata.add(new NVPair(name, value));
         }
-        if(name.equals("id")){
-            setId(ObjectRef.getInstance(value));
-        }
-        if(name.equals("typeId")){
-            //FIXME implement version
-            setTypeId(ObjectRef.getInstance(value));
-        }
+
     }
 
     public boolean hasMetaKey(String key){

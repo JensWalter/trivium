@@ -31,25 +31,29 @@ public abstract class TaskFactory<T extends Task> implements Typed {
             Class<?> factoryClass = this.getClass();
             Method method = factoryClass.getMethod("getInstance", TriviumObject.class);
             Class<?> activityclass = method.getReturnType();
-            Field[] fields = activityclass.getFields();
+            Field[] fields = activityclass.getDeclaredFields();
             for (Field field : fields) {
                 INPUT input = field.getAnnotation(INPUT.class);
                 if (input != null) {
-                    //FIXME derive type from package name
-                    String inputType = "";
+                    String path = field.getType().getCanonicalName();
+                    //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
+                    String[] arr = path.split("\\.");
+                    String typeId = arr[arr.length-2];
+                    String inputType = typeId.substring(1,9)+"-"+typeId.substring(9,13)+"-"+typeId.substring(13,17)
+                            +"-"+typeId.substring(17,21)+"-"+typeId.substring(21,33);
                     String condition = input.condition();
-                    ObjectRef typeId = ObjectRef.getInstance(inputType);
+                    ObjectRef type = ObjectRef.getInstance(inputType);
                     InputType it = new InputType();
                     it.condition = condition;
-                    it.typeId = typeId;
+                    it.typeId = type;
                     it.field = field;
-                    if (inputFields.containsKey(typeId)) {
+                    if (inputFields.containsKey(type)) {
                         InputType[] old = inputFields.get(ObjectRef.getInstance(inputType));
                         InputType[] neu = Arrays.copyOf(old, old.length + 1);
                         neu[neu.length - 1] = it;
-                        inputFields.put(typeId, neu);
+                        inputFields.put(type, neu);
                     } else {
-                        inputFields.put(typeId, new InputType[]{it});
+                        inputFields.put(type, new InputType[]{it});
                     }
                 }
             }
@@ -79,6 +83,10 @@ public abstract class TaskFactory<T extends Task> implements Typed {
     }
 
     private boolean evalCondition(Type obj, InputType input){
+        if(input.condition==null || input.condition.length()==0){
+            //no condition present
+            return true;
+        }
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
         String script = "";
         String fieldName = input.field.getName();

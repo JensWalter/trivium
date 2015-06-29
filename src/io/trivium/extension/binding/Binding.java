@@ -6,7 +6,7 @@ import io.trivium.extension.type.Type;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.TriviumObject;
-import io.trivium.reactor.Registry;
+import io.trivium.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,15 +37,5 @@ public abstract class Binding implements Typed {
         TypeFactory<Type> factory =  Registry.INSTANCE.typeFactory.get(typeId);
         TriviumObject obj = factory.getTriviumObject(object);
         AnyClient.INSTANCE.storeObject(obj);
-    }
-
-    public ObjectRef getTypeId(){
-        String path = this.getClass().getCanonicalName();
-        //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.BindingABC
-        String[] arr = path.split("\\.");
-        String typeId = arr[arr.length-2];
-        String uuid = typeId.substring(1,9)+"-"+typeId.substring(9,13)+"-"+typeId.substring(13,17)
-                +"-"+typeId.substring(17,21)+"-"+typeId.substring(21,33);
-        return ObjectRef.getInstance(uuid);
     }
 }

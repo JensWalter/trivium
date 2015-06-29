@@ -56,8 +56,7 @@ public class AnyServer implements Runnable {
                     byte[] data = new byte[dataSize];
                     et.read(data);
                     po.setId(ObjectRef.getInstance(id));
-                    //FIXME find correct version
-					po.setTypeId(ObjectRef.getInstance(typeId));
+                    po.setTypeId(ObjectRef.getInstance(typeId));
                     po.setMetadataBinary(meta);
                     po.setDataBinary(data);
 

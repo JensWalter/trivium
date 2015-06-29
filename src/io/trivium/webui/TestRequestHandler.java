@@ -1,12 +1,11 @@
 package io.trivium.webui;
 
-import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.reactor.Registry;
+import io.trivium.Registry;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;

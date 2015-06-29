@@ -1,9 +1,15 @@
 package io.trivium.extension.type;
 
 import io.trivium.anystore.ObjectRef;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public interface Typed {
-    default public ObjectRef getTypeId(){
+    default Logger getLogger() {
+        return LogManager.getLogger(getClass());
+    }
+
+    default ObjectRef getTypeId(){
         String path = this.getClass().getCanonicalName();
         //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
         String[] arr = path.split("\\.");

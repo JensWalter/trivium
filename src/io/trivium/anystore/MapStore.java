@@ -11,7 +11,7 @@ import io.trivium.glue.om.Json;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 import io.trivium.profile.WeightedAverage;
-import io.trivium.reactor.Registry;
+import io.trivium.Registry;
 import javolution.util.FastList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -140,8 +140,15 @@ public class MapStore{
             data = new String(Arrays.copyOfRange(b_metadata, 1, b_metadata.length));
         }
         NVList meta = Json.JsonToNVPairs(data);
-        po.setMetadata(meta);
-        //FIXME find correct version
+        for(NVPair pair : meta){
+            if(pair.isArray()==false) {
+                po.addMetadata(pair.getName(), pair.getValue());
+            }else{
+                for(String val : pair.getValues()){
+                    po.addMetadata(pair.getName(),val);
+                }
+            }
+        }
         po.setTypeId(ObjectRef.getInstance(meta.findValue("typeId")));
 
         byte[] b_data = dataMap.get(key.toBytes());

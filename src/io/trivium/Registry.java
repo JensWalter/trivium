@@ -1,6 +1,5 @@
-package io.trivium.reactor;
+package io.trivium;
 
-import io.trivium.TriviumLoader;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.type.TypeFactory;
@@ -23,7 +22,7 @@ public class Registry {
     
     public FastMap<ObjectRef, TaskFactory> taskFactory = null;
     public FastMap<ObjectRef, FastList<TaskFactory>> taskSubscription = null;
-    ServiceLoader<TaskFactory> activityLoader = ServiceLoader.load(TaskFactory.class);
+    ServiceLoader<TaskFactory> taskLoader = ServiceLoader.load(TaskFactory.class);
 
     public FastMap<ObjectRef,TypeFactory> typeFactory = null;
     ServiceLoader<TypeFactory> typeLoader = ServiceLoader.load(TypeFactory.class);
@@ -65,8 +64,8 @@ public class Registry {
         }
 
         //activity
-        activityLoader.reload();
-        Iterator<TaskFactory> tskIter = activityLoader.iterator();
+        taskLoader.reload();
+        Iterator<TaskFactory> tskIter = taskLoader.iterator();
         while(tskIter.hasNext()){
             TaskFactory activity = tskIter.next();
             if(!taskFactory.containsKey(activity.getTypeId())){
@@ -98,18 +97,18 @@ public class Registry {
     }
 
     private void refreshSubscriptions(){
-        for(TaskFactory activity : taskFactory.values()){
-            FastList<ObjectRef> inputTypes = activity.getInputTypes();
+        for(TaskFactory task : taskFactory.values()){
+            FastList<ObjectRef> inputTypes = task.getInputTypes();
             for(ObjectRef ref : inputTypes){
                 FastList<TaskFactory> a = taskSubscription.get(ref);
                 if(a== null){
                     FastList<TaskFactory> all = new FastList<TaskFactory>();
-                    all.add(activity);
                     all.shared();
+                    all.add(task);
                     taskSubscription.put(ref,all);
                 }else{
-                    if(!a.contains(activity)) {
-                        a.add(activity);
+                    if(!a.contains(task)) {
+                        a.add(task);
                     }
                 }
             }

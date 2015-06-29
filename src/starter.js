@@ -8,4 +8,5 @@ var mainType =  Java.type("io.trivium.Start");
 mainType.main(args);
 
 var Central = Java.type("io.trivium.Central");
+var Registry = Java.type('io.trivium.Registry');
 print("central is running => "+Central.isRunning);
