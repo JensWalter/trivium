@@ -4,6 +4,7 @@ import com.google.common.primitives.Bytes;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.extension.type.Type;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.om.Element;
@@ -273,6 +274,17 @@ public class TriviumObject implements Typed {
             } catch (Exception ex) {
                 //ignore
             }
+        }
+    }
+
+    public static TriviumObject getTriviumObject(Type t){
+        ObjectRef typeId = t.getTypeId();
+        try {
+            TypeFactory<Type> tf = Registry.INSTANCE.typeFactory.get(typeId);
+            return tf.getTriviumObject(t);
+        }catch(Exception ex){
+            LogManager.getLogger(TriviumObject.class).error("error constructing object", ex);
+            return null;
         }
     }
 }

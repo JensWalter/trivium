@@ -1,6 +1,7 @@
 package io.trivium.extension.task;
 
 import io.trivium.extension.annotation.INPUT;
+import io.trivium.extension.annotation.OUTPUT;
 import io.trivium.extension.type.Type;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.TriviumObject;
@@ -21,6 +22,7 @@ public abstract class TaskFactory<T extends Task> implements Typed {
     Logger log = LogManager.getLogger(getClass());
     private boolean scanned = false;
     private FastMap<ObjectRef, InputType[]> inputFields = new FastMap<ObjectRef, InputType[]>();
+    private FastMap<String,OutputType> outputFields = new FastMap<String,OutputType>();
 
     public abstract String getName();
 
@@ -54,6 +56,22 @@ public abstract class TaskFactory<T extends Task> implements Typed {
                         inputFields.put(type, neu);
                     } else {
                         inputFields.put(type, new InputType[]{it});
+                    }
+                }
+                OUTPUT output = field.getAnnotation(OUTPUT.class);
+                if(output != null) {
+                    String path = field.getType().getCanonicalName();
+                    //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
+                    String[] arr = path.split("\\.");
+                    String typeId = arr[arr.length-2];
+                    String outputType = typeId.substring(1,9)+"-"+typeId.substring(9,13)+"-"+typeId.substring(13,17)
+                            +"-"+typeId.substring(17,21)+"-"+typeId.substring(21,33);
+                    ObjectRef type = ObjectRef.getInstance(outputType);
+                    OutputType ot = new OutputType();
+                    ot.typeId = type;
+                    ot.field = field;
+                    if (!outputFields.containsKey(field.getName())) {
+                        outputFields.put(field.getName(), ot);
                     }
                 }
             }
@@ -124,5 +142,19 @@ public abstract class TaskFactory<T extends Task> implements Typed {
                 log.error("error population activity input", ex);
             }
         }
+    }
+
+    public FastList<TriviumObject> extractOutput(T task) {
+        FastList<TriviumObject> result = new FastList<>();
+        for (OutputType f : outputFields.values()) {
+            try {
+                f.field.setAccessible(true);
+                Type obj = (Type) f.field.get(task);
+                result.add(TriviumObject.getTriviumObject(obj));
+            } catch (Exception ex) {
+                log.error("error population activity input", ex);
+            }
+        }
+        return result;
     }
 }

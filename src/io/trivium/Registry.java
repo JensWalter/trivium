@@ -1,5 +1,6 @@
 package io.trivium;
 
+import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.type.TypeFactory;
@@ -127,8 +128,12 @@ public class Registry {
                     {
                         try {
                             Task task = factory.getInstance(po);
-                            factory.populateInput(po,task);
+                            factory.populateInput(po, task);
                             task.eval();
+                            FastList<TriviumObject> output = factory.extractOutput(task);
+                            for(TriviumObject o : output) {
+                                AnyClient.INSTANCE.storeObject(o);
+                            }
                         }catch(Exception ex){
                             log.error("error while running task '{}'",factory.getName());
                             log.error("got exception",ex);
