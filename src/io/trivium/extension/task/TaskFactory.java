@@ -113,11 +113,12 @@ public abstract class TaskFactory<T extends Task> implements Typed {
         return false;
     }
 
-    protected void populateInput(TriviumObject po, T task) {
+    public void populateInput(TriviumObject po, T task) {
         InputType[] input = inputFields.get(po.getTypeId());
         for (InputType f : input) {
             Object obj = po.getTypedData();
             try {
+                f.field.setAccessible(true);
                 f.field.set(task, obj);
             } catch (Exception ex) {
                 log.error("error population activity input", ex);

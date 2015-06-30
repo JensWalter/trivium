@@ -127,9 +127,10 @@ public class Registry {
                     {
                         try {
                             Task task = factory.getInstance(po);
+                            factory.populateInput(po,task);
                             task.eval();
                         }catch(Exception ex){
-                            log.error("error while running activity '{}'",factory.getName());
+                            log.error("error while running task '{}'",factory.getName());
                             log.error("got exception",ex);
                         }
                     }
