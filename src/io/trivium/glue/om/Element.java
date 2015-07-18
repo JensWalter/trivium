@@ -1,16 +1,19 @@
 package io.trivium.glue.om;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import io.trivium.NVList;
 import io.trivium.NVPair;
 
-public class Element {
+public class Element implements Iterator<ElementToken> {
 
     private String name;
     private String value;
     private NVList metadata = new NVList();
     private ArrayList<Element> children = new ArrayList<Element>();
+    private LinkedList<ElementToken> structure = new LinkedList<>();
 
     public static Element EMPTY = new Element("");
 
@@ -122,5 +125,40 @@ public class Element {
         }
         str = str.substring(0, str.length() - 2);
         return str;
+    }
+
+    public void initReader(){
+        structure.clear();
+        structure.push(new ElementToken(this, ElementToken.Type.END_ELEMENT));
+        if(this.isArray()){
+            structure.push(new ElementToken(this, ElementToken.Type.END_ARRAY));
+            int size = this.children.size();
+            for(int idx=size-1;idx>=0;idx--){
+                Element child = this.children.get(idx);
+                structure.push(new ElementToken(child, ElementToken.Type.CHILD));
+            }
+            structure.push(new ElementToken(this, ElementToken.Type.BEGIN_ARRAY));
+        }else if(this.children.size()>0) {
+            int size = this.children.size();
+            for(int idx=size-1;idx>=0;idx--){
+                Element child = this.children.get(idx);
+                structure.push(new ElementToken(child, ElementToken.Type.CHILD));
+            }
+        }else{
+            structure.push(new ElementToken(this, ElementToken.Type.VALUE));
+        }
+        structure.push(new ElementToken(this, ElementToken.Type.NAME));
+        structure.push(new ElementToken(this, ElementToken.Type.BEGIN_ELEMENT));
+    }
+
+    public boolean hasNext(){
+        return structure.size()>0;
+    }
+
+    public ElementToken next(){
+        if(structure.size()>0)
+            return structure.pop();
+        else
+            return null;
     }
 }

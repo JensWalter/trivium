@@ -17,12 +17,12 @@ import java.util.LinkedList;
 
 public class Json {
 
-    //FIXME json array in array doesn't work { "a": [ [ "b" ] ] }
 	public static Element JsonToInternal(String in) {
 		Element root = new Element("dummy");
 		try {
 			JsonReader reader = new JsonReader(new StringReader(in));
 			LinkedList<Element> stack = new LinkedList<Element>();
+			LinkedList<Element> arrayStack = new LinkedList<Element>();
 			stack.push(root);
 			boolean running = true;
 			boolean isArray = false;
@@ -31,7 +31,6 @@ public class Json {
 				switch (token) {
 				case BEGIN_OBJECT:
 					reader.beginObject();
-//					Central.logger.error("begin object "							+ stack.peek().getName());
 					break;
 				case NAME:
 					String name = reader.nextName();
@@ -39,13 +38,10 @@ public class Json {
 					Element cur = stack.peek();
 					cur.addChild(child);
 					stack.push(child);
-	//				Central.logger.error("name " + stack.peek().getName());
 					break;
 				case END_OBJECT:
 					reader.endObject();
     				stack.pop();
-//					Central.logger
-//							.error("end object " + stack.peek().getName());
 					break;
 				case STRING:
 					String val1 = reader.nextString();
@@ -56,7 +52,6 @@ public class Json {
 						cur1.setValue(val1);
 						stack.pop();
 					}
-//					Central.logger.error("string " + stack.peek().getName());
 					break;
 				case NUMBER:
 					String val2 = reader.nextString();
@@ -69,24 +64,33 @@ public class Json {
 						cur2.setValue(val2);
 						stack.pop();
 					}
-//					Central.logger.error("number " + stack.peek().getName());
 					break;
 				case END_DOCUMENT:
 					running = false;
-//					Central.logger.error("end document "
-//							+ stack.peek().getName());
 					break;
 				case BEGIN_ARRAY:
 					reader.beginArray();
-					isArray = true;
-//					Central.logger.error("begin array "
-//							+ stack.peek().getName());
+                    if(isArray){
+                        isArray = true;
+                        Element cur3 = stack.peek();
+                        Element el = new Element(null,null);
+                        cur3.addChild(el);
+                        stack.push(el);
+                        arrayStack.push(el);
+                    }else {
+                        isArray = true;
+                        arrayStack.push(stack.peekFirst());
+                    }
 					break;
 				case END_ARRAY:
 					reader.endArray();
 					stack.pop();
-					isArray = false;
-//					Central.logger.error("end array " + stack.peek().getName());
+                    arrayStack.pop();
+                    if(stack.peekFirst() == arrayStack.peekFirst()){
+                        isArray=true;
+                    }else {
+                        isArray = false;
+                    }
 					break;
 				case BOOLEAN:
 					String val3 = reader.nextBoolean() ? "true" : "false";
@@ -99,11 +103,9 @@ public class Json {
 						cur3.setValue(val3);
 						stack.pop();
 					}
-//					Central.logger.error("boolean " + stack.peek().getName());
 					break;
 				case NULL:
 					reader.nextNull();
-//					Central.logger.error("null " + stack.peek().getName());
 					break;
 				}
 			}
@@ -119,12 +121,7 @@ public class Json {
 		StringWriter sw = new StringWriter();
 		JsonWriter jw = new JsonWriter(sw);
 		try {
-			jw.beginObject();
-			ArrayList<Element> children = el.getChildren();
-			for (Element child : children) {
-				ElementToWriter(jw, child);
-			}
-			jw.endObject();
+            ElementToWriter2(jw, el);
 			jw.close();
 		} catch (Exception ex) {
             Logger log = LogManager.getLogger(Json.class);
@@ -133,8 +130,7 @@ public class Json {
 		return sw.toString();
 	}
 
-	private static void ElementToWriter(JsonWriter jw, Element el)
-			throws Exception {
+	private static void ElementToWriter(JsonWriter jw, Element el) throws Exception {
 		String name = el.getName();
 		if(name!=null){
 			//normal element
@@ -174,11 +170,91 @@ public class Json {
 			if(el.isArray()){
 				jw.value(el.getValue());
 			}else{
-				throw new Exception("should not happen");
+				throw new Exception("element with no name found");
 			}
 		}
-		
 	}
+
+    private static void ElementToWriter2(JsonWriter jw, Element el) throws Exception {
+        Element currentElement = el;
+        LinkedList<Element> stack = new LinkedList<Element>();
+        LinkedList<Element> arrayStack = new LinkedList<Element>();
+		currentElement.initReader();
+        //skip root node, because it is a dummy
+        currentElement.next();//begin_element
+        stack.push(el);
+        currentElement.next();//name
+        boolean isArray=false;
+        ElementToken.Type lastEvent = ElementToken.Type.NAME;
+        while(currentElement.hasNext()) {
+            ElementToken token = currentElement.next();
+            switch (token.getType()) {
+                case BEGIN_ELEMENT:
+                    if(!isArray && token.getElement().getName()!=null && lastEvent!= ElementToken.Type.END_ELEMENT) {
+                        jw.beginObject();
+                    }
+                    stack.push(token.getElement());
+                    lastEvent = ElementToken.Type.BEGIN_ELEMENT;
+                    break;
+                case NAME:
+                    if(!isArray && token.getElement().getName()!=null) {
+                        jw.name(token.getElement().getName());
+                    }
+                    break;
+                case VALUE:
+                    Element cur = token.getElement();
+                    if (cur.getMetadata().hasKey("type")) {
+                        String type = cur.getMetadata().findValue("type");
+                        if (type.equals("boolean")) {
+                            jw.value(Boolean.valueOf(cur.getValue()));
+                        } else if (type.equals("number")) {
+                            jw.value(Double.valueOf(cur.getValue()));
+                        } else {
+                            jw.value(cur.getValue());
+                        }
+                    } else {
+                        jw.value(cur.getValue());
+                    }
+                    break;
+                case BEGIN_ARRAY:
+                    jw.beginArray();
+                    stack.push(token.getElement());
+                    arrayStack.push(token.getElement());
+                    isArray = true;
+                    break;
+                case CHILD:
+                    //subnode
+                    Element child = token.getElement();
+                    child.initReader();
+                    currentElement=child;
+                    break;
+                case END_ARRAY:
+                    jw.endArray();
+                    arrayStack.pop();
+                    stack.pop();
+                    if (stack.peekFirst() == arrayStack.peekFirst()) {
+                        isArray = true;
+                    } else {
+                        isArray = false;
+                    }
+                    break;
+                case END_ELEMENT:
+                    //ignore root element
+                    lastEvent = ElementToken.Type.END_ELEMENT;
+                    if (stack.size() == 1) {
+                        break;
+                    } else {
+                        if (!isArray && token.getElement().getName() != null) {
+                            jw.endObject();
+                        }
+                        stack.pop();
+                        currentElement = stack.peekFirst();
+                        break;
+                    }
+
+            }
+        }
+    }
 
 	public static String NVPairsToJson(NVList in) {
 		String rslt = "";
