@@ -1,14 +1,20 @@
 package io.trivium.glue.om.test;
 
+import com.google.gson.stream.JsonWriter;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Json;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.StringWriter;
 
 public class TestJson {
 
 	public static void main(String[] args) {
+        jsonWithArrayObject();
 		simpleJson();
 		jsonWithArray();
         jsonWithArray2();
@@ -18,7 +24,7 @@ public class TestJson {
 	}
 
 	public static void simpleJson(){
-		String str= "{\"a\":{\"b\":\"blah\"},\"y\":{\"c\":\"blah2\"},\"z\":\"h\"}";
+		String str= "{\"a\":{\"b\":\"blah\"},\"z\":\"h\",\"y\":{\"c\":\"blah2\"}}";
 		System.out.println("TC1: " + str);
 		Element root = Json.JsonToInternal(str);
 		System.out.println("TC1: " + root.toString());
@@ -33,6 +39,13 @@ public class TestJson {
 		System.out.println("TC2: "+root.toString());
 		System.out.println("TC2: "+Json.InternalToJson(root));
 	}
+    public static void jsonWithArrayObject(){
+        String str= "{\"a\":[{\"b\":\"blah\"}],\"z\":{\"x\":\"y\"}}";
+        Element root = Json.JsonToInternal(str);
+        System.out.println("TC6: "+str);
+        System.out.println("TC6: "+root.toString());
+        System.out.println("TC6: "+Json.InternalToJson(root));
+    }
     public static void jsonWithArray2(){
         String str= "[\"a\",\"b\",\"blah\",true,123]";
         Element root = Json.JsonToInternal(str);

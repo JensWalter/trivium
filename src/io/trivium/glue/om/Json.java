@@ -25,38 +25,50 @@ public class Json {
 			LinkedList<Element> arrayStack = new LinkedList<Element>();
 			stack.push(root);
 			boolean running = true;
-			boolean isArray = false;
 			while (running) {
 				JsonToken token = reader.peek();
 				switch (token) {
 				case BEGIN_OBJECT:
 					reader.beginObject();
-					break;
+//                    System.out.println("beginObject");
+                    break;
 				case NAME:
 					String name = reader.nextName();
 					Element child = new Element(name);
 					Element cur = stack.peek();
-					cur.addChild(child);
-					stack.push(child);
-					break;
+                    if(cur == arrayStack.peek()){
+                        //is array
+                        Element inner = new Element(null,null);
+                        inner.addChild(child);
+                        cur.addChild(inner);
+                        stack.push(inner);
+                        stack.push(child);
+                    }else {
+                        cur.addChild(child);
+                        stack.push(child);
+                    }
+//                    System.out.println("name");
+                    break;
 				case END_OBJECT:
 					reader.endObject();
-    				stack.pop();
-					break;
+                    stack.pop();
+//                    System.out.println("endObject");
+                    break;
 				case STRING:
 					String val1 = reader.nextString();
 					Element cur1 = stack.peek();
-					if (isArray)
+					if (cur1==arrayStack.peek())
 						cur1.addChild(new Element(null, val1));
 					else {
 						cur1.setValue(val1);
 						stack.pop();
 					}
+//                    System.out.println("string");
 					break;
 				case NUMBER:
 					String val2 = reader.nextString();
 					Element cur2 = stack.peek();
-					if (isArray) {
+					if (cur2==arrayStack.peek()) {
 						Element cur3 = new Element(null, val2);
 						cur3.addMetadata(new NVPair("type", "number"));
 						cur2.addChild(cur3);
@@ -64,38 +76,34 @@ public class Json {
 						cur2.setValue(val2);
 						stack.pop();
 					}
+//                    System.out.println("number");
 					break;
 				case END_DOCUMENT:
 					running = false;
 					break;
 				case BEGIN_ARRAY:
 					reader.beginArray();
-                    if(isArray){
-                        isArray = true;
+                    if(stack.peek()==arrayStack.peek()){
                         Element cur3 = stack.peek();
                         Element el = new Element(null,null);
                         cur3.addChild(el);
                         stack.push(el);
                         arrayStack.push(el);
                     }else {
-                        isArray = true;
-                        arrayStack.push(stack.peekFirst());
+                        arrayStack.push(stack.peek());
                     }
+//                    System.out.println("beginArray");
 					break;
 				case END_ARRAY:
 					reader.endArray();
 					stack.pop();
                     arrayStack.pop();
-                    if(stack.peekFirst() == arrayStack.peekFirst()){
-                        isArray=true;
-                    }else {
-                        isArray = false;
-                    }
+//                    System.out.println("endArray");
 					break;
 				case BOOLEAN:
 					String val3 = reader.nextBoolean() ? "true" : "false";
 					Element cur3 = stack.peek();
-					if (isArray) {
+					if (stack.peek()==arrayStack.peek()) {
 						Element cur4 = new Element(null, val3);
 						cur4.addMetadata(new NVPair("type", "boolean"));
 						cur3.addChild(cur4);
@@ -103,9 +111,11 @@ public class Json {
 						cur3.setValue(val3);
 						stack.pop();
 					}
+//                    System.out.println("boolean");
 					break;
 				case NULL:
 					reader.nextNull();
+//                    System.out.println("null");
 					break;
 				}
 			}
@@ -121,7 +131,7 @@ public class Json {
 		StringWriter sw = new StringWriter();
 		JsonWriter jw = new JsonWriter(sw);
 		try {
-            ElementToWriter2(jw, el);
+            ElementToWriter(jw, el);
 			jw.close();
 		} catch (Exception ex) {
             Logger log = LogManager.getLogger(Json.class);
@@ -130,52 +140,7 @@ public class Json {
 		return sw.toString();
 	}
 
-	private static void ElementToWriter(JsonWriter jw, Element el) throws Exception {
-		String name = el.getName();
-		if(name!=null){
-			//normal element
-			jw.name(name);
-			if (el.getValue() != null) {
-				jw.value(el.getValue());
-			} else {
-				if(el.isArray()){
-					jw.beginArray();
-					for (Element e : el.getAllChildren()) {
-						if (e.getMetadata().findValue("type") != null) {
-							if (e.getMetadata().findValue("type")
-									.equals("boolean"))
-								jw.value(Boolean.parseBoolean(e.getValue()));
-							else if (e.getMetadata().findValue("type")
-									.equals("number"))
-								jw.value(Double.parseDouble(e.getValue()));
-							else
-								jw.value(e.getValue());
-
-						} else {
-							//if no type use string
-							jw.value(e.getValue());
-						}
-					}
-					jw.endArray();
-				}else{
-				jw.beginObject();
-				for (Element e : el.getAllChildren()) {
-					ElementToWriter(jw, e);
-				}
-				jw.endObject();
-				}
-			}
-		} else {
-			//array entry
-			if(el.isArray()){
-				jw.value(el.getValue());
-			}else{
-				throw new Exception("element with no name found");
-			}
-		}
-	}
-
-    private static void ElementToWriter2(JsonWriter jw, Element el) throws Exception {
+    private static void ElementToWriter(JsonWriter jw, Element el) throws Exception {
         Element currentElement = el;
         LinkedList<Element> stack = new LinkedList<Element>();
         LinkedList<Element> arrayStack = new LinkedList<Element>();
@@ -184,20 +149,28 @@ public class Json {
         currentElement.next();//begin_element
         stack.push(el);
         currentElement.next();//name
-        boolean isArray=false;
-        ElementToken.Type lastEvent = ElementToken.Type.NAME;
+        ElementToken lastToken = null;
         while(currentElement.hasNext()) {
             ElementToken token = currentElement.next();
             switch (token.getType()) {
                 case BEGIN_ELEMENT:
-                    if(!isArray && token.getElement().getName()!=null && lastEvent!= ElementToken.Type.END_ELEMENT) {
+                    //new start
+                    if(lastToken ==null){
+//                        System.out.println("beginObject "+token.getElement().hashCode());
+                        jw.beginObject();
+                    }else
+                    //is not array and is not sibling
+                    if(stack.peek() != arrayStack.peek() && token.getElement().getName()!=null
+                        && lastToken!=null && lastToken.getElement().getParent()!=token.getElement().getParent()){
+//                        System.out.println("beginObject "+token.getElement().hashCode());
                         jw.beginObject();
                     }
                     stack.push(token.getElement());
-                    lastEvent = ElementToken.Type.BEGIN_ELEMENT;
+                    lastToken = token;
                     break;
                 case NAME:
-                    if(!isArray && token.getElement().getName()!=null) {
+                    if(stack.peek() != arrayStack.peek() && token.getElement().getName()!=null) {
+//                        System.out.println("name "+token.getElement().hashCode());
                         jw.name(token.getElement().getName());
                     }
                     break;
@@ -208,19 +181,26 @@ public class Json {
                         if (type.equals("boolean")) {
                             jw.value(Boolean.valueOf(cur.getValue()));
                         } else if (type.equals("number")) {
-                            jw.value(Double.valueOf(cur.getValue()));
+                            Double val1 = Double.valueOf(cur.getValue());
+                            if(val1.doubleValue() % 1 != 0){
+                                jw.value(val1.doubleValue());
+                            }else{
+                                jw.value(val1.longValue());
+                            }
                         } else {
                             jw.value(cur.getValue());
                         }
                     } else {
                         jw.value(cur.getValue());
+//                        System.out.println("value "+token.getElement().hashCode());
                     }
                     break;
                 case BEGIN_ARRAY:
+//                    System.out.println("beginArray "+token.getElement().hashCode());
                     jw.beginArray();
                     stack.push(token.getElement());
                     arrayStack.push(token.getElement());
-                    isArray = true;
+                    lastToken = token;
                     break;
                 case CHILD:
                     //subnode
@@ -230,28 +210,26 @@ public class Json {
                     break;
                 case END_ARRAY:
                     jw.endArray();
+//                    System.out.println("endArray "+token.getElement().hashCode());
                     arrayStack.pop();
                     stack.pop();
-                    if (stack.peekFirst() == arrayStack.peekFirst()) {
-                        isArray = true;
-                    } else {
-                        isArray = false;
-                    }
+                    lastToken = token;
                     break;
                 case END_ELEMENT:
                     //ignore root element
-                    lastEvent = ElementToken.Type.END_ELEMENT;
+                    lastToken = token;
+//                    System.out.println("endObject "+token.getElement().hashCode());
                     if (stack.size() == 1) {
                         break;
                     } else {
-                        if (!isArray && token.getElement().getName() != null) {
+                        if (stack.peek() != arrayStack.peek() && token.getElement().getName() != null
+                                && token.getElement().getParent().isLast(token.getElement())) {
                             jw.endObject();
                         }
                         stack.pop();
-                        currentElement = stack.peekFirst();
+                        currentElement = stack.peek();
                         break;
                     }
-
             }
         }
     }

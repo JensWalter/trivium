@@ -14,6 +14,7 @@ public class Element implements Iterator<ElementToken> {
     private NVList metadata = new NVList();
     private ArrayList<Element> children = new ArrayList<Element>();
     private LinkedList<ElementToken> structure = new LinkedList<>();
+    private Element parent;
 
     public static Element EMPTY = new Element("");
 
@@ -60,7 +61,12 @@ public class Element implements Iterator<ElementToken> {
         return false;
     }
 
+    public boolean isLast(Element child){
+        return children.indexOf(child)==children.size()-1;
+    }
+
     public void addChild(Element child) {
+        child.parent = this;
         this.children.add(child);
     }
 
@@ -88,12 +94,17 @@ public class Element implements Iterator<ElementToken> {
         this.value = val;
     }
 
+    public Element getParent(){
+        return parent;
+    }
+
     public boolean isArray() {
         //check children for array
-        if (children.size() > 0 && children.get(0).name == null)
+        if (children.size() > 0 && children.get(0).name == null){
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public String toString() {
@@ -127,10 +138,10 @@ public class Element implements Iterator<ElementToken> {
         return str;
     }
 
-    public void initReader(){
+    public void initReader() {
         structure.clear();
         structure.push(new ElementToken(this, ElementToken.Type.END_ELEMENT));
-        if(this.isArray()){
+        if (this.isArray()) {
             structure.push(new ElementToken(this, ElementToken.Type.END_ARRAY));
             int size = this.children.size();
             for(int idx=size-1;idx>=0;idx--){
@@ -144,21 +155,23 @@ public class Element implements Iterator<ElementToken> {
                 Element child = this.children.get(idx);
                 structure.push(new ElementToken(child, ElementToken.Type.CHILD));
             }
-        }else{
+        } else {
             structure.push(new ElementToken(this, ElementToken.Type.VALUE));
         }
+
         structure.push(new ElementToken(this, ElementToken.Type.NAME));
         structure.push(new ElementToken(this, ElementToken.Type.BEGIN_ELEMENT));
     }
 
-    public boolean hasNext(){
-        return structure.size()>0;
+    public boolean hasNext() {
+        return structure.size() > 0;
     }
 
-    public ElementToken next(){
-        if(structure.size()>0)
+    public ElementToken next() {
+        if (structure.size() > 0) {
             return structure.pop();
-        else
+        } else {
             return null;
+        }
     }
 }
