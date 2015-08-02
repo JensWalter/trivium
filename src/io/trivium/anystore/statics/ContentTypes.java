@@ -20,6 +20,7 @@ public class ContentTypes {
         add("txt","text/plain");
         add("zip","application/zip");
         add("json","application/json");
+        add("xml","application/xml");
     }
 
     public static void add(String ending,String mime){
