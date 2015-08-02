@@ -64,9 +64,9 @@ public class Node {
             ioReactor.listen(new InetSocketAddress(port));
             ioReactor.execute(ioEventDispatch);
         } catch (InterruptedIOException ex) {
-            log.error(ex);
+            log.error("error while starting http server",ex);
         } catch (IOException e) {
-        	log.error(e);
+        	log.error("error while starting http server",e);
         }
         log.info("shutting down http node on port {}",port);
     }

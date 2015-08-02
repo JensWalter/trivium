@@ -22,13 +22,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Central {
 
-    public static FastMap<String, String> properties = new FastMap<String, String>()
-            .shared();
+    public static FastMap<String, String> properties = new FastMap<String, String>().shared();
 
-    public static FastList<String> peers = new FastList<String>();
+    public static FastList<String> peers = new FastList<>();
     public static AtomicInteger currentPeer = new AtomicInteger(0);
-
-    Logger log = LogManager.getLogger(getClass());
 
     public static boolean isRunning = false;
 

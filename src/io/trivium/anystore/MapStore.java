@@ -19,15 +19,12 @@ import org.iq80.snappy.Snappy;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class MapStore{
     Logger log = LogManager.getLogger(getClass());
     protected String path;
     AnyDB dataMap = null;
     AnyDB metaMap = null;
-
-    AtomicLong queryCount = new AtomicLong(0);
 
     public MapStore() {
         path = Central.getProperty("basePath");
@@ -69,7 +66,6 @@ public class MapStore{
     }
 
     public void storeObject(TriviumObject po) {
-        AnyDB current=null;
         ObjectRef refid = po.getId();
         byte[] id=refid.toBytes();
        // Central.logger.info("trying to store metadata {} {}",po.findMetaValue("datapoint"),po.getId().toString());
@@ -117,7 +113,7 @@ public class MapStore{
         QueryExecutor qr = new QueryExecutor(query);
         boolean hasResult = qr.execute();
 
-        FastList<TriviumObject> result = new FastList<TriviumObject>();
+        FastList<TriviumObject> result = new FastList<>();
         if(hasResult) {
             int size = qr.getSize();
             for(int i=0;i<size;i++){
@@ -141,7 +137,7 @@ public class MapStore{
         }
         NVList meta = Json.JsonToNVPairs(data);
         for(NVPair pair : meta){
-            if(pair.isArray()==false) {
+            if(pair.isArray()) {
                 po.addMetadata(pair.getName(), pair.getValue());
             }else{
                 for(String val : pair.getValues()){

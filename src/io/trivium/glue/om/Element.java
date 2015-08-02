@@ -12,7 +12,7 @@ public class Element implements Iterator<ElementToken> {
     private String name;
     private String value;
     private NVList metadata = new NVList();
-    private ArrayList<Element> children = new ArrayList<Element>();
+    private ArrayList<Element> children = new ArrayList<>();
     private LinkedList<ElementToken> structure = new LinkedList<>();
     private Element parent;
 

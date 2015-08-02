@@ -135,7 +135,7 @@ public class AnyIndex{
         DBIterator iter = idx.index.iterator();
         byte[] b_value = value.getBytes();
         iter.seek(b_value);
-        FastList<ObjectRef> keyList = new FastList<ObjectRef>();
+        FastList<ObjectRef> keyList = new FastList<>();
         while(iter.hasNext()){
             Map.Entry<byte[],byte[]> entry = iter.next();
             byte[] key = entry.getKey();

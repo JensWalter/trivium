@@ -38,14 +38,6 @@ public class AnyDB {
         buildMap();
     }
 
-    public AnyDB cloneStore() {
-        AnyDB newMap = new AnyDB();
-        newMap.type = this.type;
-        newMap.path = this.path;
-        newMap.generate();
-        return newMap;
-    }
-
     public void buildMap(){
         try {
             File file = new File(fileName+".leveldb");

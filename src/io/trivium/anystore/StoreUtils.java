@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-public abstract class StoreUtils {
+public class StoreUtils {
 
     final static protected String meta = "meta" + File.separator;
     final static protected String data = "data" + File.separator;

@@ -46,50 +46,48 @@ public class Trivium {
 		return rslt;
 	}
 
-	private static void tvm2Elem(Element elem, JsonReader reader)
-			throws IOException {
-		// get root name
-		reader.beginObject();
-		String name = reader.nextName();
+    private static void tvm2Elem(Element elem, JsonReader reader) throws IOException {
+        // get root name
+        reader.beginObject();
+        String name = reader.nextName();
 
-		Element e = new Element(name);
-		elem.addChild(e);
-		reader.beginObject();
-		while (reader.peek() == JsonToken.NAME) {
-			
-			String obj = reader.nextName();
-			// can either be 'value','children' or 'metadata'
-			if (obj.equals("value")) {
-				// TODO other types then string
-				e.setValue(reader.nextString());
-			}
-			if (obj.equals("children")) {
-				// process children
-				reader.beginArray();
-				while (reader.peek() != JsonToken.END_ARRAY) {
-					tvm2Elem(e, reader);
-				}
-				reader.endArray();
-			}
-			if (obj.equals("metadata")) {
-				reader.beginArray();
-				NVList list = new NVList();
-				while (reader.peek() != JsonToken.END_ARRAY) {
-					reader.beginObject();
-					String n = reader.nextName();
-					String v = reader.nextString();
-					list.add(new NVPair(n, v));
-					reader.endObject();
-				}
-				e.setMetadataList(list);
+        Element e = new Element(name);
+        elem.addChild(e);
+        reader.beginObject();
+        while (reader.peek() == JsonToken.NAME) {
 
-				reader.endArray();	
-			}
-		}
-			reader.endObject();
-		
-		reader.endObject();
-	}
+            String obj = reader.nextName();
+            // can either be 'value','children' or 'metadata'
+            if (obj.equals("value")) {
+                // TODO other types then string
+                e.setValue(reader.nextString());
+            }
+            if (obj.equals("children")) {
+                // process children
+                reader.beginArray();
+                while (reader.peek() != JsonToken.END_ARRAY) {
+                    tvm2Elem(e, reader);
+                }
+                reader.endArray();
+            }
+            if (obj.equals("metadata")) {
+                reader.beginArray();
+                NVList list = new NVList();
+                while (reader.peek() != JsonToken.END_ARRAY) {
+                    reader.beginObject();
+                    String n = reader.nextName();
+                    String v = reader.nextString();
+                    list.add(new NVPair(n, v));
+                    reader.endObject();
+                }
+                e.setMetadataList(list);
+
+                reader.endArray();
+            }
+        }
+        reader.endObject();
+        reader.endObject();
+    }
 
 	private static void elem2Tvm(Element elem, JsonWriter writer) throws IOException {
 		//TODO make this recursion free
