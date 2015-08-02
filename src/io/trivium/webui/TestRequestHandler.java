@@ -76,7 +76,7 @@ public class TestRequestHandler implements HttpAsyncRequestHandler<HttpRequest> 
 //                po.addMetadata("status", n.status);
 //                po.addMetadata("logid", n.logid);
 //
-//                po.setData(Json.JsonToInternal(n.toString()));
+//                po.setData(Json.jsonToElement(n.toString()));
 //
 //                c.storeObject(po);
 //            }

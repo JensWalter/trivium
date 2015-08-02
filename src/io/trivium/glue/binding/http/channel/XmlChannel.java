@@ -1,11 +1,12 @@
 package io.trivium.glue.binding.http.channel;
 
+import io.trivium.anystore.AnyClient;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.glue.TriviumObject;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
-import io.trivium.anystore.AnyClient;
-import io.trivium.anystore.ObjectRef;
+import io.trivium.glue.om.Xml;
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 
@@ -13,9 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.util.Date;
 
-public class JsonChannel extends Channel {
+public class XmlChannel extends Channel {
 
-	public JsonChannel(ObjectRef id) {
+	public XmlChannel(ObjectRef id) {
 		super(id);
 	}
 
@@ -57,7 +58,7 @@ public class JsonChannel extends Channel {
 			
 			// parse the payload
 			String payload = bos.toString();
-			Element el = Json.jsonToElement(payload);
+			Element el = Xml.xmlToElement(payload);
 			
 
 			po.setData(el);

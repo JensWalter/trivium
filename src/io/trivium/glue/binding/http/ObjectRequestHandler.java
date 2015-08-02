@@ -66,7 +66,7 @@ public class ObjectRequestHandler implements
                 FastList<String> sb = new FastList<String>();
                 for (TriviumObject po : objects) {
                     if (po != null) {
-                        sb.add(Json.InternalToJson(po.getData()));
+                        sb.add(Json.elementToJson(po.getData()));
                     }
                 }
                 String str = Joiner.on(",").join(sb);

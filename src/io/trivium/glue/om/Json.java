@@ -17,7 +17,7 @@ import java.util.LinkedList;
 
 public class Json {
 
-	public static Element JsonToInternal(String in) {
+	public static Element jsonToElement(String in) {
 		Element root = new Element("dummy");
 		try {
 			JsonReader reader = new JsonReader(new StringReader(in));
@@ -127,7 +127,7 @@ public class Json {
 		return root;
 	}
 
-	public static String InternalToJson(Element el) {
+	public static String elementToJson(Element el) {
 		StringWriter sw = new StringWriter();
 		JsonWriter jw = new JsonWriter(sw);
 		try {
