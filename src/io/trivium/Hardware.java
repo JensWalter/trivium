@@ -34,13 +34,13 @@ public class Hardware {
     public static void discover() throws Exception {
         // detect os
         String os = System.getProperty("os.name").toLowerCase();
-        if (os.indexOf("mac") >= 0 || os.indexOf("darwin") >= 0) {
+        if (os.contains("mac") || os.contains("darwin")) {
             // mac
             discoverMac();
-        } else if (os.indexOf("win") >= 0) {
+        } else if (os.contains("win")) {
             // windows
             throw new Exception("discovery for this operating system is not supported");
-        } else if (os.indexOf("nux") >= 0) {
+        } else if (os.contains("nux")) {
             // linux
             discoverLinux();
         }
@@ -61,7 +61,7 @@ public class Hardware {
             Process p = Runtime.getRuntime().exec(cmd);
             InputStreamReader isr = new InputStreamReader(p.getInputStream());
             BufferedReader br = new BufferedReader(isr);
-            String line = null;
+            String line;
             StringBuilder result = new StringBuilder();
             while ((line = br.readLine()) != null) {
                 result.append(line);
