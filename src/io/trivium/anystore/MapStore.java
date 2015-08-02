@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MapStore{
     Logger log = LogManager.getLogger(getClass());
     protected String path;
-    AnyAbstract dataMap = null;
-    AnyAbstract metaMap = null;
+    AnyDB dataMap = null;
+    AnyDB metaMap = null;
 
     AtomicLong queryCount = new AtomicLong(0);
 
@@ -69,7 +69,7 @@ public class MapStore{
     }
 
     public void storeObject(TriviumObject po) {
-        AnyAbstract current=null;
+        AnyDB current=null;
         ObjectRef refid = po.getId();
         byte[] id=refid.toBytes();
        // Central.logger.info("trying to store metadata {} {}",po.findMetaValue("datapoint"),po.getId().toString());

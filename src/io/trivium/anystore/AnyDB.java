@@ -3,6 +3,8 @@ package io.trivium.anystore;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.glue.om.Json;
+import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Logger;
 import org.iq80.leveldb.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.iq80.leveldb.impl.Iq80DBFactory;
@@ -10,8 +12,18 @@ import org.iq80.leveldb.impl.Iq80DBFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 
-public class AnyDB extends AnyAbstract {
+public class AnyDB {
     DB map =null;
+    Logger log = LogManager.getLogger(AnyDB.class);
+    public String fileName;
+    public String path;
+    public String id;
+    public byte[] idAsBytes;
+    /**
+     * valid values are "meta" or "data"
+     */
+    public String type;
+
 
     public void put(byte[] key, byte[] value){
         map.put(key, value);
@@ -21,13 +33,11 @@ public class AnyDB extends AnyAbstract {
         return map.get(key);
     }
 
-    @Override
     public void generate() {
         generateUniqueId(type,path);
         buildMap();
     }
 
-    @Override
     public AnyDB cloneStore() {
         AnyDB newMap = new AnyDB();
         newMap.type = this.type;
