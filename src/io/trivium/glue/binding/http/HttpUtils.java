@@ -1,8 +1,6 @@
 package io.trivium.glue.binding.http;
 
-import io.trivium.Central;
 import io.trivium.NVList;
-import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Json;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;

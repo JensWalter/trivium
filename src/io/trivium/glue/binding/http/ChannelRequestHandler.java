@@ -1,9 +1,7 @@
 package io.trivium.glue.binding.http;
 
-import io.trivium.Central;
 import io.trivium.glue.binding.http.channel.Channel;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.binding.http.channel.Channel;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpStatus;
@@ -21,14 +19,12 @@ import java.util.regex.Pattern;
 
 public class ChannelRequestHandler implements
 		HttpAsyncRequestHandler<HttpRequest> {
-	private final static Pattern uuidpattern = Pattern
-			.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
+	private final static Pattern uuidpattern = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
     Logger log = LogManager.getLogger(getClass());
     
 	@Override
-	public void handle(HttpRequest request, HttpAsyncExchange httpexchange,
-			HttpContext context) {
+	public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) {
 		boolean processed = false;
         ObjectRef sourceId = ObjectRef.getInstance();
 		Session s = new Session(request, httpexchange, context, sourceId);
@@ -66,33 +62,29 @@ public class ChannelRequestHandler implements
 			}
 
 			if (!processed) {
-				s.error(HttpStatus.SC_BAD_REQUEST,
-						"request could not be processed");
+				s.error(HttpStatus.SC_BAD_REQUEST, "request could not be processed");
 				return;
 			}
 		} catch (Exception ex) {
 			log.error("error processing request",ex);
-			s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR,
-					ex.toString());
+			s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.toString());
 			return;
 		}
 	}
 
-	private boolean in(Session session, ObjectRef sourceId,
-			ObjectRef channelId) throws IOException {
-		try{
-		Channel channel = Channel.getChannel(channelId);
-		channel.process(session, sourceId);
-		}catch(Exception ex){
-			log.error("error processing request",ex);
-			return false;
-		}
-		return true;
+	private boolean in(Session session, ObjectRef sourceId, ObjectRef channelId) throws IOException {
+        try{
+            Channel channel = Channel.getChannel(channelId);
+            channel.process(session, sourceId);
+        }catch(Exception ex){
+            log.error("error processing request",ex);
+            return false;
+        }
+        return true;
 	}
 
 	@Override
-	public HttpAsyncRequestConsumer<HttpRequest> processRequest(
-			HttpRequest arg0, HttpContext arg1) throws HttpException,
+	public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest arg0, HttpContext arg1) throws HttpException,
 			IOException {
 		return new BasicAsyncRequestConsumer();
 	}

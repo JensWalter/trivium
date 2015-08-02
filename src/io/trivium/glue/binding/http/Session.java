@@ -1,6 +1,5 @@
 package io.trivium.glue.binding.http;
 
-import io.trivium.Central;
 import io.trivium.anystore.ObjectRef;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;

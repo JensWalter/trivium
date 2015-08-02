@@ -1,9 +1,7 @@
 package io.trivium.glue.binding.http.channel;
 
-import io.trivium.Central;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.binding.http.Session;
 import javolution.util.FastMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

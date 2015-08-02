@@ -3,6 +3,7 @@ package io.trivium.glue.binding.http.channel;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.glue.TriviumObject;
+import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
@@ -25,23 +26,15 @@ public class XmlChannel extends Channel {
 		// read payload
 		if (session.getRequest() instanceof HttpEntityEnclosingRequest) {
 			HttpEntityEnclosingRequest r = (HttpEntityEnclosingRequest) session.getRequest();
-			DataInputStream dis = new DataInputStream(r.getEntity()
-					.getContent());
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			byte[] buf = new byte[100000];
-			while (dis.available() > 0) {
-				int i = dis.read(buf);
-				bos.write(buf, 0, i);
-			}
-			dis.close();
-			bos.close();
+
+            String requestData = HttpUtils.getInputAsString(r);
 
 			//construct persistence object
 			TriviumObject po = new TriviumObject();
 
 			po.addMetadata("contentType", "application/trivium.io");
 
-			// if header starts with infinup - copy value
+			// if header starts with trivium - copy value
 			Header[] headers = session.getRequest().getAllHeaders();
 			for (Header h : headers) {
 				if (h.getName().startsWith("trivium-")) {
@@ -57,8 +50,7 @@ public class XmlChannel extends Channel {
 			po.addMetadata("type","object");
 			
 			// parse the payload
-			String payload = bos.toString();
-			Element el = Xml.xmlToElement(payload);
+			Element el = Xml.xmlToElement(requestData);
 			
 
 			po.setData(el);
