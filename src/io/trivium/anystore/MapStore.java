@@ -155,9 +155,9 @@ public class MapStore{
         if (b_data[0] == 1) {
             //decompress
             byte[] in = Snappy.uncompress(b_data, 1, b_data.length - 1);
-            po.setData(Trivium.triviumToInternal(new String(in)));
+            po.setData(Trivium.triviumJsonToElement(new String(in)));
         } else {
-            po.setData(Trivium.triviumToInternal(new String(Arrays.copyOfRange(b_data, 1, b_data.length))));
+            po.setData(Trivium.triviumJsonToElement(new String(Arrays.copyOfRange(b_data, 1, b_data.length))));
         }
 
         return po;

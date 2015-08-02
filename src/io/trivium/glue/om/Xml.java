@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Xml {
 
-	public static Element transformXml(String in){
+	public static Element xmlToElement(String in){
 		Element root=new Element("dummy");
 		LinkedList<Element> stack = new LinkedList<Element>();
 		stack.push(root);

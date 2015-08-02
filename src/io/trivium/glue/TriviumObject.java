@@ -207,7 +207,7 @@ public class TriviumObject implements Typed {
     }
 
     private void data2Binary(){
-        byte[] b_data = Trivium.internalToTrivium(data).getBytes();
+        byte[] b_data = Trivium.elementToTriviumJson(data).getBytes();
         if (typeByte==1) {
             byte[] compressed = new byte[Snappy.maxCompressedLength(b_data.length)];
             int count = Snappy.compress(b_data, 0, b_data.length, compressed, 0);
@@ -220,9 +220,9 @@ public class TriviumObject implements Typed {
         if(b_data[0]==1){
             //decompress
             byte[] in = Snappy.uncompress(b_data,1,b_data.length-1);
-            data = Trivium.triviumToInternal(new String(in));
+            data = Trivium.triviumJsonToElement(new String(in));
         }else{
-            data= Trivium.triviumToInternal(new String(Arrays.copyOfRange(b_data, 1, b_data.length)));
+            data= Trivium.triviumJsonToElement(new String(Arrays.copyOfRange(b_data, 1, b_data.length)));
         }
     }
 

@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Trivium {
 
-	public static Element triviumToInternal(String in) {
+	public static Element triviumJsonToElement(String in) {
 		Element root = new Element("dummy");
 		try {
 			JsonReader reader = new JsonReader(new StringReader(in));
@@ -24,12 +24,12 @@ public class Trivium {
 			reader.close();
 		} catch (Exception ex) {
             Logger log = LogManager.getLogger(Trivium.class);
-			log.error("exception thrown while transorming object to extenal structure",ex);
+			log.error("exception thrown while transforming object to external structure",ex);
 		}
 		return root;
 	}
 
-	public static String internalToTrivium(Element in) {
+	public static String elementToTriviumJson(Element in) {
 		String rslt = null;
 		try {
 			StringWriter sw = new StringWriter();
@@ -41,7 +41,7 @@ public class Trivium {
 			rslt = sw.toString();
 		} catch (Exception ex) {
             Logger log = LogManager.getLogger(Trivium.class);
-			log.error("exception thrown while transorming object to internal structure",ex);
+			log.error("exception thrown while transforming object to internal structure",ex);
 		}
 		return rslt;
 	}

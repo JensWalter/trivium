@@ -25,8 +25,8 @@ public class TestTrivium {
 		complex.addMetadata(new NVPair("meta1", "val2"));
 		
 		e.addChild(complex);
-		String str  = Trivium.internalToTrivium(e);
-		Element elem = Trivium.triviumToInternal(str);
+		String str  = Trivium.elementToTriviumJson(e);
+		Element elem = Trivium.triviumJsonToElement(str);
 		System.out.println(e.toString());
 		System.out.println(elem.getChild(0).toString());
 		/*
@@ -49,13 +49,13 @@ public class TestTrivium {
 		complex.addMetadata(new NVPair("meta1", "val2"));
 		
 		e.addChild(complex);
-		String str  = Trivium.internalToTrivium(e);
+		String str  = Trivium.elementToTriviumJson(e);
 		System.out.println(str);
 	}
 	
 	public static void iup2Elem(){
 		String str ="{\"root\":{\"children\":[{\"sub1\":{\"value\":\"value1\"}},{\"sub2\":{\"value\":\"value2\"}},{\"complex1\":{\"metadata\":[{\"meta1\":\"val1\"},{\"meta1\":\"val2\"}],\"value\":\"value2\"}}]}}";
-		Element elem = Trivium.triviumToInternal(str);
+		Element elem = Trivium.triviumJsonToElement(str);
 		System.out.println(elem.toString());
 	}
 }
