@@ -34,8 +34,7 @@ public class ObjectRequestHandler implements
     Logger log = LogManager.getLogger(getClass());
     
     @Override
-    public void handle(HttpRequest request, HttpAsyncExchange httpexchange,
-                       HttpContext context) {
+    public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) {
         ObjectRef sourceId = ObjectRef.getInstance();
         Session s = new Session(request, httpexchange, context, sourceId);
 
@@ -63,7 +62,7 @@ public class ObjectRequestHandler implements
                     q.criteria.add(new Value(pair.getName(), pair.getValue()));
                 }
                 FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q);
-                FastList<String> sb = new FastList<String>();
+                FastList<String> sb = new FastList<>();
                 for (TriviumObject po : objects) {
                     if (po != null) {
                         sb.add(Json.elementToJson(po.getData()));
@@ -87,8 +86,7 @@ public class ObjectRequestHandler implements
         }
     }
 
-    private boolean upsert(HttpRequest request, ObjectRef sourceId,
-                           Header[] headers, String uri) throws IOException {
+    private boolean upsert(HttpRequest request, ObjectRef sourceId, Header[] headers, String uri) throws IOException {
         boolean processed = false;
         // look for id in uri
         ObjectRef id;
@@ -140,8 +138,7 @@ public class ObjectRequestHandler implements
     }
 
     @Override
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest(
-            HttpRequest arg0, HttpContext arg1) throws HttpException,
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest( HttpRequest arg0, HttpContext arg1) throws HttpException,
             IOException {
         return new BasicAsyncRequestConsumer();
     }

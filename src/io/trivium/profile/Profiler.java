@@ -1,5 +1,8 @@
 package io.trivium.profile;
 
+import io.trivium.anystore.AnyClient;
+import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
+import io.trivium.glue.TriviumObject;
 import javolution.util.FastMap;
 
 import java.util.TimerTask;
@@ -60,7 +63,8 @@ public class Profiler extends TimerTask{
             t.persist();
         }
         for (Differential d : diffCollector.values()) {
-            d.persist();
+            TriviumObject tvm = TriviumObject.getTriviumObject(d);
+            AnyClient.INSTANCE.storeObject(tvm);
         }
         for (WeightedAverage a: avgCollector.values()) {
             a.persist();

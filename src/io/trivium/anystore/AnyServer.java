@@ -1,9 +1,9 @@
 package io.trivium.anystore;
 
 import io.trivium.Central;
+import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
 import io.trivium.glue.TriviumObject;
 import io.trivium.profile.DataPoints;
-import io.trivium.profile.Differential;
 import io.trivium.profile.Profiler;
 import io.trivium.profile.Ticker;
 import net.openhft.chronicle.ExcerptTailer;

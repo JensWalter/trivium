@@ -14,7 +14,10 @@ public interface TypeFactory<T> extends Typed{
         Class<?> aClass  = token.getRawType();
         T t = null;
         try {
-            t = (T) aClass.newInstance();
+            //private constructor support
+            Constructor<?> constructor = aClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            t = (T) constructor.newInstance();
             Field[] fields = aClass.getDeclaredFields();
             Element el = tvm.getData();
             el = el.getChild(0);
