@@ -28,6 +28,7 @@ public class Ticker implements Type {
         this.interval = interval;
 
     }
+
     public Ticker(String datapoint) {
         this.datapoint = datapoint;
         this.interval = 60000;
