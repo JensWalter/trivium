@@ -3,6 +3,7 @@ package io.trivium.profile;
 import io.trivium.anystore.AnyClient;
 import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
 import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
+import io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e.WeightedAverage;
 import io.trivium.glue.TriviumObject;
 import javolution.util.FastMap;
 
@@ -70,7 +71,8 @@ public class Profiler extends TimerTask{
             client.storeObject(tvm);
         }
         for (WeightedAverage a: avgCollector.values()) {
-            a.persist();
+            TriviumObject tvm = TriviumObject.getTriviumObject(a);
+            client.storeObject(tvm);
         }
     }
 }
