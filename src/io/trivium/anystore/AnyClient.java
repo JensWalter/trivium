@@ -2,11 +2,11 @@ package io.trivium.anystore;
 
 import io.trivium.Central;
 import io.trivium.anystore.query.Query;
+import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
 import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
 import io.trivium.glue.TriviumObject;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
-import io.trivium.profile.Ticker;
 import javolution.util.FastList;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
@@ -39,6 +39,9 @@ public class AnyClient {
     }
 
     public synchronized void storeObject(TriviumObject po) {
+        if(po == null){
+            return;
+        }
         Profiler.INSTANCE.tick(DataPoints.ANYSTORE_QUEUE_IN);
         Profiler.INSTANCE.increment(DataPoints.ANYSTORE_QUEUE_SIZE);
         //pre serialize
