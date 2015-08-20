@@ -26,7 +26,6 @@ import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -109,7 +108,6 @@ public class TriviumLoader extends ClassLoader {
         }
     }
 
-    @Nullable
     @Override
     public URL getResource(String name) {
         try{
