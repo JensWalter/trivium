@@ -20,7 +20,7 @@ import io.trivium.anystore.ObjectRef;
 
 public class TypeIds {
     public final static ObjectRef FILE = ObjectRef.getInstance("e53042cb-ab0b-4479-9583-49320e397141");
-    public final static ObjectRef PROFILER_TICKER = ObjectRef.getInstance("e53042cb-ab0b-4489-9583-49320e397141");
-    public final static ObjectRef PROFILER_DIFFERENTIAL = ObjectRef.getInstance("e53042cb-ab0b-4489-9583-49320e397142");
-    public final static ObjectRef PROFILER_WEIGHTEDAVERAGE = ObjectRef.getInstance("e53042cb-ab0b-4489-9583-49320e397143");
+    public final static ObjectRef PROFILER_TICKER = ObjectRef.getInstance("14ee6f6f-ceec-4d20-9be9-42b21fcc4732");
+    public final static ObjectRef PROFILER_DIFFERENTIAL = ObjectRef.getInstance("2a4a0814-f16c-4f2b-8c9a-b1f51289b00c");
+    public final static ObjectRef PROFILER_WEIGHTEDAVERAGE = ObjectRef.getInstance("9ff9aa69-ff6f-4ca1-a0cf-0e12758e7b1e");
 }
