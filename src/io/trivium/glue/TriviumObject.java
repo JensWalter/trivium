@@ -29,6 +29,7 @@ import io.trivium.glue.om.Json;
 import io.trivium.Registry;
 import org.iq80.snappy.Snappy;
 
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -220,6 +221,31 @@ public class TriviumObject implements Typed {
     public void setDataBinary(byte[] input){
         b_data = input;
         data = Element.EMPTY;
+    }
+
+    public void setBinary(byte[] input){
+        ByteBuffer bb = ByteBuffer.wrap(input);
+        int metaSize = bb.getInt();
+        int dataSize = bb.getInt();
+        byte[] meta = new byte[metaSize];
+        byte[] data = new byte[dataSize];
+        bb.get(meta);
+        setMetadataBinary(meta);
+        bb.get(data);
+        setDataBinary(data);
+    }
+
+    public byte[] getBinary(){
+        byte[] data = getDataBinary();
+        byte[] meta = getMetadataBinary();
+        //allocation size is both data block plus 2 longs for size
+        ByteBuffer bb = ByteBuffer.allocate(data.length+meta.length+8);
+        bb.putInt(meta.length);
+        bb.putInt(data.length);
+        bb.put(meta);
+        bb.put(data);
+
+        return bb.array();
     }
 
     private void data2Binary(){

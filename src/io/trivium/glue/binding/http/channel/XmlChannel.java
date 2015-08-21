@@ -22,13 +22,10 @@ import io.trivium.glue.TriviumObject;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;
-import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Xml;
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.util.Date;
 
 public class XmlChannel extends Channel {

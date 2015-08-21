@@ -16,6 +16,7 @@
 
 package io.trivium.anystore;
 
+import io.qdb.buffer.MessageCursor;
 import io.trivium.Central;
 import io.trivium.anystore.query.Query;
 import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
@@ -24,58 +25,36 @@ import io.trivium.glue.TriviumObject;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 import javolution.util.FastList;
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.IndexedChronicle;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AnyClient {
 
 	public static AnyClient INSTANCE = new AnyClient();
-	private ExcerptAppender pipeIn;
+	private Queue pipeIn;
     Logger log = Logger.getLogger(getClass().getName());
 
 	public AnyClient() {
-		String locPipeIn = Central.getProperty("basePath") + "queues"
-				+ File.separator + "anystore" + File.separator + "queueIn";
+		String locPipeIn = Central.getProperty("basePath") + "queues" + File.separator + "queueIn";
+        StoreUtils.createIfNotExists(locPipeIn);
 
-        IndexedChronicle chronicle = null;
-        try {
-            chronicle = new IndexedChronicle(locPipeIn);
-			pipeIn = chronicle.createAppender();
-		} catch (IOException e) {
-			log.log(Level.SEVERE,"failed to initialize internal queue reader",e);
-		}
+        pipeIn = Queue.getQueue(locPipeIn);
+
         //init profiler
         Profiler.INSTANCE.initTicker(new Ticker(DataPoints.ANYSTORE_QUEUE_IN));
         Profiler.INSTANCE.initDifferential(new Differential(DataPoints.ANYSTORE_QUEUE_SIZE));
     }
 
-    public synchronized void storeObject(TriviumObject po) {
-        if(po == null){
+    public synchronized void storeObject(TriviumObject tvm) {
+        if(tvm == null){
             return;
         }
         Profiler.INSTANCE.tick(DataPoints.ANYSTORE_QUEUE_IN);
         Profiler.INSTANCE.increment(DataPoints.ANYSTORE_QUEUE_SIZE);
-        //pre serialize
-        byte[] id = po.getId().toBytes();
-        byte[] typeId = po.getTypeId().toBytes();
-        byte[] metadata = po.getMetadataBinary();
-        byte[] data = po.getDataBinary();
 
-        int len = id.length + typeId.length + 4 + metadata.length + 4 + data.length;
-
-        pipeIn.startExcerpt(len);
-        pipeIn.write(id);
-        pipeIn.write(typeId);
-        pipeIn.writeInt(metadata.length);
-        pipeIn.write(metadata);
-        pipeIn.writeInt(data.length);
-        pipeIn.write(data);
-        pipeIn.finish();
+        byte[] msg = tvm.getBinary();
+        pipeIn.append(msg);
     }
 
 	public void delete(Query query) {
