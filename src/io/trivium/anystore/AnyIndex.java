@@ -23,20 +23,23 @@ import io.trivium.Central;
 import io.trivium.NVPair;
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.apache.logging.log4j.*;
-import org.apache.logging.log4j.Logger;
-import org.iq80.leveldb.*;
+import org.iq80.leveldb.CompressionType;
+import org.iq80.leveldb.DBIterator;
+import org.iq80.leveldb.Options;
 import org.iq80.leveldb.impl.Iq80DBFactory;
+import org.iq80.leveldb.DB;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class AnyIndex{
     private static FastMap<String,AnyIndex> ALL = new FastMap<String,AnyIndex>().shared();
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     private String name;
     private long entries;
     private DB index;
@@ -58,7 +61,7 @@ public class AnyIndex{
     }
 
     private AnyIndex(String name){
-        log.debug("creating index for field {}",name);
+        log.log(Level.FINE,"creating index for field {}", name);
         this.name=name;
         entries=0;
 
@@ -77,7 +80,7 @@ public class AnyIndex{
             Iq80DBFactory factory = Iq80DBFactory.factory;
             index = factory.open(new File(path + name+".leveldb"), options);
         } catch (Exception e) {
-            log.error("cannot initialize index {}", name, e);
+            log.log(Level.SEVERE,"cannot initialize index " + name, e);
             System.exit(0);
         }
 
@@ -132,7 +135,7 @@ public class AnyIndex{
                     }
                     valueBloomFilter =null;
                     vrBloomFilter = null;
-                    log.debug("disabling index for column {} with variance {}", name,variance);
+                    log.log(Level.FINE,"disabling index for column {} with variance {}", new Object[]{name,variance});
                 }
             }
         }

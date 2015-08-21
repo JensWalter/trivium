@@ -19,14 +19,14 @@ package io.trivium.glue.om;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import io.trivium.NVList;
 import io.trivium.NVPair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Trivium {
 
@@ -39,8 +39,8 @@ public class Trivium {
 
 			reader.close();
 		} catch (Exception ex) {
-            Logger log = LogManager.getLogger(Trivium.class);
-			log.error("exception thrown while transforming object to external structure",ex);
+            Logger log = Logger.getLogger(Trivium.class.getName());
+			log.log(Level.SEVERE,"exception thrown while transforming object to external structure", ex);
 		}
 		return root;
 	}
@@ -56,8 +56,8 @@ public class Trivium {
 			writer.close();
 			rslt = sw.toString();
 		} catch (Exception ex) {
-            Logger log = LogManager.getLogger(Trivium.class);
-			log.error("exception thrown while transforming object to internal structure",ex);
+            Logger log = Logger.getLogger(Trivium.class.getName());
+			log.log(Level.SEVERE,"exception thrown while transforming object to internal structure",ex);
 		}
 		return rslt;
 	}

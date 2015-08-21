@@ -24,8 +24,6 @@ import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.ObjectRef;
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -33,9 +31,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class TaskFactory<T extends Task> implements Typed {
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     private boolean scanned = false;
     private FastMap<ObjectRef, InputType[]> inputFields = new FastMap<ObjectRef, InputType[]>();
     private FastMap<String,OutputType> outputFields = new FastMap<String,OutputType>();
@@ -92,8 +92,8 @@ public abstract class TaskFactory<T extends Task> implements Typed {
                 }
             }
         } catch (Exception ex) {
-            log.error("failed to reflect on type {}", this.getTypeId().toString());
-            log.error("got exception", ex);
+            log.log(Level.SEVERE,"failed to reflect on type {}", this.getTypeId().toString());
+            log.log(Level.SEVERE,"got exception", ex);
         }
         scanned = true;
     }
@@ -142,7 +142,7 @@ public abstract class TaskFactory<T extends Task> implements Typed {
                 }
             }
         } catch (Exception ex) {
-            log.error("condition check failed with ",ex);
+            log.log(Level.SEVERE,"condition check failed with ",ex);
         }
         return false;
     }
@@ -155,7 +155,7 @@ public abstract class TaskFactory<T extends Task> implements Typed {
                 f.field.setAccessible(true);
                 f.field.set(task, obj);
             } catch (Exception ex) {
-                log.error("error population activity input", ex);
+                log.log(Level.SEVERE,"error population activity input", ex);
             }
         }
     }
@@ -168,7 +168,7 @@ public abstract class TaskFactory<T extends Task> implements Typed {
                 Type obj = (Type) f.field.get(task);
                 result.add(TriviumObject.getTriviumObject(obj));
             } catch (Exception ex) {
-                log.error("error population activity input", ex);
+                log.log(Level.SEVERE,"error population activity input", ex);
             }
         }
         return result;

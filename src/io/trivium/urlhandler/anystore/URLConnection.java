@@ -23,17 +23,17 @@ import io.trivium.anystore.query.Value;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
 import javolution.util.FastList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class URLConnection extends java.net.URLConnection {
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     
     /**
      * Constructs a URL connection to the specified URL. A connection to
@@ -52,7 +52,7 @@ public class URLConnection extends java.net.URLConnection {
 
     synchronized public InputStream getInputStream()
             throws IOException {
-        log.debug("looking for url {}",url.toString());
+        log.log(Level.FINE,"looking for url {}", url.toString());
         //query anystore
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));

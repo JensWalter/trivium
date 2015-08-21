@@ -17,12 +17,12 @@
 package io.trivium.extension.type;
 
 import io.trivium.anystore.ObjectRef;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Logger;
 
 public interface Typed {
     default Logger getLogger() {
-        return LogManager.getLogger(getClass());
+        return Logger.getLogger(getClass().getName());
     }
 
     default ObjectRef getTypeId(){

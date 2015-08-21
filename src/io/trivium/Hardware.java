@@ -19,8 +19,6 @@ package io.trivium;
 import io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e.WeightedAverage;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.management.MBeanServerConnection;
 import java.io.BufferedReader;
@@ -29,6 +27,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Hardware {
 
@@ -86,8 +86,8 @@ public class Hardware {
             isr.close();
             return result.toString().trim();
         } catch (Exception e) {
-            Logger log = LogManager.getLogger(Hardware.class);
-            log.error("error exists with the current command", e);
+            Logger log = Logger.getLogger(Hardware.class.getName());
+            log.log(Level.SEVERE,"error exists with the current command", e);
         }
         return "";
     }
@@ -103,8 +103,8 @@ public class Hardware {
             if (i > 0)
                 memSize = i;
         } catch (Exception e) {
-            Logger log = LogManager.getLogger(Hardware.class);
-            log.error(e);
+            Logger log = Logger.getLogger(Hardware.class.getName());
+            log.log(Level.SEVERE, "error discovering the mac address", e);
         }
     }
 
@@ -114,7 +114,7 @@ public class Hardware {
 
         // get memory size
         String size = runInOS(new String[] { "/bin/sh", "-c", "/usr/bin/awk '/MemTotal:/ { print $2 }' /proc/meminfo" });
-        Logger log = LogManager.getLogger(Hardware.class);
+        Logger log = Logger.getLogger(Hardware.class.getName());
         
         try {
             try {
@@ -122,7 +122,7 @@ public class Hardware {
                 if (i > 0)
                     memSize = i * 1024L;
             } catch (Exception e) {
-                log.error("cannot read memory size", e);
+                log.log(Level.SEVERE, "cannot read memory size", e);
             }
             String basePath = Central.getProperty("basePath");
             // checking filesystem
@@ -130,13 +130,13 @@ public class Hardware {
             fsType = runInOS(new String[] { "/bin/sh", "-c", cmd });
 
             Central.setProperty("fsType", fsType);
-            log.info("system is running on linux.");
-            log.info("cpu count is {}", cpuCount);
-            log.info("memory size is {}", memSize);
-            log.info("anystore path is {}", basePath);
-            log.info("anystore filesystem type is {}", fsType);
+            log.log(Level.INFO, "system is running on linux.");
+            log.log(Level.INFO, "cpu count is {}", cpuCount);
+            log.log(Level.INFO, "memory size is {}", memSize);
+            log.log(Level.INFO, "anystore path is {}", basePath);
+            log.log(Level.INFO, "anystore filesystem type is {}", fsType);
         } catch (Exception e) {
-            log.error("os discovery failed", e);
+            log.log(Level.SEVERE, "os discovery failed", e);
         }
     }
 }

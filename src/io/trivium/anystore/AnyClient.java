@@ -26,17 +26,17 @@ import io.trivium.profile.Profiler;
 import javolution.util.FastList;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AnyClient {
 
 	public static AnyClient INSTANCE = new AnyClient();
 	private ExcerptAppender pipeIn;
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
 
 	public AnyClient() {
 		String locPipeIn = Central.getProperty("basePath") + "queues"
@@ -47,7 +47,7 @@ public class AnyClient {
             chronicle = new IndexedChronicle(locPipeIn);
 			pipeIn = chronicle.createAppender();
 		} catch (IOException e) {
-			log.error(e);
+			log.log(Level.SEVERE,"failed to initialize internal queue reader",e);
 		}
         //init profiler
         Profiler.INSTANCE.initTicker(new Ticker(DataPoints.ANYSTORE_QUEUE_IN));

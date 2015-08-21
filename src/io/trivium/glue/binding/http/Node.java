@@ -17,7 +17,6 @@
 package io.trivium.glue.binding.http;
 
 import io.trivium.Central;
-import io.trivium.Central;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.impl.nio.DefaultHttpServerIODispatch;
 import org.apache.http.impl.nio.DefaultNHttpServerConnection;
@@ -28,16 +27,21 @@ import org.apache.http.nio.NHttpConnectionFactory;
 import org.apache.http.nio.protocol.UriHttpAsyncRequestHandlerMapper;
 import org.apache.http.nio.reactor.IOEventDispatch;
 import org.apache.http.nio.reactor.ListeningIOReactor;
-import org.apache.http.protocol.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.http.protocol.HttpProcessor;
+import org.apache.http.protocol.HttpProcessorBuilder;
+import org.apache.http.protocol.ResponseConnControl;
+import org.apache.http.protocol.ResponseContent;
+import org.apache.http.protocol.ResponseDate;
+import org.apache.http.protocol.ResponseServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Node {
 	private int port;
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
 	
 	public Node(){
 		port = Integer.parseInt(Central.getProperty("httpPort"));
@@ -83,14 +87,14 @@ public class Node {
 		            try {
 						ioReactor.execute(ioEventDispatch);
 					} catch (IOException e) {
-						log.error("failed to start http server on port "+port,e);
+						log.log(Level.SEVERE,"failed to start http server on port "+port,e);
                         System.exit(0);
 					}
 			}).start();
         } catch (Exception e) {
-        	log.error("failed to start http server on port "+port,e);
+        	log.log(Level.SEVERE,"failed to start http server on port "+port,e);
             System.exit(0);
         }
-        log.info("server listening on port {}",port);
+        log.log(Level.INFO,"server listening on port {}",port);
     }
 }

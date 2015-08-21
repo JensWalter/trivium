@@ -22,6 +22,7 @@ import io.trivium.glue.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.lang.reflect.*;
+import java.util.logging.Level;
 
 public interface TypeFactory<T> extends Typed{
     String getName();
@@ -62,11 +63,11 @@ public interface TypeFactory<T> extends Typed{
                         field.set(t, el.getFirstChild(name).getValue());
                     }
                 } catch (Exception ex) {
-                    getLogger().error("error while building typed object", ex);
+                    getLogger().log(Level.SEVERE,"error while building typed object", ex);
                 }
             }
         } catch (Exception ex) {
-            getLogger().error("error while constructing typed object", ex);
+            getLogger().log(Level.SEVERE,"error while constructing typed object", ex);
         }
         return t;
     }
@@ -95,7 +96,7 @@ public interface TypeFactory<T> extends Typed{
                     root.addChild(new Element(name,field.get(instance).toString()));
                 }
             } catch (Exception ex) {
-                getLogger().error("error while building typed object", ex);
+                getLogger().log(Level.SEVERE,"error while building typed object", ex);
             }
         }
         tvm.setData(root);

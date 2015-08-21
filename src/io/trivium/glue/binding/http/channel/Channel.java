@@ -19,8 +19,9 @@ package io.trivium.glue.binding.http.channel;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.anystore.ObjectRef;
 import javolution.util.FastMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Channel {
 
@@ -42,8 +43,8 @@ public abstract class Channel {
 				c = (Channel) t.getDeclaredConstructor(ObjectRef.class).newInstance(id);
 				all.put(id, c);
 			} catch (Exception e) {
-                Logger log = LogManager.getLogger(Channel.class);
-				log.error(e);
+                Logger log = Logger.getLogger(Channel.class.getName());
+				log.log(Level.SEVERE,"error while retrieving chanel definition",e);
 			}
 		}
 		return c;

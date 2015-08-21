@@ -19,6 +19,8 @@ package io.trivium.hfm;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetSocketAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import io.trivium.Central;
 import io.trivium.glue.binding.http.HttpConnectionHandler;
@@ -43,11 +45,9 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Node {
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
 	private int port = 8734;
 	
 	public Node(){
@@ -79,11 +79,9 @@ public class Node {
         	ListeningIOReactor ioReactor = new DefaultListeningIOReactor(config);
             ioReactor.listen(new InetSocketAddress(port));
             ioReactor.execute(ioEventDispatch);
-        } catch (InterruptedIOException ex) {
-            log.error("error while starting http server",ex);
-        } catch (IOException e) {
-        	log.error("error while starting http server",e);
+        } catch (IOException ex) {
+            log.log(Level.SEVERE,"error while starting http server", ex);
         }
-        log.info("shutting down http node on port {}",port);
+        log.log(Level.INFO,"shutting down http node on port {}",port);
     }
 }

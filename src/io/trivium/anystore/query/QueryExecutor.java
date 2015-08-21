@@ -21,15 +21,15 @@ import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.glue.TriviumObject;
 import javolution.util.FastList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class QueryExecutor implements Supplier<TriviumObject> {
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     
     ObjectRef id;
     Query query;
@@ -106,7 +106,7 @@ public class QueryExecutor implements Supplier<TriviumObject> {
                                 try {
                                     double d_value = Double.parseDouble(value);
                                 }catch(NumberFormatException nfe){
-                                    log.debug("looking for number, but value is not convertible",nfe);
+                                    log.log(Level.FINE,"looking for number, but value is not convertible", nfe);
                                 }
                             }
                         }
@@ -118,7 +118,7 @@ public class QueryExecutor implements Supplier<TriviumObject> {
                     return get();
                 }
             } catch (Exception ex) {
-                log.error("ignoring error while loading object", ex);
+                log.log(Level.SEVERE,"ignoring error while loading object", ex);
             }
         }
         return null;

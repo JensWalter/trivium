@@ -26,10 +26,10 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +37,7 @@ public class ChannelRequestHandler implements
 		HttpAsyncRequestHandler<HttpRequest> {
 	private final static Pattern uuidpattern = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     
 	@Override
 	public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) {
@@ -82,7 +82,7 @@ public class ChannelRequestHandler implements
 				return;
 			}
 		} catch (Exception ex) {
-			log.error("error processing request",ex);
+			log.log(Level.SEVERE,"error processing request", ex);
 			s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.toString());
 			return;
 		}
@@ -93,7 +93,7 @@ public class ChannelRequestHandler implements
             Channel channel = Channel.getChannel(channelId);
             channel.process(session, sourceId);
         }catch(Exception ex){
-            log.error("error processing request",ex);
+            log.log(Level.SEVERE,"error processing request",ex);
             return false;
         }
         return true;

@@ -20,12 +20,12 @@ import io.trivium.NVList;
 import io.trivium.glue.om.Json;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpUtils {
     public static String getInputAsString(HttpRequest request){
@@ -45,8 +45,8 @@ public class HttpUtils {
                 bos.close();
                 result = bos.toString("UTF-8");
             } catch (IOException e) {
-                Logger log = LogManager.getLogger(HttpUtils.class);
-                log.error("error while decoding http input stream", e);
+                Logger log = Logger.getLogger(HttpUtils.class.getName());
+                log.log(Level.SEVERE,"error while decoding http input stream", e);
             }
             return result;
         }else{

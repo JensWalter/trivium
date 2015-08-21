@@ -24,15 +24,15 @@ import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.IndexedChronicle;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AnyServer implements Runnable {
 
 	public static AnyServer INSTANCE = new AnyServer();
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
 	private MapStore store = null;
 	
 	public void init(){
@@ -54,7 +54,7 @@ public class AnyServer implements Runnable {
 		try {
 			chronicle = new IndexedChronicle(pipeIn);
 		}catch(Exception ex){
-			log.error("cannot init anystore chronicle",ex);
+			log.log(Level.SEVERE,"cannot init anystore chronicle", ex);
 		}
 		try {
 			ExcerptTailer et = chronicle.createTailer();
@@ -90,7 +90,7 @@ public class AnyServer implements Runnable {
 				}
 			}
 		} catch (Exception e1) {
-			log.error("error while writing to backend",e1);
+			log.log(Level.SEVERE,"error while writing to backend",e1);
 		} finally{
 			try {
 				chronicle.close();

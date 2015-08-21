@@ -19,18 +19,20 @@ package io.trivium.anystore;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.glue.om.Json;
-import org.apache.logging.log4j.*;
-import org.apache.logging.log4j.Logger;
-import org.iq80.leveldb.*;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.iq80.leveldb.CompressionType;
+import org.iq80.leveldb.Options;
 import org.iq80.leveldb.impl.Iq80DBFactory;
+import org.iq80.leveldb.DB;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AnyDB {
     DB map =null;
-    Logger log = LogManager.getLogger(AnyDB.class);
+    Logger log = Logger.getLogger(getClass().getName());
     public String fileName;
     public String path;
     public String id;
@@ -67,11 +69,11 @@ public class AnyDB {
                 Iq80DBFactory factory = Iq80DBFactory.factory;
                 map = factory.open(file, options);
             } catch (Exception e) {
-                log.error("cannot initialize leveldb store {}", fileName, e);
+                log.log(Level.SEVERE,"cannot initialize leveldb store "+fileName, e);
             }
             persist();
         }catch (Exception ex){
-            log.error("creating file store failed",ex);
+            log.log(Level.SEVERE,"creating file store failed",ex);
             System.exit(0);
         }
     }
@@ -87,7 +89,7 @@ public class AnyDB {
             fos.write(str.getBytes());
             fos.close();
         }catch(Exception ex){
-            log.error("creating store meta information failed",ex);
+            log.log(Level.SEVERE,"creating store meta information failed",ex);
         }
     }
 

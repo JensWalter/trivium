@@ -20,11 +20,12 @@ import org.apache.http.nio.NHttpServerConnection;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandlerMapper;
 import org.apache.http.nio.protocol.HttpAsyncService;
 import org.apache.http.protocol.HttpProcessor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpConnectionHandler extends HttpAsyncService {
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
 
 	public HttpConnectionHandler(HttpProcessor httpProcessor,
 			HttpAsyncRequestHandlerMapper handlerMapper) {
@@ -47,13 +48,14 @@ public class HttpConnectionHandler extends HttpAsyncService {
 
 	@Override
 	protected void log(Exception ex) {
-		log.debug("exception logged {}", ex);
+		log.log(Level.FINE,"exception logged", ex);
 		super.log(ex);
 	}
 
 	@Override
 	public void exception(NHttpServerConnection conn, Exception cause) {
-		log.debug("{}: exeption thrown {}", conn, cause);
+		log.log(Level.FINE,"{}: exception thrown an exception", conn);
+        log.log(Level.FINE,"", cause);
 		super.exception(conn, cause);
 	}
 }

@@ -23,11 +23,11 @@ import io.trivium.extension.type.TypeFactory;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.TriviumObject;
 import io.trivium.Registry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Logger;
 
 public abstract class Binding implements Typed {
-    protected Logger log = LogManager.getLogger(getClass());
+    protected Logger log = Logger.getLogger(getClass().getName());
     private State state = State.stopped;
 
     public abstract void start();

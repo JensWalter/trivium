@@ -36,13 +36,13 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpRequest> {
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     
     @Override
     public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
@@ -51,7 +51,7 @@ public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpReque
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
-        log.debug("registry handler");
+        log.log(Level.FINE,"registry handler");
 
             NVList params = HttpUtils.getInputAsNVList(request);
             /** list
@@ -132,7 +132,7 @@ public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpReque
                 s.ok();
             }
         }catch(Exception ex){
-            log.error("error while processing registry request",ex);
+            log.log(Level.SEVERE,"error while processing registry request",ex);
             s.ok();
         }
     }

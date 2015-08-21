@@ -26,16 +26,16 @@ import io.trivium.extension.task.TaskFactory;
 import io.trivium.test.TestCase;
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Registry {
     public static Registry INSTANCE = new Registry();
 
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     
     public FastMap<ObjectRef, TaskFactory> taskFactory = null;
     public FastMap<ObjectRef, FastList<TaskFactory>> taskSubscription = null;
@@ -77,7 +77,7 @@ public class Registry {
         }
         //printing registered Types
         for(TypeFactory type : typeFactory.values()){
-            log.debug("registered type factory for '{}'", type.getName());
+            log.log(Level.FINE,"registered type factory for '{}'", type.getName());
         }
 
         //activity
@@ -151,8 +151,8 @@ public class Registry {
                                 AnyClient.INSTANCE.storeObject(o);
                             }
                         }catch(Exception ex){
-                            log.error("error while running task '{}'",factory.getName());
-                            log.error("got exception",ex);
+                            log.log(Level.SEVERE, "error while running task '{}'", factory.getName());
+                            log.log(Level.SEVERE, "got exception", ex);
                         }
                     }
                 }

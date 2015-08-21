@@ -17,11 +17,11 @@
 package io.trivium.extension.task;
 
 import io.trivium.extension.type.Typed;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Logger;
 
 public abstract class Task implements Typed {
-    protected Logger log = LogManager.getLogger(getClass());
+    protected Logger log = Logger.getLogger(getClass().getName());
 
     public abstract boolean eval() throws Exception;
 

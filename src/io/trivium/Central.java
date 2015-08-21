@@ -24,17 +24,13 @@ import io.trivium.glue.binding.http.Node;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import org.apache.commons.cli.*;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import java.io.File;
 import java.util.Date;
 import java.util.Timer;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Central {
 
@@ -62,11 +58,8 @@ public class Central {
     }
 
     public static void setLogLevel(String level) {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration conf = ctx.getConfiguration();
-        LoggerConfig lconf = conf.getLoggerConfig("core");
-        lconf.setLevel(Level.getLevel(level.toUpperCase()));
-        ctx.updateLoggers();
+        Logger log = Logger.getLogger("");
+        log.setLevel(Level.parse(level.toUpperCase()));
     }
 
     public static String getPeer() {

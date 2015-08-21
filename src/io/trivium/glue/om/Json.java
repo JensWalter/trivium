@@ -19,17 +19,15 @@ package io.trivium.glue.om;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import javolution.util.FastList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Json {
 
@@ -137,8 +135,8 @@ public class Json {
 			}
 			reader.close();
 		} catch (Exception ex) {
-            Logger log = LogManager.getLogger(Json.class);
-			log.error("error in json serializer", ex);
+            Logger log = Logger.getLogger(Json.class.getName());
+			log.log(Level.SEVERE,"error in json serializer", ex);
 		}
 		return root;
 	}
@@ -150,8 +148,8 @@ public class Json {
             ElementToWriter(jw, el);
 			jw.close();
 		} catch (Exception ex) {
-            Logger log = LogManager.getLogger(Json.class);
-			log.error("error in json serializer",ex);
+            Logger log = Logger.getLogger(Json.class.getName());
+			log.log(Level.SEVERE, "error in json serializer", ex);
 		}
 		return sw.toString();
 	}
@@ -277,8 +275,8 @@ public class Json {
 			writer.close();
 			rslt = sw.toString();
 		} catch (Exception e) {
-            Logger log = LogManager.getLogger(Json.class);
-			log.error("exception thrown in json stringify",e);
+            Logger log = Logger.getLogger(Json.class.getName());
+			log.log(Level.SEVERE, "exception thrown in json stringify", e);
 		}
 		return rslt;
 	}
@@ -331,8 +329,8 @@ public class Json {
 			}
 			reader.close();
 		} catch (Exception e) {
-            Logger log = LogManager.getLogger(Json.class);
-			log.error("exception thrown in json parse",e);
+            Logger log = Logger.getLogger(Json.class.getName());
+			log.log(Level.SEVERE,"exception thrown in json parse",e);
 		}
 		return rslt;
 	}

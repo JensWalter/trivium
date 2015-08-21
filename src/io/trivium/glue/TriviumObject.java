@@ -27,14 +27,14 @@ import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Trivium;
 import io.trivium.glue.om.Json;
 import io.trivium.Registry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.iq80.snappy.Snappy;
 
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TriviumObject implements Typed {
 
@@ -44,7 +44,7 @@ public class TriviumObject implements Typed {
      * 1 snappy compressed json
      */
     public static byte typeByte = 1;
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
 	ObjectRef id;
     ObjectRef typeId;
 	NVList metadata;
@@ -212,7 +212,7 @@ public class TriviumObject implements Typed {
             T obj = tf.getInstance(this);
             return obj;
         }catch(Exception ex){
-            log.error("error constructing object",ex);
+            log.log(Level.SEVERE,"error constructing object", ex);
             return null;
         }
     }
@@ -299,7 +299,7 @@ public class TriviumObject implements Typed {
             TypeFactory<Type> tf = Registry.INSTANCE.typeFactory.get(typeId);
             return tf.getTriviumObject(t);
         }catch(Exception ex){
-            LogManager.getLogger(TriviumObject.class).error("error constructing object", ex);
+            Logger.getLogger(TriviumObject.class.getName()).log(Level.SEVERE,"error constructing object", ex);
             return null;
         }
     }

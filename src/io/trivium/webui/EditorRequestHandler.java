@@ -25,13 +25,13 @@ import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
 import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
 import org.apache.http.protocol.HttpContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EditorRequestHandler implements HttpAsyncRequestHandler<HttpRequest> {
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
     
     @Override
     public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
@@ -40,10 +40,10 @@ public class EditorRequestHandler implements HttpAsyncRequestHandler<HttpRequest
 
     @Override
     public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
-        log.debug("editor request handler");
+        log.log(Level.FINE,"editor request handler");
 
         Session s = new Session(request, httpexchange, context, ObjectRef.getInstance());
-        log.info(context.getAttribute("id"));
+        log.log(Level.INFO,context.getAttribute("id").toString());
 
         s.ok();
     }

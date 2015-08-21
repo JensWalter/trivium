@@ -10,7 +10,6 @@
     <orderEntry type="module" module-name="lib-apache-http" exported="" />
     <orderEntry type="module" module-name="lib-apache-commons" exported="" />
     <orderEntry type="module" module-name="lib-leveldb" exported="" />
-    <orderEntry type="module" module-name="lib-log4j" exported="" />
     <orderEntry type="module" module-name="lib-javolution" exported="" />
     <orderEntry type="module" module-name="lib-chronicle" exported="" />
     <orderEntry type="module" module-name="bnd-timer" />

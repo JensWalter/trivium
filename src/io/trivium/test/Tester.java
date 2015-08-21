@@ -16,30 +16,27 @@
 
 package io.trivium.test;
 
-import io.trivium.anystore.ObjectRef;
-import io.trivium.extension.type.TypeFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Tester {
-    public static Logger logger = LogManager.getLogger(Tester.class);
+    public static Logger logger = Logger.getLogger(Tester.class.getName());
 
     public static void success(String... args){
         if(args!=null && args.length>1){
-            logger.info("success "+args[0],args);
+            logger.log(Level.INFO,"success " + args[0], args);
         }else {
-            logger.info("success", args);
+            logger.log(Level.INFO,"success", args);
         }
     }
 
     public static void error(String... args){
         if(args!=null && args.length>1){
-            logger.info("error "+args[0],args);
+            logger.log(Level.INFO,"error "+args[0],args);
         }else {
-            logger.info("error", args);
+            logger.log(Level.INFO,"error", args);
         }
     }
     
@@ -50,12 +47,12 @@ public class Tester {
         Iterator<TestCase> iter = typeLoader.iterator();
         while(iter.hasNext()){
             TestCase tc = iter.next();
-            logger.info("test {}: {} {}",tc.getTypeId().toString(),tc.getClassName(),tc.getMethodName());
+            logger.log(Level.INFO,"test {}: {} {}",new Object[]{tc.getTypeId().toString(),tc.getClassName(),tc.getMethodName()});
             try {
                 tc.run();
-                logger.info("test {}: succeeded", tc.getTypeId().toString());
+                logger.log(Level.INFO,"test {}: succeeded", tc.getTypeId().toString());
             }catch(Exception ex){
-                logger.error("test {}: failed with exception {}", ex);
+                logger.log(Level.SEVERE,"test {}: failed with exception {}", ex);
             }
         }
     }

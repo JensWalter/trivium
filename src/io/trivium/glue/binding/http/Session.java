@@ -25,8 +25,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
 import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.protocol.HttpContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Session {
 
@@ -34,7 +35,7 @@ public class Session {
 	HttpAsyncExchange httpexchange;
 	HttpContext context;
 	ObjectRef id;
-    Logger log = LogManager.getLogger(getClass());
+    Logger log = Logger.getLogger(getClass().getName());
 
 	public Session(HttpRequest request, HttpAsyncExchange httpexchange,
 			HttpContext context, ObjectRef id) {
@@ -67,7 +68,7 @@ public class Session {
 
 			httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
 		} catch (Exception ex) {
-			log.error(ex);
+			log.log(Level.SEVERE,"error while sending 'error' response",ex);
 		}
 	}
 
@@ -82,7 +83,7 @@ public class Session {
 
 			httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
 		} catch (Exception ex) {
-			log.error(ex);
+            log.log(Level.SEVERE, "error while sending 'ok' response", ex);
 		}
 	}
 
@@ -94,7 +95,7 @@ public class Session {
             response.setEntity(entity);
             httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
         } catch (Exception ex) {
-            log.error(ex);
+            log.log(Level.SEVERE, "error while sending 'ok' response", ex);
         }
     }
 }
