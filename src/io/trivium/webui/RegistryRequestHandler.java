@@ -16,6 +16,8 @@
 
 package io.trivium.webui;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.extension.binding.Binding;
@@ -29,31 +31,19 @@ import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.ContentTypes;
 import javolution.util.FastMap;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpRequest> {
+public class RegistryRequestHandler implements HttpHandler {
     Logger log = Logger.getLogger(getClass().getName());
-    
-    @Override
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
-        return new BasicAsyncRequestConsumer();
-    }
 
     @Override
-    public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
+    public void handle(HttpExchange httpexchange) {
         log.log(Level.FINE,"registry handler");
 
-            NVList params = HttpUtils.getInputAsNVList(request);
+            NVList params = HttpUtils.getInputAsNVList(httpexchange);
             /** list
              {
              "command" : "list"
@@ -65,7 +55,7 @@ public class RegistryRequestHandler implements HttpAsyncRequestHandler<HttpReque
              "command" : "start"|"stop"|"status"
              }
              */
-            Session s = new Session(request, httpexchange, context, ObjectRef.getInstance());
+            Session s = new Session(httpexchange, ObjectRef.getInstance());
         try {
             String cmd = params.findValue("command");
             if (cmd.equals("list")) {

@@ -19,7 +19,6 @@ package io.trivium.anystore;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.glue.om.Json;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.iq80.leveldb.CompressionType;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.impl.Iq80DBFactory;
@@ -27,6 +26,8 @@ import org.iq80.leveldb.DB;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,7 +90,7 @@ public class AnyDB {
             fos.write(str.getBytes());
             fos.close();
         }catch(Exception ex){
-            log.log(Level.SEVERE,"creating store meta information failed",ex);
+            log.log(Level.SEVERE, "creating store meta information failed", ex);
         }
     }
 
@@ -98,7 +99,9 @@ public class AnyDB {
         this.path=path;
         boolean exists = true;
         while(exists){
-            id = RandomStringUtils.randomAlphanumeric(4);
+            //generate random string
+            String randomStr = new BigInteger(130, new SecureRandom()).toString(32);
+            id = randomStr.substring(0,3);
             idAsBytes = id.getBytes();
             switch (type) {
                 case "data":

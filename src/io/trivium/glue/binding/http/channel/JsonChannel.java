@@ -16,6 +16,8 @@
 
 package io.trivium.glue.binding.http.channel;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
 import io.trivium.glue.TriviumObject;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
@@ -23,58 +25,50 @@ import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
-import org.apache.http.Header;
-import org.apache.http.HttpEntityEnclosingRequest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.util.Date;
 
 public class JsonChannel extends Channel {
 
-	public JsonChannel(ObjectRef id) {
-		super(id);
-	}
+    public JsonChannel(ObjectRef id) {
+        super(id);
+    }
 
-	@Override
-	public void process(Session session, ObjectRef sourceId) throws Exception {
-		// read payload
-		if (session.getRequest() instanceof HttpEntityEnclosingRequest) {
-			HttpEntityEnclosingRequest r = (HttpEntityEnclosingRequest) session.getRequest();
+    @Override
+    public void process(Session session, ObjectRef sourceId) {
+        // read payload
+        HttpExchange httpexchange = session.getHttpExchange();
+        String requestData = HttpUtils.getInputAsString(httpexchange);
 
-            String requestData = HttpUtils.getInputAsString(r);
+        //construct persistence object
+        TriviumObject po = new TriviumObject();
 
-            //construct persistence object
-			TriviumObject po = new TriviumObject();
+        po.addMetadata("contentType", "application/trivium.io");
 
-			po.addMetadata("contentType", "application/trivium.io");
+        // if header starts with trivium - copy value
+        Headers headers = session.getHttpExchange().getRequestHeaders();
+        for (String headerName : headers.keySet()) {
+            if (headerName.startsWith("trivium-")) {
+                po.addMetadata(headerName.substring(8), headers.getFirst(headerName));
+            }
+        }
 
-			// if header starts with trivium - copy value
-			Header[] headers = session.getRequest().getAllHeaders();
-			for (Header h : headers) {
-				if (h.getName().startsWith("trivium-")) {
-					po.addMetadata(h.getName().substring(8), h
-							.getValue());
-				}
-			}
+        //setting channel data
+        //ttl -> stale after retention
+        po.addMetadata("stale", String.valueOf(new Date().getTime() + config.retention));
+        //type = object
+        po.addMetadata("type", "object");
 
-			//setting channel data
-			//ttl -> stale after retention
-			po.addMetadata("stale", String.valueOf(new Date().getTime() + config.retention));
-			//type = object
-			po.addMetadata("type","object");
-			
-			// parse the payload
-			Element el = Json.jsonToElement(requestData);
-			
+        // parse the payload
+        Element el = Json.jsonToElement(requestData);
 
-			po.setData(el);
-			po.setTypeId(config.getTypeId());
 
-			AnyClient.INSTANCE.storeObject(po);
-			
-			session.ok();
-		}
-	}
+        po.setData(el);
+        po.setTypeId(config.getTypeId());
+
+        AnyClient.INSTANCE.storeObject(po);
+
+        session.ok();
+    }
 
 }

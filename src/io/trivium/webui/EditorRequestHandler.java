@@ -16,34 +16,22 @@
 
 package io.trivium.webui;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.anystore.ObjectRef;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class EditorRequestHandler implements HttpAsyncRequestHandler<HttpRequest> {
+public class EditorRequestHandler implements HttpHandler {
     Logger log = Logger.getLogger(getClass().getName());
-    
-    @Override
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
-        return new BasicAsyncRequestConsumer();
-    }
 
     @Override
-    public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
+    public void handle(HttpExchange httpexchange) {
         log.log(Level.FINE,"editor request handler");
 
-        Session s = new Session(request, httpexchange, context, ObjectRef.getInstance());
-        log.log(Level.INFO,context.getAttribute("id").toString());
+        Session s = new Session(httpexchange, ObjectRef.getInstance());
 
         s.ok();
     }

@@ -16,57 +16,34 @@
 
 package io.trivium.glue.binding.http;
 
+import com.sun.net.httpserver.HttpExchange;
 import io.trivium.anystore.ObjectRef;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.nio.protocol.BasicAsyncResponseProducer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.protocol.HttpContext;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Session {
 
-	HttpRequest request;
-	HttpAsyncExchange httpexchange;
-	HttpContext context;
+	HttpExchange httpexchange;
 	ObjectRef id;
     Logger log = Logger.getLogger(getClass().getName());
 
-	public Session(HttpRequest request, HttpAsyncExchange httpexchange,
-			HttpContext context, ObjectRef id) {
-		this.request = request;
+	public Session(HttpExchange httpexchange, ObjectRef id) {
 		this.httpexchange = httpexchange;
-		this.context = context;
 		this.id = id;
 	}
 
-	public HttpRequest getRequest() {
-		return request;
-	}
-
-	public HttpAsyncExchange getHttpexchange() {
+	public HttpExchange getHttpExchange() {
 		return httpexchange;
-	}
-
-	public HttpContext getContext() {
-		return context;
 	}
 
 	public void error(int code, String text) {
 		try {
-			StringEntity entity = new StringEntity(text + "\n",
-					ContentType.create("text/plain", "UTF-8"));
-
-			HttpResponse response = httpexchange.getResponse();
-			response.setEntity(entity);
-			response.setStatusCode(code);
-
-			httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
+            httpexchange.getResponseHeaders().set("Content-Type","text/plain; charset=UTF-8");
+            httpexchange.sendResponseHeaders(code, text.length());
+            httpexchange.getResponseBody().write(text.getBytes());
+            httpexchange.getResponseBody().close();
+            httpexchange.close();
 		} catch (Exception ex) {
 			log.log(Level.SEVERE,"error while sending 'error' response",ex);
 		}
@@ -74,14 +51,11 @@ public class Session {
 
 	public void ok() {
 		try {
-			StringEntity entity = new StringEntity("true\n",
-					ContentType.create("text/plain", "UTF-8"));
-
-			HttpResponse response = httpexchange.getResponse();
-			response.setEntity(entity);
-			response.setStatusCode(HttpStatus.SC_OK);
-
-			httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
+            httpexchange.getResponseHeaders().set("Content-Type","text/plain; charset=UTF-8");
+            httpexchange.sendResponseHeaders(200, 4);
+            httpexchange.getResponseBody().write("true".getBytes());
+            httpexchange.getResponseBody().close();
+            httpexchange.close();
 		} catch (Exception ex) {
             log.log(Level.SEVERE, "error while sending 'ok' response", ex);
 		}
@@ -89,11 +63,12 @@ public class Session {
 
     public void ok(String contentType,String resp) {
         try {
-            StringEntity entity = new StringEntity(resp,ContentType.create(contentType,"UTF-8"));
-            HttpResponse response = httpexchange.getResponse();
-            response.setStatusCode(HttpStatus.SC_OK);
-            response.setEntity(entity);
-            httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
+            httpexchange.getResponseHeaders().set("Content-Type",contentType+"; charset=UTF-8");
+            httpexchange.sendResponseHeaders(200, resp.length());
+            httpexchange.getResponseBody().write(resp.getBytes());
+            httpexchange.getResponseBody().close();
+            httpexchange.close();
+
         } catch (Exception ex) {
             log.log(Level.SEVERE, "error while sending 'ok' response", ex);
         }

@@ -16,6 +16,8 @@
 
 package io.trivium.webui;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.NVList;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
@@ -25,17 +27,9 @@ import io.trivium.anystore.statics.TypeIds;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.logging.Level;
@@ -43,18 +37,13 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest> {
+public class UploadRequestHandler implements HttpHandler {
     Logger log = Logger.getLogger(getClass().getName());
-    
-    @Override
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
-        return new BasicAsyncRequestConsumer();
-    }
 
     @Override
-    public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
+    public void handle(HttpExchange httpexchange) {
         log.log(Level.FINE,"upload request handler");
-        NVList upload = HttpUtils.getInputAsNVList(request);
+        NVList upload = HttpUtils.getInputAsNVList(httpexchange);
         /**
          {
          "name":"vie.xml",
@@ -64,7 +53,7 @@ public class UploadRequestHandler implements HttpAsyncRequestHandler<HttpRequest
          "data":"PGRvbWFpbiB...."
          }
          */
-        Session s = new Session(request, httpexchange, context, ObjectRef.getInstance());
+        Session s = new Session(httpexchange, ObjectRef.getInstance());
         try {
             String fileName = upload.findValue("name");
             String type = upload.findValue("type");

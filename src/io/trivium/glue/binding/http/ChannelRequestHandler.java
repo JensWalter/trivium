@@ -16,16 +16,10 @@
 
 package io.trivium.glue.binding.http;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.glue.binding.http.channel.Channel;
 import io.trivium.anystore.ObjectRef;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpStatus;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -33,20 +27,19 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChannelRequestHandler implements
-		HttpAsyncRequestHandler<HttpRequest> {
+public class ChannelRequestHandler implements HttpHandler {
 	private final static Pattern uuidpattern = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
     Logger log = Logger.getLogger(getClass().getName());
     
 	@Override
-	public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) {
-		boolean processed = false;
+	public void handle(HttpExchange httpexchange) {
+		boolean processed;
         ObjectRef sourceId = ObjectRef.getInstance();
-		Session s = new Session(request, httpexchange, context, sourceId);
+		Session s = new Session(httpexchange, sourceId);
 		
 		try {
-			String uri = request.getRequestLine().getUri();
+			String uri = httpexchange.getRequestURI().getPath();
 			String[] parts = uri.split("/");
 
 			// get channelid
@@ -55,7 +48,7 @@ public class ChannelRequestHandler implements
 			if (matcher.find()) {
 				channelId = ObjectRef.getInstance(matcher.group());
 			} else {
-				s.error(HttpStatus.SC_BAD_REQUEST,
+				s.error(/*SC_BAD_REQUEST*/400,
 						"channelid unknown\nplease use the following pattern\nhttp://{server}:{port}/channel/{in|out}/{channelid}\n");
 				return;
 			}
@@ -66,24 +59,22 @@ public class ChannelRequestHandler implements
 				processed = in(s, sourceId, channelId);
 			}else if (method.equals("out")) {
 				//TODO do query or whatever this is
-				processed = false;
-				s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR,
-						"not implemented");
+				s.error(/*INTERNAL_SERVER_ERROR*/500, "not implemented");
 				return;
 			} else {
 				// unknown method
-				s.error(HttpStatus.SC_BAD_REQUEST,
+				s.error(/*BAD_REQUEST*/400,
 						"method unknown\nplease use the following pattern\nhttp://{server}:{port}/channel/{in|out}/{channelid}\n");
 				return;
 			}
 
 			if (!processed) {
-				s.error(HttpStatus.SC_BAD_REQUEST, "request could not be processed");
+				s.error(/*BAD_REQUEST*/400, "request could not be processed");
 				return;
 			}
 		} catch (Exception ex) {
 			log.log(Level.SEVERE,"error processing request", ex);
-			s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.toString());
+			s.error(/*INTERNAL_SERVER_ERROR*/500, ex.toString());
 			return;
 		}
 	}
@@ -98,11 +89,4 @@ public class ChannelRequestHandler implements
         }
         return true;
 	}
-
-	@Override
-	public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest arg0, HttpContext arg1) throws HttpException,
-			IOException {
-		return new BasicAsyncRequestConsumer();
-	}
-
 }

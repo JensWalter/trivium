@@ -16,16 +16,10 @@
 
 package io.trivium.glue.binding.http;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.ContentTypes;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,54 +27,52 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class WebUIRequestHandler implements HttpAsyncRequestHandler<HttpRequest>{
+public class WebUIRequestHandler implements HttpHandler {
     Logger log = Logger.getLogger(getClass().getName());
 
-	@Override
-	public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
-		 HttpResponse response = httpexchange.getResponse();
-         Session s = new Session(request, httpexchange, context, ObjectRef.getInstance());
-		 //Header[] headers = request.getAllHeaders();
-		 String origURI =request.getRequestLine().getUri();
-		 String uri = origURI;
-		 if(uri.equals("/ui/"))
-			 uri= "io/trivium/webui/index.html";
-		 else
-			 uri= "io/trivium/webui"+uri.substring(3);
-		 log.log(Level.INFO,"receiving request for uri: {} => {}", new Object[]{origURI, uri});
-		 ClassLoader cl = ClassLoader.getSystemClassLoader();
-        try{
-            Class<?> clazz = cl.loadClass(uri.replace('/','.'));
+    @Override
+    public void handle(HttpExchange httpexchange) {
+        Session s = new Session(httpexchange, ObjectRef.getInstance());
+        String origURI = httpexchange.getRequestURI().getPath();
+        String uri = origURI;
+        if (uri.equals("/ui/"))
+            uri = "io/trivium/webui/index.html";
+        else
+            uri = "io/trivium/webui" + uri.substring(3);
+        log.log(Level.INFO, "receiving request for uri: {} => {}", new Object[]{origURI, uri});
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+        try {
+            Class<?> clazz = cl.loadClass(uri.replace('/', '.'));
             Class<?>[] interfaces = clazz.getInterfaces();
-            for(Class<?> iface : interfaces){
-                if (iface.getCanonicalName().equals("org.apache.http.nio.protocol.HttpAsyncRequestHandler")) {
+            for (Class<?> iface : interfaces) {
+                if (iface.getCanonicalName().equals("com.sun.net.httpserver.HttpHandler")) {
                     //is request handler
-                    HttpAsyncRequestHandler handler = (HttpAsyncRequestHandler) clazz.newInstance();
-                    handler.handle(request, httpexchange, context);
+                    HttpHandler handler = (HttpHandler) clazz.newInstance();
+                    handler.handle(httpexchange);
                     return;
                 }
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             //ignore
         }
-         InputStream is = cl.getResourceAsStream(uri);
-         if(is!=null){
-			InputStreamReader isr = new InputStreamReader(is);
-			char[] buf = new char[1000000];
-			int num = isr.read(buf);
-            String ending = uri.substring(uri.lastIndexOf('.')+1);
-            String contentType = ContentTypes.getMimeType(ending,"text/plain");
+        //TODO implement real reader
+        InputStream is = cl.getResourceAsStream(uri);
+        if (is != null) {
+            InputStreamReader isr = new InputStreamReader(is);
+            char[] buf = new char[1000000];
+            int num = 0;
+            try {
+                num = isr.read(buf);
+            } catch (IOException e) {
+                log.log(Level.SEVERE,"error retrieving resource " + uri, e);
+            }
+            String ending = uri.substring(uri.lastIndexOf('.') + 1);
+            String contentType = ContentTypes.getMimeType(ending, "text/plain");
 
-			s.ok(contentType,new String(buf,0,num));
+            s.ok(contentType, new String(buf, 0, num));
             return;
-		 }
+        }
         //if no response was send so far
-        s.error(404,"resource not found");
-	}
-
-	@Override
-	public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest arg0, HttpContext arg1) throws HttpException, IOException {
-		return new BasicAsyncRequestConsumer();
-	}
-
+        s.error(404, "resource not found");
+    }
 }

@@ -16,42 +16,38 @@
 
 package io.trivium.hfm;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.NVList;
 import io.trivium.NVPair;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
+import io.trivium.glue.binding.http.Session;
 import javolution.util.FastList;
-import org.apache.http.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.nio.protocol.*;
-import org.apache.http.protocol.HttpContext;
 
-import java.io.IOException;
-
-public class RequestHandler implements HttpAsyncRequestHandler<HttpRequest>{
+public class RequestHandler implements HttpHandler{
 
 	@Override
-	public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) throws HttpException, IOException {
-		HttpResponse response = httpexchange.getResponse();
+	public void handle(HttpExchange httpexchange) {
 
 		//find hfm related headers
-		Header[] headers = request.getAllHeaders();
+		Headers headers = httpexchange.getRequestHeaders();
 		String contentType = "";
 		NVList list = new NVList();
-		for(Header header : headers){
-			String name = header.getName();
-			if(name.startsWith("hfm:")){
-				list.add(new NVPair(name.substring(3), header.getValue()));
+		for(String headerName : headers.keySet()){
+			if(headerName.startsWith("hfm:")){
+				list.add(new NVPair(headerName.substring(3), headers.getFirst(headerName)));
 			}
-			if(name.equalsIgnoreCase("Content-Type")){
-				contentType=header.getValue();
+			if(headerName.equalsIgnoreCase("Content-Type")){
+				contentType=headers.getFirst(headerName);
 			}
 		}
 		//switch request method
-		String method = request.getRequestLine().getMethod();
+		String method = httpexchange.getRequestMethod();
 		if(method.equals("GET")){
 			//read from store
             Query q = new Query();
@@ -66,24 +62,9 @@ public class RequestHandler implements HttpAsyncRequestHandler<HttpRequest>{
 		}
 		if(method.equals("POST") || method.equals("PUT")){
 			//write to store
-			String uri =request.getRequestLine().getUri();
+			String uri =httpexchange.getRequestURI().getPath();
 		}
 		
-		 
-			
-			StringEntity entity = new StringEntity(new String("TEST"),ContentType.create(contentType,"UTF-8"));
-//                   ContentType.create("text/html", "UTF-8"));
-           response.setEntity(entity);
-			response.setStatusCode(HttpStatus.SC_OK);
-			
-		 
-		 //handleInternal(request, response, context);
-        httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
+		 new Session(httpexchange, ObjectRef.getInstance()).ok();
 	}
-
-	@Override
-	public HttpAsyncRequestConsumer<HttpRequest> processRequest(HttpRequest arg0, HttpContext arg1) throws HttpException, IOException {
-		return new BasicAsyncRequestConsumer();
-	}
-
 }

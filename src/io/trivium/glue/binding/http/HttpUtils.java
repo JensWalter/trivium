@@ -16,46 +16,57 @@
 
 package io.trivium.glue.binding.http;
 
+import com.sun.net.httpserver.HttpExchange;
 import io.trivium.NVList;
 import io.trivium.glue.om.Json;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HttpUtils {
-    public static String getInputAsString(HttpRequest request){
-        if (request instanceof HttpEntityEnclosingRequest) {
-            HttpEntityEnclosingRequest r = (HttpEntityEnclosingRequest) request;
-            DataInputStream dis = null;
-            String result = "";
-            try {
-                dis = new DataInputStream(r.getEntity().getContent());
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                byte[] buf = new byte[100000];
-                while (dis.available() > 0) {
-                    int i = dis.read(buf);
-                    bos.write(buf, 0, i);
-                }
-                dis.close();
-                bos.close();
-                result = bos.toString("UTF-8");
-            } catch (IOException e) {
-                Logger log = Logger.getLogger(HttpUtils.class.getName());
-                log.log(Level.SEVERE,"error while decoding http input stream", e);
+    public static String getInputAsString(HttpExchange exchange) {
+        InputStream requestStream = exchange.getRequestBody();
+        String result = "";
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buf = new byte[100000];
+            while (requestStream.available() > 0) {
+                int i = requestStream.read(buf);
+                bos.write(buf, 0, i);
             }
-            return result;
-        }else{
-            return "";
+            requestStream.close();
+            bos.close();
+            result = bos.toString("UTF-8");
+        } catch (IOException e) {
+            Logger log = Logger.getLogger(HttpUtils.class.getName());
+            log.log(Level.SEVERE, "error while decoding http input stream", e);
         }
+        return result;
     }
 
-    public static NVList getInputAsNVList(HttpRequest request){
-        String str = getInputAsString(request);
+    public static byte[] getInputAsBinary(HttpExchange exchange) {
+        InputStream requestStream = exchange.getRequestBody();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            byte[] buf = new byte[100000];
+            while (requestStream.available() > 0) {
+                int i = requestStream.read(buf);
+                bos.write(buf, 0, i);
+            }
+            requestStream.close();
+            bos.close();
+        } catch (IOException e) {
+            Logger log = Logger.getLogger(HttpUtils.class.getName());
+            log.log(Level.SEVERE, "error while decoding http input stream", e);
+        }
+        return bos.toByteArray();
+    }
+
+    public static NVList getInputAsNVList(HttpExchange exchange) {
+        String str = getInputAsString(exchange);
         NVList list = Json.JsonToNVPairs(str);
         return list;
     }

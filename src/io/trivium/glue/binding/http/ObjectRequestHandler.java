@@ -17,6 +17,9 @@
 package io.trivium.glue.binding.http;
 
 import com.google.common.base.Joiner;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.glue.TriviumObject;
@@ -27,52 +30,44 @@ import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.ContentTypes;
 import javolution.util.FastList;
-import org.apache.http.*;
-import org.apache.http.nio.protocol.BasicAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncExchange;
-import org.apache.http.nio.protocol.HttpAsyncRequestConsumer;
-import org.apache.http.nio.protocol.HttpAsyncRequestHandler;
-import org.apache.http.protocol.HttpContext;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ObjectRequestHandler implements
-        HttpAsyncRequestHandler<HttpRequest> {
+public class ObjectRequestHandler implements HttpHandler {
     private final static Pattern uuidpattern = Pattern
             .compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
     Logger log = Logger.getLogger(getClass().getName());
     
     @Override
-    public void handle(HttpRequest request, HttpAsyncExchange httpexchange, HttpContext context) {
+    public void handle(HttpExchange httpexchange) {
+
         ObjectRef sourceId = ObjectRef.getInstance();
-        Session s = new Session(request, httpexchange, context, sourceId);
+        Session s = new Session(httpexchange, sourceId);
 
         try {
-            Header[] headers = request.getAllHeaders();
-            String uri = request.getRequestLine().getUri();
+            Headers headers = httpexchange.getRequestHeaders();
+           // Header[] headers = request.getAllHeaders();
+            String uri = httpexchange.getRequestURI().getPath();
 
             String[] parts = uri.split("/");
             // get method
             String method = parts[2];
             if (method.equals("upsert")) {
-                boolean processed = upsert(request, sourceId, headers, uri);
+                boolean processed = upsert(httpexchange, sourceId, headers, uri);
                 if (!processed) {
-                    s.error(HttpStatus.SC_BAD_REQUEST,
-                            "request could not be processed");
+                    s.error(/*BAD_REQUEST*/400,"request could not be processed");
                     return;
                 } else {
                     s.ok();
                 }
             } else if (method.equals("query")) {
                 // read payload
-                NVList criteria = HttpUtils.getInputAsNVList(request);
+                NVList criteria = HttpUtils.getInputAsNVList(httpexchange);
                 Query q = new Query();
                 for (NVPair pair : criteria) {
                     q.criteria.add(new Value(pair.getName(), pair.getValue()));
@@ -90,19 +85,18 @@ public class ObjectRequestHandler implements
                 return;
             } else {
                 // unknown method
-                s.error(HttpStatus.SC_BAD_REQUEST,
+                s.error(/*BAD_REQUEST*/400,
                         "method unknown\nplease use the following pattern\nhttp://{server}:{port}/object/{upsert|search|get|update}/{id}\n");
                 return;
             }
         } catch (Exception ex) {
             log.log(Level.SEVERE,"error processing object request", ex);
-            s.error(HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                    ex.toString());
+            s.error(/*INTERNAL_SERVER_ERROR*/500,ex.toString());
             return;
         }
     }
 
-    private boolean upsert(HttpRequest request, ObjectRef sourceId, Header[] headers, String uri) throws IOException {
+    private boolean upsert(HttpExchange httpexchange, ObjectRef sourceId, Headers headers, String uri) throws IOException {
         boolean processed = false;
         // look for id in uri
         ObjectRef id;
@@ -113,50 +107,30 @@ public class ObjectRequestHandler implements
             id = ObjectRef.getInstance();
         }
         // read payload
-        if (request instanceof HttpEntityEnclosingRequest) {
-            HttpEntityEnclosingRequest r = (HttpEntityEnclosingRequest) request;
-            DataInputStream dis = new DataInputStream(r.getEntity()
-                    .getContent());
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buf = new byte[100000];
-            while (dis.available() > 0) {
-                int i = dis.read(buf);
-                bos.write(buf, 0, i);
-            }
-            dis.close();
-            bos.close();
+        byte[] payload = HttpUtils.getInputAsBinary(httpexchange);
 
-            // send object to backend
-            TriviumObject po = new TriviumObject();
-            po.setId(id);
+        // send object to backend
+        TriviumObject po = new TriviumObject();
+        po.setId(id);
 
-            String contentType = "application/octet-stream";
-            if (request.containsHeader("Content-Type")) {
-                Header type = request.getFirstHeader("Content-Type");
-                contentType = type.getValue();
-            }
-            po.addMetadata("contentType", contentType);
-
-            // if header starts with trivium - copy value
-            for (Header h : headers) {
-                if (h.getName().startsWith("trivium-")) {
-                    po.addMetadata(h.getName().substring(9), h.getValue());
-                }
-            }
-
-            //TODO is this still right
-            po.setDataBinary(bos.toByteArray());
-
-            AnyClient.INSTANCE.storeObject(po);
-            processed = true;
+        String contentType = "application/octet-stream";
+        if (headers.containsKey("Content-Type")) {
+            contentType = headers.getFirst("Content-Type");
         }
+        po.addMetadata("contentType", contentType);
+
+        // if header starts with trivium - copy value
+        for (String headerName : headers.keySet()) {
+            if (headerName.startsWith("trivium-")) {
+                po.addMetadata(headerName.substring(9), headers.getFirst(headerName));
+            }
+        }
+
+        po.setDataBinary(payload);
+
+        AnyClient.INSTANCE.storeObject(po);
+        processed = true;
+
         return processed;
     }
-
-    @Override
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest( HttpRequest arg0, HttpContext arg1) throws HttpException,
-            IOException {
-        return new BasicAsyncRequestConsumer();
-    }
-
 }

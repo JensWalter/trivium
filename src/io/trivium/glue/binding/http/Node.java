@@ -16,25 +16,9 @@
 
 package io.trivium.glue.binding.http;
 
+import com.sun.net.httpserver.HttpServer;
 import io.trivium.Central;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.impl.nio.DefaultHttpServerIODispatch;
-import org.apache.http.impl.nio.DefaultNHttpServerConnection;
-import org.apache.http.impl.nio.DefaultNHttpServerConnectionFactory;
-import org.apache.http.impl.nio.reactor.DefaultListeningIOReactor;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.apache.http.nio.NHttpConnectionFactory;
-import org.apache.http.nio.protocol.UriHttpAsyncRequestHandlerMapper;
-import org.apache.http.nio.reactor.IOEventDispatch;
-import org.apache.http.nio.reactor.ListeningIOReactor;
-import org.apache.http.protocol.HttpProcessor;
-import org.apache.http.protocol.HttpProcessorBuilder;
-import org.apache.http.protocol.ResponseConnControl;
-import org.apache.http.protocol.ResponseContent;
-import org.apache.http.protocol.ResponseDate;
-import org.apache.http.protocol.ResponseServer;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,53 +32,25 @@ public class Node {
 	}
 
     public void start() {
-        // Create HTTP protocol processing chain
-        HttpProcessor httpproc = HttpProcessorBuilder.create()
-                .add(new ResponseDate())
-                .add(new ResponseServer("trivium"))
-                .add(new ResponseContent())
-                .add(new ResponseConnControl()).build();
- 
-        UriHttpAsyncRequestHandlerMapper reqistry = new UriHttpAsyncRequestHandlerMapper();
-        
-        //internal object handler
-        ObjectRequestHandler requesthandler = new ObjectRequestHandler();
-        reqistry.register("/object/*", requesthandler);
-      
-        //channel handler
-        ChannelRequestHandler channelhandler = new ChannelRequestHandler();
-        reqistry.register("/channel/*", channelhandler);
-
-        //webui handler
-        WebUIRequestHandler uihandler = new WebUIRequestHandler();
-        reqistry.register("/ui/*", uihandler);
-
-        HttpConnectionHandler protocolHandler = new HttpConnectionHandler(httpproc, reqistry);
-        NHttpConnectionFactory<DefaultNHttpServerConnection> connFactory;
-        connFactory = new DefaultNHttpServerConnectionFactory(
-                    ConnectionConfig.DEFAULT);
- 
-        final IOEventDispatch ioEventDispatch = new DefaultHttpServerIODispatch(protocolHandler, connFactory);
-        IOReactorConfig config = IOReactorConfig.custom()
-            .setIoThreadCount(1)
-            .setSoTimeout(3000)
-            .setConnectTimeout(3000)
-            .build();
         try {
-        	final ListeningIOReactor ioReactor = new DefaultListeningIOReactor(config);
-            ioReactor.listen(new InetSocketAddress(port));
-            new Thread(() -> {
-		            try {
-						ioReactor.execute(ioEventDispatch);
-					} catch (IOException e) {
-						log.log(Level.SEVERE,"failed to start http server on port "+port,e);
-                        System.exit(0);
-					}
-			}).start();
+            //TODO how to specify backlog for the tcp implementation
+            HttpServer server = HttpServer.create(new InetSocketAddress(port),100);
+            server.setExecutor(null); // creates a default executor
+
+            //internal object handler
+            server.createContext("/object/", new ObjectRequestHandler());
+
+            //channel handler
+            server.createContext("/channel/", new ChannelRequestHandler());
+
+            //webui handler
+            server.createContext("/ui/", new WebUIRequestHandler());
+
+            server.start();
         } catch (Exception e) {
-        	log.log(Level.SEVERE,"failed to start http server on port "+port,e);
+            log.log(Level.SEVERE, "failed to start http server on port " + port, e);
             System.exit(0);
         }
-        log.log(Level.INFO,"server listening on port {}",port);
+        log.log(Level.INFO, "server listening on port {}", port);
     }
 }

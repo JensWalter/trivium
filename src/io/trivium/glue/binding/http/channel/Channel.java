@@ -49,5 +49,5 @@ public abstract class Channel {
 		}
 		return c;
 	}
-	public abstract void process(Session session,ObjectRef sourceId) throws Exception;
+	public abstract void process(Session session,ObjectRef sourceId);
 }
