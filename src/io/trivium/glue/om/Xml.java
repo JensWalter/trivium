@@ -23,12 +23,10 @@ import java.util.logging.Logger;
 
 import io.trivium.NVPair;
 
-import javolution.text.CharArray;
-import javolution.xml.XMLObjectReader;
-import javolution.xml.sax.Attributes;
-import javolution.xml.stream.XMLStreamConstants;
-import javolution.xml.stream.XMLStreamException;
-import javolution.xml.stream.XMLStreamReaderImpl;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 public class Xml {
 
@@ -36,18 +34,17 @@ public class Xml {
 		Element root=new Element("dummy");
 		LinkedList<Element> stack = new LinkedList<Element>();
 		stack.push(root);
-		XMLObjectReader xor = new XMLObjectReader();
+        XMLInputFactory xmlif = XMLInputFactory.newInstance();
 		try {
-			xor.setInput(new StringReader(in));
-			XMLStreamReaderImpl xsr = (XMLStreamReaderImpl) xor.getStreamReader();
-			
-			while(xsr.hasNext()){
+            XMLStreamReader xsr = xmlif.createXMLStreamReader(new StringReader(in));
+
+            while(xsr.hasNext()){
 				int i = xsr.next();
-				if(i==XMLStreamConstants.START_ELEMENT){
+				if(i== XMLStreamConstants.START_ELEMENT){
 					//start
 					String name = xsr.getLocalName().toString();
 					Element child = new Element(name);
-					CharArray ca = xsr.getNamespaceURI();
+					String ca = xsr.getNamespaceURI();
 					if(ca!=null && ca.length()>0){
 						String ns = ca.toString();
 						NVPair p = new NVPair("xml:ns",ns);
@@ -55,10 +52,9 @@ public class Xml {
 					}
 					int ac = xsr.getAttributeCount();
 					if(ac>0){
-						Attributes atts = xsr.getAttributes();
 						for(int idx=0;idx<ac;idx++){
-							Element e =new Element(atts.getLocalName(idx).toString());
-							e.setValue(atts.getValue(idx).toString());
+							Element e =new Element(xsr.getAttributeLocalName(idx));
+							e.setValue(xsr.getAttributeValue(idx));
 							child.addChild(e);
 						}
 					}

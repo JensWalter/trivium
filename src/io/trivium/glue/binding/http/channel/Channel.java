@@ -18,14 +18,14 @@ package io.trivium.glue.binding.http.channel;
 
 import io.trivium.glue.binding.http.Session;
 import io.trivium.anystore.ObjectRef;
-import javolution.util.FastMap;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class Channel {
 
-    protected static FastMap<ObjectRef, Channel> all = new FastMap<ObjectRef, Channel>().shared();
+    protected static ConcurrentHashMap<ObjectRef, Channel> all = new ConcurrentHashMap<>();
     
 	final protected ChannelConfig config;
 	

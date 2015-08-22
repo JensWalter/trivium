@@ -7,7 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="lib-javolution" exported="" />
     <orderEntry type="module" module-name="bnd-timer" />
     <orderEntry type="module" module-name="tpe-logentry" />
     <orderEntry type="module" module-name="tpe-timertick" />

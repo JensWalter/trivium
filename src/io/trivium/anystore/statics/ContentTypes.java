@@ -16,11 +16,11 @@
 
 package io.trivium.anystore.statics;
 
-import javolution.util.FastMap;
+import java.util.HashMap;
 
 public class ContentTypes {
-    private static FastMap<String,String> ending2Mime = new FastMap<String,String>();
-    private static FastMap<String,String> mime2Ending = new FastMap<String,String>();
+    private static HashMap<String,String> ending2Mime = new HashMap<>();
+    private static HashMap<String,String> mime2Ending = new HashMap<>();
 
     static{
         add("class","application/java-vm");

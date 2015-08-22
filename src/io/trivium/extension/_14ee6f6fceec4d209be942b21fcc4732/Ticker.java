@@ -18,15 +18,15 @@ package io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732;
 
 import io.trivium.extension.type.Type;
 import io.trivium.profile.TimeUtils;
-import javolution.util.FastMap;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Ticker implements Type {
 
     private long interval;
     private String datapoint;
-    private FastMap<Long, AtomicLong> values = new FastMap<Long, AtomicLong>().shared();
+    private ConcurrentHashMap<Long, AtomicLong> values = new ConcurrentHashMap<>();
 
     /**
      * should not be used, only invoked by reflection
@@ -58,7 +58,7 @@ public class Ticker implements Type {
         return interval;
     }
 
-    public FastMap<Long,AtomicLong> getValues(){
+    public ConcurrentHashMap<Long,AtomicLong> getValues(){
         return values;
     }
 

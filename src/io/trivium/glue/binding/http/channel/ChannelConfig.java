@@ -19,11 +19,12 @@ package io.trivium.glue.binding.http.channel;
 import com.google.gson.Gson;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.type.Typed;
-import javolution.util.FastMap;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChannelConfig implements Typed{
 	
-	private static FastMap<ObjectRef, ChannelConfig> knownConfigs = new FastMap<ObjectRef, ChannelConfig>().shared();
+	private static ConcurrentHashMap<ObjectRef, ChannelConfig> knownConfigs = new ConcurrentHashMap<>();
 
 	public ObjectRef id;
 	private ObjectRef typeId;

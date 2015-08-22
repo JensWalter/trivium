@@ -30,9 +30,7 @@ import io.trivium.glue.om.Json;
 import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.ContentTypes;
-import javolution.util.FastMap;
 
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;

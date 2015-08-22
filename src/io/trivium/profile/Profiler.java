@@ -21,15 +21,15 @@ import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
 import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
 import io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e.WeightedAverage;
 import io.trivium.glue.TriviumObject;
-import javolution.util.FastMap;
 
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Profiler extends TimerTask{
     public static Profiler INSTANCE = new Profiler();
-    private FastMap<String,Ticker> tickCollector = new FastMap<String,Ticker>().shared();
-    private FastMap<String,Differential> diffCollector = new FastMap<String,Differential>().shared();
-    private FastMap<String,WeightedAverage> avgCollector = new FastMap<String,WeightedAverage>().shared();
+    private ConcurrentHashMap<String,Ticker> tickCollector = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String,Differential> diffCollector = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String,WeightedAverage> avgCollector = new ConcurrentHashMap<>();
 
     public void initTicker(Ticker t){
         if(!tickCollector.containsKey(t.getDatapoint())) {
