@@ -35,7 +35,7 @@ public class AnyClient {
     Logger log = Logger.getLogger(getClass().getName());
 
 	public AnyClient() {
-		String locPipeIn = Central.getProperty("basePath") + "queues" + File.separator + "queueIn";
+		String locPipeIn = Central.getProperty("basePath") + File.separator + "queues" + File.separator + "queueIn";
         StoreUtils.createIfNotExists(locPipeIn);
 
         pipeIn = Queue.getQueue(locPipeIn);
