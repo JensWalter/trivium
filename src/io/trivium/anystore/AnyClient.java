@@ -16,7 +16,6 @@
 
 package io.trivium.anystore;
 
-import io.qdb.buffer.MessageCursor;
 import io.trivium.Central;
 import io.trivium.anystore.query.Query;
 import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
@@ -24,9 +23,9 @@ import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
 import io.trivium.glue.TriviumObject;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
-import javolution.util.FastList;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class AnyClient {
@@ -61,7 +60,7 @@ public class AnyClient {
         AnyServer.INSTANCE.getStore().delete(query);
 	}
 
-	public FastList<TriviumObject> loadObjects(Query query) {
+	public ArrayList<TriviumObject> loadObjects(Query query) {
 		return AnyServer.INSTANCE.getStore().loadObjects(query);
 	}
 }

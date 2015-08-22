@@ -22,14 +22,14 @@ import io.trivium.extension.type.Type;
 import io.trivium.extension.type.Typed;
 import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.ObjectRef;
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,8 +37,8 @@ import java.util.logging.Logger;
 public abstract class TaskFactory<T extends Task> implements Typed {
     Logger log = Logger.getLogger(getClass().getName());
     private boolean scanned = false;
-    private FastMap<ObjectRef, InputType[]> inputFields = new FastMap<ObjectRef, InputType[]>();
-    private FastMap<String,OutputType> outputFields = new FastMap<String,OutputType>();
+    private HashMap<ObjectRef, InputType[]> inputFields = new HashMap<>();
+    private HashMap<String,OutputType> outputFields = new HashMap<>();
 
     public abstract String getName();
 
@@ -98,12 +98,12 @@ public abstract class TaskFactory<T extends Task> implements Typed {
         scanned = true;
     }
 
-    public FastList<ObjectRef> getInputTypes() {
+    public ArrayList<ObjectRef> getInputTypes() {
         if (!scanned) {
             scanClass();
         }
         Set<ObjectRef> keyset = inputFields.keySet();
-        return new FastList<ObjectRef>(keyset);
+        return new ArrayList<ObjectRef>(keyset);
     }
 
     public boolean isApplicable(TriviumObject po) {
@@ -160,8 +160,8 @@ public abstract class TaskFactory<T extends Task> implements Typed {
         }
     }
 
-    public FastList<TriviumObject> extractOutput(T task) {
-        FastList<TriviumObject> result = new FastList<>();
+    public ArrayList<TriviumObject> extractOutput(T task) {
+        ArrayList<TriviumObject> result = new ArrayList<>();
         for (OutputType f : outputFields.values()) {
             try {
                 f.field.setAccessible(true);

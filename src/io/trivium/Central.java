@@ -21,12 +21,12 @@ import io.trivium.profile.TimeUtils;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.StoreUtils;
 import io.trivium.glue.binding.http.Node;
-import javolution.util.FastList;
-import javolution.util.FastMap;
 import org.apache.commons.cli.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -34,14 +34,14 @@ import java.util.logging.Logger;
 
 public class Central {
 
-    public static FastMap<String, String> properties = new FastMap<String, String>().shared();
+    public static HashMap<String, String> properties = new HashMap<>();
 
-    public static FastList<String> peers = new FastList<>();
+    public static ArrayList<String> peers = new ArrayList<>();
     public static AtomicInteger currentPeer = new AtomicInteger(0);
 
     public static boolean isRunning = false;
 
-    public static void setProperty(String name, String value) {
+    public synchronized static void setProperty(String name, String value) {
         properties.put(name, value);
     }
 

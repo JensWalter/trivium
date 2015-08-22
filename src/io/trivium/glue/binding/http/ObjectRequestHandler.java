@@ -29,9 +29,9 @@ import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.ContentTypes;
-import javolution.util.FastList;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -72,8 +72,8 @@ public class ObjectRequestHandler implements HttpHandler {
                 for (NVPair pair : criteria) {
                     q.criteria.add(new Value(pair.getName(), pair.getValue()));
                 }
-                FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q);
-                FastList<String> sb = new FastList<>();
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q);
+                ArrayList<String> sb = new ArrayList<>();
                 for (TriviumObject po : objects) {
                     if (po != null) {
                         sb.add(Json.elementToJson(po.getData()));

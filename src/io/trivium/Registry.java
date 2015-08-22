@@ -24,11 +24,11 @@ import io.trivium.glue.TriviumObject;
 import io.trivium.extension.task.Task;
 import io.trivium.extension.task.TaskFactory;
 import io.trivium.test.TestCase;
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,33 +37,18 @@ public class Registry {
 
     Logger log = Logger.getLogger(getClass().getName());
     
-    public FastMap<ObjectRef, TaskFactory> taskFactory = null;
-    public FastMap<ObjectRef, FastList<TaskFactory>> taskSubscription = null;
+    public ConcurrentHashMap<ObjectRef, TaskFactory> taskFactory = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<ObjectRef, ArrayList<TaskFactory>> taskSubscription = new ConcurrentHashMap<>();
     ServiceLoader<TaskFactory> taskLoader = ServiceLoader.load(TaskFactory.class);
 
-    public FastMap<ObjectRef,TypeFactory> typeFactory = null;
+    public ConcurrentHashMap<ObjectRef,TypeFactory> typeFactory = new ConcurrentHashMap<>();
     ServiceLoader<TypeFactory> typeLoader = ServiceLoader.load(TypeFactory.class);
 
-    public FastMap<ObjectRef,Binding> bindings= null;
+    public ConcurrentHashMap<ObjectRef,Binding> bindings= new ConcurrentHashMap<>();
     ServiceLoader<Binding> bindingLoader = ServiceLoader.load(Binding.class,new TriviumLoader(ClassLoader.getSystemClassLoader()));
 
-    public FastMap<ObjectRef,TestCase> testcases= null;
+    public ConcurrentHashMap<ObjectRef,TestCase> testcases= new ConcurrentHashMap<>();
     ServiceLoader<TestCase> testcaseLoader = ServiceLoader.load(TestCase.class,new TriviumLoader(ClassLoader.getSystemClassLoader()));
-
-    public Registry(){
-        taskFactory = new FastMap<ObjectRef, TaskFactory>();
-        taskFactory.shared();
-        taskSubscription = new FastMap<ObjectRef,FastList<TaskFactory>>().shared();
-
-        typeFactory = new FastMap<ObjectRef,TypeFactory>();
-        typeFactory.shared();
-
-        bindings = new FastMap<ObjectRef,Binding>();
-        bindings.shared();
-
-        testcases = new FastMap<ObjectRef,TestCase>();
-        testcases.shared();
-    }
 
     public void reload(){
         //types
@@ -115,12 +100,11 @@ public class Registry {
 
     private void refreshSubscriptions(){
         for(TaskFactory task : taskFactory.values()){
-            FastList<ObjectRef> inputTypes = task.getInputTypes();
+            ArrayList<ObjectRef> inputTypes = task.getInputTypes();
             for(ObjectRef ref : inputTypes){
-                FastList<TaskFactory> a = taskSubscription.get(ref);
+                ArrayList<TaskFactory> a = taskSubscription.get(ref);
                 if(a== null){
-                    FastList<TaskFactory> all = new FastList<TaskFactory>();
-                    all.shared();
+                    ArrayList<TaskFactory> all = new ArrayList<>();
                     all.add(task);
                     taskSubscription.put(ref,all);
                 }else{
@@ -134,11 +118,11 @@ public class Registry {
 
     public void notify(TriviumObject po){
         ObjectRef ref = po.getTypeId();
-        FastList<TaskFactory> list = taskSubscription.get(ref);
+        ArrayList<TaskFactory> list = taskSubscription.get(ref);
         //calculate activity
         if(list!=null) {
             for (TaskFactory factory : list) {
-                FastList<ObjectRef> types = factory.getInputTypes();
+                ArrayList<ObjectRef> types = factory.getInputTypes();
                 for (ObjectRef type : types) {
                     if(factory.isApplicable( po))
                     {
@@ -146,7 +130,7 @@ public class Registry {
                             Task task = factory.getInstance(po);
                             factory.populateInput(po, task);
                             task.eval();
-                            FastList<TriviumObject> output = factory.extractOutput(task);
+                            ArrayList<TriviumObject> output = factory.extractOutput(task);
                             for(TriviumObject o : output) {
                                 AnyClient.INSTANCE.storeObject(o);
                             }

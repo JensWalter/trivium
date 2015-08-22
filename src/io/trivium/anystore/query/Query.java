@@ -17,11 +17,12 @@
 package io.trivium.anystore.query;
 
 import io.trivium.anystore.ObjectRef;
-import javolution.util.FastList;
+
+import java.util.ArrayList;
 
 public class Query {
     public ObjectRef id = ObjectRef.getInstance();
-    public FastList<Criteria> criteria = new FastList<Criteria>();
+    public ArrayList<Criteria> criteria = new ArrayList<Criteria>();
 
     public String getValueForName(String name) {
         for (Criteria c : criteria) {

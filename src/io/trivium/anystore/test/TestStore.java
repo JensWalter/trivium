@@ -24,7 +24,8 @@ import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.glue.om.Element;
-import javolution.util.FastList;
+
+import java.util.ArrayList;
 
 public class TestStore {
 	public static void main(String[] args) {
@@ -50,7 +51,7 @@ public class TestStore {
         for(NVPair pair:filter){
             q.criteria.add(new Value(pair.getName(), pair.getValue()));
         }
-		FastList<TriviumObject> list = AnyServer.INSTANCE.getStore().loadObjects(q);
+		ArrayList<TriviumObject> list = AnyServer.INSTANCE.getStore().loadObjects(q);
 		
 		System.out.println(po.getMetadataJson());
 		System.out.println(list.get(0).getMetadataJson());

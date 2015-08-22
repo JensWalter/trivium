@@ -20,8 +20,8 @@ import io.trivium.anystore.AnyIndex;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.glue.TriviumObject;
-import javolution.util.FastList;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -33,7 +33,7 @@ public class QueryExecutor implements Supplier<TriviumObject> {
     
     ObjectRef id;
     Query query;
-    FastList<ObjectRef> keys = new FastList<ObjectRef>();
+    ArrayList<ObjectRef> keys = new ArrayList<ObjectRef>();
     Iterator<ObjectRef> iterator;
 
     public QueryExecutor(Query query) {
@@ -46,7 +46,7 @@ public class QueryExecutor implements Supplier<TriviumObject> {
      */
     public boolean execute() {
         boolean mayExist = true;
-        FastList<String> key = new FastList<String>();
+        ArrayList<String> key = new ArrayList<>();
         for (Criteria crit : query.criteria) {
             if (crit instanceof Value) {
                 Value val = (Value) crit;

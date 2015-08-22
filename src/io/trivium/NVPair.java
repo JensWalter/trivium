@@ -16,15 +16,12 @@
 
 package io.trivium;
 
-import javolution.util.FastList;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class NVPair {
 
 	private String name;
-	private FastList<String> value = new FastList<String>();
+	private ArrayList<String> value = new ArrayList<String>();
 
 	public NVPair() {
 
@@ -39,7 +36,7 @@ public class NVPair {
 		this.value.add(value);
 	}
 
-	public NVPair(String name, FastList<String> value) {
+	public NVPair(String name, ArrayList<String> value) {
 		this.name = name;
 		this.value = value;
 	}
@@ -55,7 +52,7 @@ public class NVPair {
 			return null;
 	}
 
-	public FastList<String> getValues() {
+	public ArrayList<String> getValues() {
 		return value;
 	}
 

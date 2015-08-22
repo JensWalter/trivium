@@ -27,7 +27,8 @@ import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.glue.binding.http.Session;
-import javolution.util.FastList;
+
+import java.util.ArrayList;
 
 public class RequestHandler implements HttpHandler{
 
@@ -54,7 +55,7 @@ public class RequestHandler implements HttpHandler{
             for(NVPair pair:list){
                 q.criteria.add(new Value(pair.getName(), pair.getValue()));
             }
-			FastList<TriviumObject> all = AnyServer.INSTANCE.getStore().loadObjects(q);
+			ArrayList<TriviumObject> all = AnyServer.INSTANCE.getStore().loadObjects(q);
 			if(all.size()>0){
 				TriviumObject po = all.get(0);
 				String type = po.findMetaValue("contentType");

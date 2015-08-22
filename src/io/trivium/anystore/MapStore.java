@@ -28,10 +28,10 @@ import io.trivium.glue.om.Json;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 import io.trivium.Registry;
-import javolution.util.FastList;
 import org.iq80.snappy.Snappy;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,11 +125,11 @@ public class MapStore{
         }
     }
 
-    public FastList<TriviumObject> loadObjects(Query query) {
+    public ArrayList<TriviumObject> loadObjects(Query query) {
         QueryExecutor qr = new QueryExecutor(query);
         boolean hasResult = qr.execute();
 
-        FastList<TriviumObject> result = new FastList<>();
+        ArrayList<TriviumObject> result = new ArrayList<>();
         if(hasResult) {
             int size = qr.getSize();
             for(int i=0;i<size;i++){

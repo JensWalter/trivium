@@ -22,12 +22,12 @@ import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
-import javolution.util.FastList;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +56,7 @@ public class URLConnection extends java.net.URLConnection {
         //query anystore
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));
-        FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+        ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
         FileTypeFactory factory = new FileTypeFactory();
         byte[] b=new byte[0];
         for(TriviumObject po : objects){

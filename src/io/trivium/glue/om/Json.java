@@ -21,10 +21,10 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import io.trivium.NVList;
 import io.trivium.NVPair;
-import javolution.util.FastList;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -260,7 +260,7 @@ public class Json {
 				if (pair.isArray()) {
 					// array
 					writer.beginArray();
-					FastList<String> vals = pair.getValues();
+                    ArrayList<String> vals = pair.getValues();
 					for (String s : vals) {
 						writer.value(s);
 					}

@@ -33,6 +33,7 @@ import io.trivium.anystore.statics.ContentTypes;
 import javolution.util.FastMap;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,21 +63,21 @@ public class RegistryRequestHandler implements HttpHandler {
                 Registry.INSTANCE.reload();
 
                 NVList list = new NVList();
-                FastMap<ObjectRef, Binding> bindings = Registry.INSTANCE.bindings;
+                ConcurrentHashMap<ObjectRef, Binding> bindings = Registry.INSTANCE.bindings;
                 NVPair nvbind = new NVPair("binding");
                 for (Binding binding : bindings.values()) {
                     nvbind.addValue(binding.getTypeId().toString());
                     list.add(new NVPair(binding.getTypeId().toString(),binding.getName()));
                 }
                 list.add(nvbind);
-                FastMap<ObjectRef, TypeFactory> types = Registry.INSTANCE.typeFactory;
+                ConcurrentHashMap<ObjectRef, TypeFactory> types = Registry.INSTANCE.typeFactory;
                 NVPair tybind = new NVPair("type");
                 for (TypeFactory t : types.values()) {
                     tybind.addValue(t.getTypeId().toString());
                     list.add(new NVPair(t.getTypeId().toString(),t.getName()));
                 }
                 list.add(tybind);
-                FastMap<ObjectRef, TaskFactory> tasks = Registry.INSTANCE.taskFactory;
+                ConcurrentHashMap<ObjectRef, TaskFactory> tasks = Registry.INSTANCE.taskFactory;
                 NVPair tskpair = new NVPair("task");
                 for (TaskFactory f : tasks.values()) {
                     tskpair.addValue(f.getTypeId().toString());

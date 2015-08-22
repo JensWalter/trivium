@@ -16,20 +16,13 @@
 
 package io.trivium;
 
-import javolution.util.FastList;
-
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class NVList extends AbstractCollection<NVPair>{
 
-	private FastList<NVPair> list;
-
-	public NVList() {
-list = new FastList<NVPair>();
-		list.shared();
-	}
+	private ArrayList<NVPair> list = new ArrayList<>();
 
 	@Override
 	public boolean add(NVPair pair) {
@@ -128,7 +121,7 @@ list = new FastList<NVPair>();
 	@Override
 	protected NVList clone() {
 		NVList neu = new NVList();
-		neu.list = new FastList<NVPair>(this.list);
+		neu.list = new ArrayList<>(this.list);
 		return neu;
 	}
 

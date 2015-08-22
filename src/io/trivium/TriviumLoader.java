@@ -24,19 +24,22 @@ import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Enumeration;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TriviumLoader extends ClassLoader {
 
-    private FastMap<String,Class<?>> classes = new FastMap<String,Class<?>>();
+    //TODO is a class loader single threaded or multi threaded?
+    private ConcurrentHashMap<String,Class<?>> classes = new ConcurrentHashMap<>();
 
     public TriviumLoader(ClassLoader parent) {
         super(parent);
@@ -54,7 +57,7 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType", ContentTypes.getMimeType("class")));
-                FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
                 FileTypeFactory factory = new FileTypeFactory();
                 for(TriviumObject po : objects){
                     FileType memFile = factory.getInstance(po);
@@ -89,7 +92,7 @@ public class TriviumLoader extends ClassLoader {
             Query query = new Query();
             query.criteria.add(new Value("name", name));
             query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-            FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+            ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
             FileTypeFactory factory = new FileTypeFactory();
             for(TriviumObject po : objects){
                 String uri = "anystore://"+po.getId().toString();
@@ -132,7 +135,7 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType","application/java-vm"));
-                FastList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
                 FileTypeFactory factory = new FileTypeFactory();
                 for(TriviumObject po : objects){
                     FileType file = factory.getInstance(po);

@@ -21,8 +21,6 @@ import com.google.common.primitives.Bytes;
 import com.google.common.hash.BloomFilter;
 import io.trivium.Central;
 import io.trivium.NVPair;
-import javolution.util.FastList;
-import javolution.util.FastMap;
 import org.iq80.leveldb.CompressionType;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
@@ -32,13 +30,15 @@ import org.iq80.leveldb.DB;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class AnyIndex{
-    private static FastMap<String,AnyIndex> ALL = new FastMap<String,AnyIndex>().shared();
+    private static ConcurrentHashMap<String,AnyIndex> ALL = new ConcurrentHashMap<>();
     Logger log = Logger.getLogger(getClass().getName());
     private String name;
     private long entries;
@@ -154,7 +154,7 @@ public class AnyIndex{
         DBIterator iter = idx.index.iterator();
         byte[] b_value = value.getBytes();
         iter.seek(b_value);
-        FastList<ObjectRef> keyList = new FastList<>();
+        ArrayList<ObjectRef> keyList = new ArrayList<>();
         while(iter.hasNext()){
             Map.Entry<byte[],byte[]> entry = iter.next();
             byte[] key = entry.getKey();
