@@ -64,8 +64,9 @@ public class Session {
     public void ok(String contentType,String resp) {
         try {
             httpexchange.getResponseHeaders().set("Content-Type",contentType+"; charset=UTF-8");
-            httpexchange.sendResponseHeaders(200, resp.length());
-            httpexchange.getResponseBody().write(resp.getBytes());
+            byte[] responseData = resp.getBytes();
+            httpexchange.sendResponseHeaders(200, responseData.length);
+            httpexchange.getResponseBody().write(responseData);
             httpexchange.getResponseBody().close();
             httpexchange.close();
 

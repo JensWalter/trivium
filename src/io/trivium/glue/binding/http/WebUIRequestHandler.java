@@ -39,7 +39,7 @@ public class WebUIRequestHandler implements HttpHandler {
             uri = "io/trivium/webui/index.html";
         else
             uri = "io/trivium/webui" + uri.substring(3);
-        log.log(Level.INFO, "receiving request for uri: {} => {}", new Object[]{origURI, uri});
+        log.log(Level.INFO, "receiving request for uri: {0} => {1}", new Object[]{origURI, uri});
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         try {
             Class<?> clazz = cl.loadClass(uri.replace('/', '.'));
