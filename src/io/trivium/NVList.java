@@ -58,11 +58,11 @@ public class NVList extends AbstractCollection<NVPair>{
 	}
 
 	public void replace(NVPair pair){
-		for(NVPair entry : list){
-			if(entry.getName().equals(pair.getName())){
-				list.remove(entry);
-			}
-		}
+        list.stream().sorted().forEach(elem -> {
+            if (elem.getName().equals(pair.getName())) {
+                list.remove(elem);
+            }
+        });
 		list.add(pair);
 	}
 

@@ -121,12 +121,7 @@ public class TriviumObject implements Typed {
     }
 
     public void replaceMeta(String name,String value){
-        for(NVPair entry : metadata){
-            if(entry.getName().equals(name)){
-                metadata.remove(entry);
-            }
-        }
-        metadata.add(new NVPair(name,value));
+        metadata.replace(new NVPair(name,value));
     }
 
     public ArrayList<NVPair> findMetadata(String name) {
