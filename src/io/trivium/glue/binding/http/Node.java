@@ -51,6 +51,6 @@ public class Node {
             log.log(Level.SEVERE, "failed to start http server on port " + port, e);
             System.exit(0);
         }
-        log.log(Level.INFO, "server listening on port {}", port);
+        log.log(Level.INFO, "server listening on port {0}", port);
     }
 }
