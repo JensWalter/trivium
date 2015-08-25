@@ -38,6 +38,8 @@ public class Queue {
     public Queue(String path){
         try {
             queue = new PersistentMessageBuffer(new File(path));
+            //set size to 100mb
+            queue.setMaxSize(100*1024*1024);
         }catch(Exception ex){
             log.log(Level.SEVERE,"error initializing queue on path "+path,ex);
         }

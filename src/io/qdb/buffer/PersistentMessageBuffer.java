@@ -374,14 +374,20 @@ public class PersistentMessageBuffer implements MessageBuffer {
      */
     public void cleanup() throws IOException {
         for (;;) {
-            File doomed;
+            File doomed = null;
             synchronized (this) {
                 if (maxSize == 0 || getSize() <= maxSize || firstFile >= lastFile - 1) return;
-                doomed = getFile(firstFile);
-                ++firstFile;
-                // todo what about cursors that might have doomed open?
+                if(waitingCursors.length>0) {
+                    Cursor cursor = waitingCursors[0];
+                    if(cursor !=null && cursor.fileIndex>firstFile){
+                        doomed = getFile(firstFile);
+                        ++firstFile;
+                    }else{
+                        return;
+                    }
+                }
             }
-            if (!doomed.delete()) {
+            if (doomed != null && !doomed.delete()) {
                 throw new IOException("Unable to delete [" + doomed + "]");
             }
         }
