@@ -19,10 +19,11 @@ package io.trivium;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NVList extends AbstractCollection<NVPair>{
 
-	private ArrayList<NVPair> list = new ArrayList<>();
+	private CopyOnWriteArrayList<NVPair> list = new CopyOnWriteArrayList<>();
 
 	@Override
 	public boolean add(NVPair pair) {
@@ -58,11 +59,11 @@ public class NVList extends AbstractCollection<NVPair>{
 	}
 
 	public void replace(NVPair pair){
-        list.stream().sorted().forEach(elem -> {
+        for (NVPair elem : list) {
             if (elem.getName().equals(pair.getName())) {
                 list.remove(elem);
             }
-        });
+        }
 		list.add(pair);
 	}
 
@@ -121,7 +122,7 @@ public class NVList extends AbstractCollection<NVPair>{
 	@Override
 	protected NVList clone() {
 		NVList neu = new NVList();
-		neu.list = new ArrayList<>(this.list);
+		neu.list = new CopyOnWriteArrayList<>(this.list);
 		return neu;
 	}
 
