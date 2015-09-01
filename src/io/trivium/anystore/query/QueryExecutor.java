@@ -33,7 +33,7 @@ public class QueryExecutor implements Supplier<TriviumObject> {
     
     ObjectRef id;
     Query query;
-    ArrayList<ObjectRef> keys = new ArrayList<ObjectRef>();
+    ArrayList<ObjectRef> keys = new ArrayList<>();
     Iterator<ObjectRef> iterator;
 
     public QueryExecutor(Query query) {
@@ -60,7 +60,6 @@ public class QueryExecutor implements Supplier<TriviumObject> {
             }
         }
         if (!mayExist) {
-//            Central.logger.debug("index miss for query {}", query.id.toString());
             return false;
         } else {
             //sequential index scan
