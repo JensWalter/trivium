@@ -39,7 +39,7 @@
       	  },
           render: function() {
           var elements = this.props.id.map(function(e){
-                return (<li>{all[e]}</li>);
+                return (<li ley={e}>{all[e]}</li>);
             });
             return (<div>Type: <ul>{elements}</ul></div>);
           }
@@ -98,7 +98,7 @@
       	  },
           render: function() {
             var elements = this.props.id.map(function(e){
-                return (<li>{all[e]}</li>);
+                return (<li key={e}>{all[e]}</li>);
             });
             return (<div>Task: <ul>{elements}</ul></div>);
           }

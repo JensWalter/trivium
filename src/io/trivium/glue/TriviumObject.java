@@ -271,7 +271,6 @@ public class TriviumObject implements Typed {
                 id = ObjectRef.getInstance();
             }
         }
-        //FIXME make == work again
         if (typeId == null || typeId == ObjectRef.INVALID) {
             if (metadata!=null && metadata.hasKey("typeId")) {
                 typeId = ObjectRef.getInstance(metadata.findValue("typeId"));

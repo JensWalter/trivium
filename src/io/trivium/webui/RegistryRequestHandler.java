@@ -40,21 +40,17 @@ public class RegistryRequestHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpexchange) {
-        log.log(Level.FINE,"registry handler");
+        log.log(Level.FINE, "registry handler");
 
-            NVList params = HttpUtils.getInputAsNVList(httpexchange);
-            /** list
-             {
-             "command" : "list"
-             }
-             */
-            /**
-             {
-             "id" : "...",
-             "command" : "start"|"stop"|"status"
-             }
-             */
-            Session s = new Session(httpexchange, ObjectRef.getInstance());
+        NVList params = HttpUtils.getInputAsNVList(httpexchange);
+        /** list
+         {"command" : "list"}
+         */
+        /**
+         {"id" : "...",
+         "command" : "start"|"stop"|"status"}
+         */
+        Session s = new Session(httpexchange, ObjectRef.getInstance());
         try {
             String cmd = params.findValue("command");
             if (cmd.equals("list")) {
@@ -65,21 +61,21 @@ public class RegistryRequestHandler implements HttpHandler {
                 NVPair nvbind = new NVPair("binding");
                 for (Binding binding : bindings.values()) {
                     nvbind.addValue(binding.getTypeId().toString());
-                    list.add(new NVPair(binding.getTypeId().toString(),binding.getName()));
+                    list.add(new NVPair(binding.getTypeId().toString(), binding.getName()));
                 }
                 list.add(nvbind);
                 ConcurrentHashMap<ObjectRef, TypeFactory> types = Registry.INSTANCE.typeFactory;
                 NVPair tybind = new NVPair("type");
                 for (TypeFactory t : types.values()) {
                     tybind.addValue(t.getTypeId().toString());
-                    list.add(new NVPair(t.getTypeId().toString(),t.getName()));
+                    list.add(new NVPair(t.getTypeId().toString(), t.getName()));
                 }
                 list.add(tybind);
                 ConcurrentHashMap<ObjectRef, TaskFactory> tasks = Registry.INSTANCE.taskFactory;
                 NVPair tskpair = new NVPair("task");
                 for (TaskFactory f : tasks.values()) {
                     tskpair.addValue(f.getTypeId().toString());
-                    list.add(new NVPair(f.getTypeId().toString(),f.getName()));
+                    list.add(new NVPair(f.getTypeId().toString(), f.getName()));
                 }
                 list.add(tskpair);
 
@@ -89,8 +85,8 @@ public class RegistryRequestHandler implements HttpHandler {
             } else if (cmd.equals("status")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Binding bind =Registry.INSTANCE.bindings.get(ref);
-                if(bind!=null) {
+                Binding bind = Registry.INSTANCE.bindings.get(ref);
+                if (bind != null) {
                     State state = bind.getState();
                     NVList list = new NVList();
                     switch (state) {
@@ -103,7 +99,7 @@ public class RegistryRequestHandler implements HttpHandler {
                     }
                     String json = Json.NVPairsToJson(list);
                     s.ok(ContentTypes.getMimeType("json"), json);
-                }else {
+                } else {
                     s.ok();
                 }
             } else if (cmd.equals("start")) {
@@ -120,8 +116,8 @@ public class RegistryRequestHandler implements HttpHandler {
 
                 s.ok();
             }
-        }catch(Exception ex){
-            log.log(Level.SEVERE,"error while processing registry request",ex);
+        } catch (Exception ex) {
+            log.log(Level.SEVERE, "error while processing registry request", ex);
             s.ok();
         }
     }

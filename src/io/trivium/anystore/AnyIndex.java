@@ -43,10 +43,7 @@ public class AnyIndex{
     private String name;
     private long entries;
     private DB index;
-    /**
-     * 1mb hash size => 2^20 bit *100 werte
-     */
-    private int hashSize = 10485760;
+
     BloomFilter<String> valueBloomFilter;
     BloomFilter<String> vrBloomFilter;
 
@@ -73,10 +70,7 @@ public class AnyIndex{
         try {
             Options options = new Options();
             options.createIfMissing(true);
-            //options.compressionType(CompressionType.SNAPPY);
             options.compressionType(CompressionType.NONE);
-            //options.cacheSize(50*1048576);
-            //options.writeBufferSize(50*1048576);
             Iq80DBFactory factory = Iq80DBFactory.factory;
             index = factory.open(new File(path + name+".leveldb"), options);
         } catch (Exception e) {

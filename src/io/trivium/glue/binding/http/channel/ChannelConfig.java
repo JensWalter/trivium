@@ -43,7 +43,6 @@ public class ChannelConfig implements Typed{
 	
 	public static void addConfig(ChannelConfig config){
 		knownConfigs.put(config.id, config);
-		//TODO publish object to all nodes
 	}
 
 	@Override

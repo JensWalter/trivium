@@ -22,8 +22,11 @@ import io.trivium.profile.Profiler;
 import io.trivium.profile.TimeUtils;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.StoreUtils;
-import io.trivium.glue.binding.http.Node;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.PosixParser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ import java.util.logging.Logger;
 public class Central {
 
     public static HashMap<String, String> properties = new HashMap<>();
+    private static Logger log = Logger.getLogger(Central.class.getName());
 
     public static ArrayList<String> peers = new ArrayList<>();
     public static AtomicInteger currentPeer = new AtomicInteger(0);
@@ -73,7 +77,7 @@ public class Central {
     public static void setup(String[] args) throws Exception {
         CommandLineParser parser = new PosixParser();
         Options opts = new Options();
-        opts.addOption("ll", "loglevel", true, "turn logging to one of the following levels: trace,debug,info,warning,error");
+        opts.addOption("ll", "loglevel", true, "turn logging to one of the following levels: fine,info,warning,severe");
         opts.addOption("h", "help", false, "show help");
         opts.addOption("?", "help", false, "show help");
         opts.addOption("p", "path", true, "base path for the local storage");
@@ -92,8 +96,12 @@ public class Central {
         }
         if (cmd.hasOption("loglevel")) {
             String val = cmd.getOptionValue("loglevel");
-            //TODO validate
-            Central.setLogLevel(val);
+            try {
+                Level l = Level.parse(val.toUpperCase());
+                Central.setLogLevel(val);
+            }catch(Exception ex){
+                log.log(Level.WARNING,"log level was not recognized, falling back to default value");
+            }
         }
         if (cmd.hasOption("compress")) {
             String val = cmd.getOptionValue("compress");
@@ -163,12 +171,6 @@ public class Central {
     }
 
     public static void start() {
-
-        // start http node
-//        if (Central.getProperty("httpPort") != null) {
-//            Node node = new Node();
-//            node.start();
-//        }
 
         //register activities
         Registry.INSTANCE.reload();

@@ -24,6 +24,7 @@ import io.trivium.extension.binding.Binding;
 import io.trivium.glue.Http;
 import io.trivium.glue.binding.http.Session;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -50,7 +51,6 @@ public class WebUIHandler extends Binding implements HttpHandler {
             uri = "io/trivium/webui/index.html";
         else
             uri = "io/trivium/webui" + uri.substring(3);
-        log.log(Level.INFO, "receiving request for uri: {0} => {1}", new Object[]{origURI, uri});
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         try {
             Class<?> clazz = cl.loadClass(uri.replace('/', '.'));
@@ -66,21 +66,18 @@ public class WebUIHandler extends Binding implements HttpHandler {
         } catch (Exception ex) {
             //ignore
         }
-        //TODO implement real reader
         InputStream is = cl.getResourceAsStream(uri);
         if (is != null) {
-            InputStreamReader isr = new InputStreamReader(is);
-            char[] buf = new char[1000000];
-            int num = 0;
-            try {
-                num = isr.read(buf);
-            } catch (IOException e) {
-                log.log(Level.SEVERE,"error retrieving resource " + uri, e);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buf = new byte[100000];
+            while(is.available()>0){
+                int count = is.read(buf);
+                bos.write(buf,0,count);
             }
             String ending = uri.substring(uri.lastIndexOf('.') + 1);
             String contentType = ContentTypes.getMimeType(ending, "text/plain");
 
-            s.ok(contentType, new String(buf, 0, num));
+            s.ok(contentType, new String(bos.toByteArray()));
             return;
         }
         //if no response was send so far
