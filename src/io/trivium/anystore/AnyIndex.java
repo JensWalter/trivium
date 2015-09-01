@@ -58,7 +58,7 @@ public class AnyIndex{
     }
 
     private AnyIndex(String name){
-        log.log(Level.FINE,"creating index for field {}", name);
+        log.log(Level.FINE,"creating index for field {1}", name);
         this.name=name;
         entries=0;
 
@@ -83,9 +83,6 @@ public class AnyIndex{
         //TODO create file persistence
         valueBloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()),1000000,falsePositiveProbability);
         vrBloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()),1000000,falsePositiveProbability);
-        
-        //valueBloomFilter = new BloomFilter<String>(path + name+"_value.bloomfilter",falsePositiveProbability, hashSize);
-        //vrBloomFilter = new BloomFilter<String>(path + name+"_valref.bloomfilter",falsePositiveProbability, hashSize);
 
         ALL.put(name,this);
     }
@@ -129,7 +126,7 @@ public class AnyIndex{
                     }
                     valueBloomFilter =null;
                     vrBloomFilter = null;
-                    log.log(Level.FINE,"disabling index for column {} with variance {}", new Object[]{name,variance});
+                    log.log(Level.FINE,"disabling index for column {0} with variance {1}", new Object[]{name,variance});
                 }
             }
         }
@@ -164,8 +161,7 @@ public class AnyIndex{
     public static double getVariance(String name){
         AnyIndex idx = get(name);
         long cardinality = idx.bloomCount;
-        double variance = (double) cardinality / idx.entries;
-        return variance;
+        return (double) cardinality / idx.entries;
     }
 
     public static void process(NVPair pair, ObjectRef ref){
