@@ -16,9 +16,7 @@
 
 package io.trivium.anystore;
 
-import com.google.common.hash.Funnels;
 import com.google.common.primitives.Bytes;
-import com.google.common.hash.BloomFilter;
 import io.trivium.Central;
 import io.trivium.NVPair;
 import org.iq80.leveldb.CompressionType;
@@ -28,8 +26,6 @@ import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.iq80.leveldb.DB;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,15 +37,9 @@ public class AnyIndex{
     private static ConcurrentHashMap<String,AnyIndex> ALL = new ConcurrentHashMap<>();
     Logger log = Logger.getLogger(getClass().getName());
     private String name;
-    private long entries;
     private DB index;
 
-    BloomFilter<String> valueBloomFilter;
-    BloomFilter<String> vrBloomFilter;
-
-    long bloomCount = 0;
     boolean indexEnabled = true;
-    private long queries = 0;
     boolean forced = false;
 
     public AnyIndex(String name,boolean force){
@@ -60,7 +50,6 @@ public class AnyIndex{
     private AnyIndex(String name){
         log.log(Level.FINE,"creating index for field {1}", name);
         this.name=name;
-        entries=0;
 
         String path = Central.getProperty("basePath");
         if (!path.endsWith(File.separator))
@@ -78,57 +67,16 @@ public class AnyIndex{
             System.exit(0);
         }
 
-        double falsePositiveProbability = 0.1;
-
-        //TODO create file persistence
-        valueBloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()),1000000,falsePositiveProbability);
-        vrBloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()),1000000,falsePositiveProbability);
-
         ALL.put(name,this);
     }
 
     private void index(NVPair pair,ObjectRef ref){
-        entries++;
-
         if (indexEnabled) {
-            boolean isNew = ! valueBloomFilter.mightContain(pair.getValue());
-            valueBloomFilter.put(pair.getValue());
-            vrBloomFilter.put(pair.getValue() + ref.toString());
-
-            if (isNew) {
-                bloomCount += 1;
-            }
-
             byte[] b_value = pair.getValue().getBytes();
             byte[] b_ref = ref.toBytes();
             byte[] b_valueRef = Bytes.concat(b_value,b_ref);
 
             index.put(b_valueRef, b_ref);
-
-            if(entries%10000==0){
-                long cardinality = bloomCount;
-                double variance = (double) cardinality / entries;
-                if(variance< 0.01d){
-                    indexEnabled=false;
-                    //delete the index
-                    DBIterator iterator = index.iterator();
-                    try {
-                        for(iterator.seekToFirst(); iterator.hasNext();) {
-                            byte[] k = iterator.next().getKey();
-                            index.delete(k);
-                        }
-                    } finally {
-                        try {
-                            iterator.close();
-                        } catch (IOException e) {
-                            //ignore
-                        }
-                    }
-                    valueBloomFilter =null;
-                    vrBloomFilter = null;
-                    log.log(Level.FINE,"disabling index for column {0} with variance {1}", new Object[]{name,variance});
-                }
-            }
         }
     }
 
@@ -140,7 +88,7 @@ public class AnyIndex{
         return idx;
     }
 
-    public static Stream<ObjectRef> lookup(String name, String value){
+    public static ArrayList<ObjectRef> lookup(String name, String value){
         AnyIndex idx = ALL.get(name);
         DBIterator iter = idx.index.iterator();
         byte[] b_value = value.getBytes();
@@ -155,33 +103,12 @@ public class AnyIndex{
                 break;
             }
         }
-        return keyList.stream();
-    }
-
-    public static double getVariance(String name){
-        AnyIndex idx = get(name);
-        long cardinality = idx.bloomCount;
-        return (double) cardinality / idx.entries;
+        return keyList;
     }
 
     public static void process(NVPair pair, ObjectRef ref){
         String name = pair.getName();
         AnyIndex idx = get(name);
         idx.index(pair,ref);
-    }
-
-    public static boolean check(String name,String value){
-        AnyIndex idx = ALL.get(name);
-        if(idx!=null){
-            idx.queries+=1;
-            if(idx.indexEnabled) {
-                return idx.valueBloomFilter.mightContain(value);
-            }else{
-                return true;
-            }
-        }else{
-            //no check possible
-            return true;
-        }
     }
 }

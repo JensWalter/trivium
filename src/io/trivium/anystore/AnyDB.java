@@ -63,10 +63,7 @@ public class AnyDB {
             try {
                 Options options = new Options();
                 options.createIfMissing(true);
-                //options.compressionType(CompressionType.SNAPPY);
                 options.compressionType(CompressionType.NONE);
-                //options.cacheSize(50*1048576);
-                //options.writeBufferSize(50*1048576);
                 Iq80DBFactory factory = Iq80DBFactory.factory;
                 map = factory.open(file, options);
             } catch (Exception e) {
