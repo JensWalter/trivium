@@ -61,7 +61,6 @@ public class ObjectHandler extends Binding implements HttpHandler {
 
         try {
             Headers headers = httpExchange.getRequestHeaders();
-            // Header[] headers = request.getAllHeaders();
             String uri = httpExchange.getRequestURI().getPath();
 
             String[] parts = uri.split("/");

@@ -26,11 +26,6 @@ public class Start {
 
 	public static void main(String[] args) throws Exception {
 		Central.setup(args);
-
-		
-//		Central.setProperty("webInterface", "true");
-//		Central.setProperty("autoIncrementPort", "true");
-		
 		Central.start();
 		
 		//create dummy json channel for testing
@@ -59,9 +54,7 @@ public class Start {
 //		m.invoke(o);
 		
 		
-		
-		//Node httpNode = new Node();
-		//httpNode.start();
+
 	}
 
 }

@@ -34,7 +34,7 @@ public enum Http {
     Logger log = Logger.getLogger(getClass().getName());
 
     public void registerListener(String uri, HttpHandler handler) {
-        registerListener("localhost", 12345, "/", handler);
+        registerListener("localhost", 12345, uri, handler);
     }
 
     public void registerListener(int port, String uri, HttpHandler handler) {

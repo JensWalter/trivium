@@ -17,7 +17,6 @@
 package io.trivium;
 
 import io.trivium.anystore.ObjectRef;
-import io.trivium.extension.binding.Binding;
 import io.trivium.profile.Profiler;
 import io.trivium.profile.TimeUtils;
 import io.trivium.anystore.AnyServer;
@@ -176,8 +175,7 @@ public class Central {
         Registry.INSTANCE.reload();
 
         //init ui handler
-        Binding b = Registry.INSTANCE.bindings.get(ObjectRef.getInstance("8c419189-0b68-4fe3-a807-34ad3287800d"));
-        b.start();
+        Registry.INSTANCE.bindings.get(ObjectRef.getInstance("8c419189-0b68-4fe3-a807-34ad3287800d")).start();
         //init object handler
         Registry.INSTANCE.bindings.get(ObjectRef.getInstance("3d63321d-f553-4c3d-a8e7-b6159e7ee35b")).start();
         //init channel handler
