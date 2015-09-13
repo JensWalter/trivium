@@ -16,7 +16,6 @@
 
 package io.trivium;
 
-import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
@@ -24,6 +23,7 @@ import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 
 import java.io.DataInputStream;
 import java.io.File;

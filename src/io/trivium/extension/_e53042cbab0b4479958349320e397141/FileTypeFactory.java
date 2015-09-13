@@ -17,12 +17,11 @@
 package io.trivium.extension._e53042cbab0b4479958349320e397141;
 
 import io.trivium.NVList;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.TypeFactory;
-import io.trivium.glue.TriviumObject;
 import io.trivium.glue.om.Element;
-import io.trivium.anystore.ObjectRef;
 
-public class FileTypeFactory implements TypeFactory {
+public class FileTypeFactory implements TypeFactory<FileType> {
     @Override
     public FileType getInstance(TriviumObject po) {
         FileType file = new FileType();
@@ -40,27 +39,20 @@ public class FileTypeFactory implements TypeFactory {
     }
 
     @Override
-    public TriviumObject getTriviumObject(Object instance) {
-        if(instance instanceof FileType) {
-            FileType inst = (FileType)instance;
+    public TriviumObject getTriviumObject(FileType instance) {
             TriviumObject po = new TriviumObject();
-            po.replaceMeta("name", inst.name);
-            po.replaceMeta("size", inst.size);
-            po.replaceMeta("contentType", inst.contentType);
+            po.replaceMeta("name", instance.name);
+            po.replaceMeta("size", instance.size);
+            po.replaceMeta("contentType", instance.contentType);
 
             Element file = new Element("file");
-            file.addChild(new Element("data", inst.data));
-            file.addChild(new Element("name", inst.name));
-            file.addChild(new Element("size", inst.size));
-            file.addChild(new Element("contentType", inst.contentType));
-            file.addChild(new Element("lastModified", inst.lastModified));
-
+            file.addChild(new Element("data", instance.data));
+            file.addChild(new Element("name", instance.name));
+            file.addChild(new Element("size", instance.size));
+            file.addChild(new Element("contentType", instance.contentType));
+            file.addChild(new Element("lastModified", instance.lastModified));
             po.setData(file);
-
             return po;
-        }else{
-            return null;
-        }
     }
 
     @Override

@@ -16,11 +16,11 @@
 
 package io.trivium.extension.task;
 
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.annotation.INPUT;
 import io.trivium.extension.annotation.OUTPUT;
 import io.trivium.extension.type.Type;
 import io.trivium.extension.type.Typed;
-import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.ObjectRef;
 
 import javax.script.ScriptEngine;

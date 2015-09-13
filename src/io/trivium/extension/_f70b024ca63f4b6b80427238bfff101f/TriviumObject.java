@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package io.trivium.glue;
+package io.trivium.extension._f70b024ca63f4b6b80427238bfff101f;
 
 import com.google.common.primitives.Bytes;
 import io.trivium.NVList;
 import io.trivium.NVPair;
+import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.type.Type;
 import io.trivium.extension.type.TypeFactory;
-import io.trivium.extension.type.Typed;
 import io.trivium.glue.om.Element;
-import io.trivium.glue.om.Trivium;
 import io.trivium.glue.om.Json;
-import io.trivium.Registry;
+import io.trivium.glue.om.Trivium;
 import org.iq80.snappy.Snappy;
 
 import java.nio.ByteBuffer;
@@ -37,8 +36,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TriviumObject implements Typed {
-
+public class TriviumObject implements Type {
     /**
      * typeByte
      * 0 uncompressed json
@@ -46,11 +44,11 @@ public class TriviumObject implements Typed {
      */
     public static byte typeByte = 1;
     Logger log = Logger.getLogger(getClass().getName());
-	ObjectRef id;
+    ObjectRef id;
     ObjectRef typeId;
-	NVList metadata;
+    NVList metadata;
     byte[] b_metadata;
-	Element data;
+    Element data;
     byte[] b_data;
 
     public TriviumObject(){
@@ -69,9 +67,9 @@ public class TriviumObject implements Typed {
         data = Element.EMPTY;
     }
 
-	public ObjectRef getId(){
-		return id;
-	}
+    public ObjectRef getId(){
+        return id;
+    }
 
     public void setId(ObjectRef id){
         this.id=id;
@@ -99,16 +97,16 @@ public class TriviumObject implements Typed {
         if(name.equals("typeId")){
             setTypeId(ObjectRef.getInstance(value));
         }else
-        // look for existing entry
-        if(hasMetaKey(name)) {
-            for (NVPair p : metadata) {
-                if (p.getName().equals(name)) {
-                    p.addValue(value);
+            // look for existing entry
+            if(hasMetaKey(name)) {
+                for (NVPair p : metadata) {
+                    if (p.getName().equals(name)) {
+                        p.addValue(value);
+                    }
                 }
+            }else {
+                metadata.add(new NVPair(name, value));
             }
-        }else {
-            metadata.add(new NVPair(name, value));
-        }
 
     }
 

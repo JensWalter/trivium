@@ -18,9 +18,9 @@ package io.trivium;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.type.TypeFactory;
-import io.trivium.glue.TriviumObject;
 import io.trivium.extension.task.Task;
 import io.trivium.extension.task.TaskFactory;
 import io.trivium.test.TestCase;

@@ -18,8 +18,8 @@ package io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732;
 
 import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.TypeFactory;
-import io.trivium.glue.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.profile.TimeUtils;
 

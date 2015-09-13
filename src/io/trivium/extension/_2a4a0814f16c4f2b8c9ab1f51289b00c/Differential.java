@@ -17,7 +17,6 @@
 package io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c;
 
 import io.trivium.extension.type.Type;
-import io.trivium.glue.TriviumObject;
 
 import java.util.concurrent.atomic.AtomicLong;
 

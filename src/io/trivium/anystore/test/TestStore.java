@@ -20,9 +20,9 @@ import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
-import io.trivium.glue.TriviumObject;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.util.ArrayList;

@@ -20,7 +20,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.TriviumObject;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;

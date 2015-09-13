@@ -18,10 +18,10 @@ package io.trivium.extension.binding;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.extension.type.Typed;
-import io.trivium.glue.TriviumObject;
 import io.trivium.Registry;
 
 import java.util.logging.Logger;
