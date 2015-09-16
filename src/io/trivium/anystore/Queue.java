@@ -16,8 +16,8 @@
 
 package io.trivium.anystore;
 
-import io.qdb.buffer.MessageCursor;
-import io.qdb.buffer.PersistentMessageBuffer;
+import io.trivium.dep.io.qdb.buffer.MessageCursor;
+import io.trivium.dep.io.qdb.buffer.PersistentMessageBuffer;
 
 import java.io.File;
 import java.io.IOException;

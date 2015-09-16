@@ -21,11 +21,11 @@ import io.trivium.profile.Profiler;
 import io.trivium.profile.TimeUtils;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.StoreUtils;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.PosixParser;
+import io.trivium.dep.org.apache.commons.cli.CommandLine;
+import io.trivium.dep.org.apache.commons.cli.CommandLineParser;
+import io.trivium.dep.org.apache.commons.cli.HelpFormatter;
+import io.trivium.dep.org.apache.commons.cli.Options;
+import io.trivium.dep.org.apache.commons.cli.PosixParser;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -16,14 +16,14 @@
 
 package io.trivium.anystore;
 
-import com.google.common.primitives.Bytes;
+import io.trivium.dep.com.google.common.primitives.Bytes;
 import io.trivium.Central;
 import io.trivium.NVPair;
-import org.iq80.leveldb.CompressionType;
-import org.iq80.leveldb.DBIterator;
-import org.iq80.leveldb.Options;
-import org.iq80.leveldb.impl.Iq80DBFactory;
-import org.iq80.leveldb.DB;
+import io.trivium.dep.org.iq80.leveldb.CompressionType;
+import io.trivium.dep.org.iq80.leveldb.DBIterator;
+import io.trivium.dep.org.iq80.leveldb.Options;
+import io.trivium.dep.org.iq80.leveldb.impl.Iq80DBFactory;
+import io.trivium.dep.org.iq80.leveldb.DB;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 public class AnyIndex{
     private static ConcurrentHashMap<String,AnyIndex> ALL = new ConcurrentHashMap<>();

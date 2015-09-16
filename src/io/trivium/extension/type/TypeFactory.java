@@ -16,7 +16,7 @@
 
 package io.trivium.extension.type;
 
-import com.google.common.reflect.TypeToken;
+import io.trivium.dep.com.google.common.reflect.TypeToken;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;

@@ -16,9 +16,9 @@
 
 package io.trivium.glue.om;
 
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
+import io.trivium.dep.com.google.gson.stream.JsonReader;
+import io.trivium.dep.com.google.gson.stream.JsonToken;
+import io.trivium.dep.com.google.gson.stream.JsonWriter;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 

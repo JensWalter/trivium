@@ -22,9 +22,9 @@ import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
+import io.trivium.dep.com.google.gson.stream.JsonReader;
+import io.trivium.dep.com.google.gson.stream.JsonToken;
+import io.trivium.dep.com.google.gson.stream.JsonWriter;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 

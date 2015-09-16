@@ -16,7 +16,7 @@
 
 package io.trivium.extension._f70b024ca63f4b6b80427238bfff101f;
 
-import com.google.common.primitives.Bytes;
+import io.trivium.dep.com.google.common.primitives.Bytes;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.Registry;
@@ -26,7 +26,7 @@ import io.trivium.extension.type.TypeFactory;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Trivium;
-import org.iq80.snappy.Snappy;
+import io.trivium.dep.org.iq80.snappy.Snappy;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;

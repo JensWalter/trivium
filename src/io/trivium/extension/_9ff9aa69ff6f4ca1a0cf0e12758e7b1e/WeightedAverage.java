@@ -16,7 +16,7 @@
 
 package io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e;
 
-import com.google.common.util.concurrent.AtomicDouble;
+import io.trivium.dep.com.google.common.util.concurrent.AtomicDouble;
 import io.trivium.extension.type.Type;
 
 import java.util.concurrent.atomic.AtomicLong;

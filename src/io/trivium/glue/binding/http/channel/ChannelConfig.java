@@ -16,7 +16,7 @@
 
 package io.trivium.glue.binding.http.channel;
 
-import com.google.gson.Gson;
+import io.trivium.dep.com.google.gson.Gson;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.type.Typed;
 

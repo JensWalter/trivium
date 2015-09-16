@@ -16,8 +16,8 @@
 
 package io.trivium.anystore;
 
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
+import io.trivium.dep.com.google.common.collect.Interner;
+import io.trivium.dep.com.google.common.collect.Interners;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

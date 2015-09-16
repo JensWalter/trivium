@@ -19,10 +19,10 @@ package io.trivium.anystore;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.glue.om.Json;
-import org.iq80.leveldb.CompressionType;
-import org.iq80.leveldb.Options;
-import org.iq80.leveldb.impl.Iq80DBFactory;
-import org.iq80.leveldb.DB;
+import io.trivium.dep.org.iq80.leveldb.CompressionType;
+import io.trivium.dep.org.iq80.leveldb.Options;
+import io.trivium.dep.org.iq80.leveldb.impl.Iq80DBFactory;
+import io.trivium.dep.org.iq80.leveldb.DB;
 
 import java.io.File;
 import java.io.FileOutputStream;

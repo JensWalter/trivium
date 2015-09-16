@@ -31,7 +31,7 @@ import io.trivium.glue.om.Json;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 import io.trivium.Registry;
-import org.iq80.snappy.Snappy;
+import io.trivium.dep.org.iq80.snappy.Snappy;
 
 import java.io.File;
 import java.util.ArrayList;

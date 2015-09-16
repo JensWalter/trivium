@@ -17,7 +17,7 @@
 package io.trivium.anystore;
 
 import io.trivium.Central;
-import org.apache.commons.io.FileUtils;
+import io.trivium.dep.org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.logging.Level;

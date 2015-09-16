@@ -16,7 +16,7 @@
 
 package io.trivium.anystore;
 
-import io.qdb.buffer.MessageCursor;
+import io.trivium.dep.io.qdb.buffer.MessageCursor;
 import io.trivium.Central;
 import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
 import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;

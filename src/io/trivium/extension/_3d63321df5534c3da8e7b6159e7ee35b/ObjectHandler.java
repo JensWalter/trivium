@@ -16,7 +16,7 @@
 
 package io.trivium.extension._3d63321df5534c3da8e7b6159e7ee35b;
 
-import com.google.common.base.Joiner;
+import io.trivium.dep.com.google.common.base.Joiner;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
