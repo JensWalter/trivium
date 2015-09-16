@@ -21,6 +21,8 @@ import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.TypeFactory;
 import io.trivium.glue.om.Element;
 
+import java.time.Instant;
+
 public class FileTypeFactory implements TypeFactory<FileType> {
     @Override
     public FileType getInstance(TriviumObject po) {
@@ -30,9 +32,10 @@ public class FileTypeFactory implements TypeFactory<FileType> {
         Element fileElement = root.getFirstChild("file");
         file.contentType = fileElement.getFirstChild("contentType").getValue();
         file.data = fileElement.getFirstChild("data").getValue();
-        file.lastModified = fileElement.getFirstChild("lastModified").getValue();
+        //UTC-String "2014-11-11T15:33:14Z"
+        file.lastModified = Instant.parse(fileElement.getFirstChild("lastModified").getValue());
         file.name = fileElement.getFirstChild("name").getValue();
-        file.size = fileElement.getFirstChild("size").getValue();
+        file.size = Long.getLong(fileElement.getFirstChild("size").getValue());
         file.metadata = metadata;
 
         return file;
@@ -40,23 +43,24 @@ public class FileTypeFactory implements TypeFactory<FileType> {
 
     @Override
     public TriviumObject getTriviumObject(FileType instance) {
-            TriviumObject po = new TriviumObject();
-            po.replaceMeta("name", instance.name);
-            po.replaceMeta("size", instance.size);
-            po.replaceMeta("contentType", instance.contentType);
+        TriviumObject po = new TriviumObject();
+        po.replaceMeta("name", instance.name);
+        po.replaceMeta("size", String.valueOf(instance.size));
+        po.replaceMeta("contentType", instance.contentType);
 
-            Element file = new Element("file");
-            file.addChild(new Element("data", instance.data));
-            file.addChild(new Element("name", instance.name));
-            file.addChild(new Element("size", instance.size));
-            file.addChild(new Element("contentType", instance.contentType));
-            file.addChild(new Element("lastModified", instance.lastModified));
-            po.setData(file);
-            return po;
+        Element file = new Element("file");
+        file.addChild(new Element("data", instance.data));
+        file.addChild(new Element("name", instance.name));
+        file.addChild(new Element("size", String.valueOf(instance.size)));
+        file.addChild(new Element("contentType", instance.contentType));
+        //UTC-String "2014-11-11T15:33:14Z"
+        file.addChild(new Element("lastModified", instance.lastModified.toString()));
+        po.setData(file);
+        return po;
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "trivium-file factory";
     }
 

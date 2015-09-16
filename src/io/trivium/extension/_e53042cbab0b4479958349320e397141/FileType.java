@@ -21,6 +21,8 @@ import io.trivium.extension.type.Type;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.TypeIds;
 
+import java.time.Instant;
+
 public class FileType implements Type {
     /**
      * {
@@ -37,9 +39,9 @@ public class FileType implements Type {
      }
      */
     public String name;
-    public String size;
+    public long size;
     public String contentType;
-    public String lastModified;
+    public Instant lastModified;
     public String data;
     public NVList metadata;
 
