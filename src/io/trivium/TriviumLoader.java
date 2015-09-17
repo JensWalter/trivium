@@ -149,9 +149,6 @@ public class TriviumLoader extends ClassLoader {
                 }
             }
         }catch(Exception ex){}
-        if (name.startsWith("javablogging.")) {
-            return getClass(name);
-        }
         return super.loadClass(name);
     }
 
