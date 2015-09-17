@@ -22,7 +22,6 @@ import io.trivium.NVPair;
 import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension.type.Type;
-import io.trivium.extension.type.TypeFactory;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Trivium;
@@ -199,11 +198,11 @@ public class TriviumObject implements Type {
         return b_data;
     }
 
-    public <T> T getTypedData(){
+    public <T extends Type> T getTypedData(){
         ObjectRef typeId = this.getTypeId();
         try {
-            TypeFactory<T> tf = Registry.INSTANCE.typeFactory.get(typeId);
-            T obj = tf.getInstance(this);
+            T obj = (T) Registry.INSTANCE.types.get(typeId).newInstance();
+            obj.populate(this);
             return obj;
         }catch(Exception ex){
             log.log(Level.SEVERE,"error constructing object", ex);
@@ -312,10 +311,8 @@ public class TriviumObject implements Type {
     }
 
     public static TriviumObject getTriviumObject(Type t){
-        ObjectRef typeId = t.getTypeId();
         try {
-            TypeFactory<Type> tf = Registry.INSTANCE.typeFactory.get(typeId);
-            return tf.getTriviumObject(t);
+            return t.toTriviumObject();
         }catch(Exception ex){
             Logger.getLogger(TriviumObject.class.getName()).log(Level.SEVERE,"error constructing object", ex);
             return null;

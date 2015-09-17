@@ -17,9 +17,11 @@
 package io.trivium.extension._e53042cbab0b4479958349320e397141;
 
 import io.trivium.NVList;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.TypeIds;
+import io.trivium.glue.om.Element;
 
 import java.time.Instant;
 
@@ -45,4 +47,35 @@ public class FileType implements Type {
     public String data;
     public NVList metadata;
 
+    @Override
+    public void populate(TriviumObject po) {
+        NVList metadata = po.getMetadata();
+        Element root = po.getData();
+        Element fileElement = root.getFirstChild("file");
+        this.contentType = fileElement.getFirstChild("contentType").getValue();
+        this.data = fileElement.getFirstChild("data").getValue();
+        //UTC-String "2014-11-11T15:33:14Z"
+        this.lastModified = Instant.parse(fileElement.getFirstChild("lastModified").getValue());
+        this.name = fileElement.getFirstChild("name").getValue();
+        this.size = Long.getLong(fileElement.getFirstChild("size").getValue());
+        this.metadata = metadata;
+    }
+
+    @Override
+    public TriviumObject toTriviumObject() {
+        TriviumObject po = new TriviumObject();
+        po.replaceMeta("name", this.name);
+        po.replaceMeta("size", String.valueOf(this.size));
+        po.replaceMeta("contentType", this.contentType);
+
+        Element file = new Element("file");
+        file.addChild(new Element("data", this.data));
+        file.addChild(new Element("name", this.name));
+        file.addChild(new Element("size", String.valueOf(this.size)));
+        file.addChild(new Element("contentType", this.contentType));
+        //UTC-String "2014-11-11T15:33:14Z"
+        file.addChild(new Element("lastModified", this.lastModified.toString()));
+        po.setData(file);
+        return po;
+    }
 }

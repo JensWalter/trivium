@@ -18,22 +18,28 @@ package io.trivium;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.dep.org.apache.commons.io.IOUtils;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
-import io.trivium.extension.type.TypeFactory;
+import io.trivium.extension.type.Type;
 import io.trivium.extension.task.Task;
 import io.trivium.extension.task.TaskFactory;
 import io.trivium.test.TestCase;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Registry {
-    public static Registry INSTANCE = new Registry();
+public enum Registry {
+    INSTANCE;
 
     Logger log = Logger.getLogger(getClass().getName());
     
@@ -41,8 +47,7 @@ public class Registry {
     public ConcurrentHashMap<ObjectRef, ArrayList<TaskFactory>> taskSubscription = new ConcurrentHashMap<>();
     ServiceLoader<TaskFactory> taskLoader = ServiceLoader.load(TaskFactory.class);
 
-    public ConcurrentHashMap<ObjectRef,TypeFactory> typeFactory = new ConcurrentHashMap<>();
-    ServiceLoader<TypeFactory> typeLoader = ServiceLoader.load(TypeFactory.class);
+    public ConcurrentHashMap<ObjectRef,Class<? extends Type>> types = new ConcurrentHashMap<>();
 
     public ConcurrentHashMap<ObjectRef,Binding> bindings= new ConcurrentHashMap<>();
     ServiceLoader<Binding> bindingLoader = ServiceLoader.load(Binding.class,new TriviumLoader(ClassLoader.getSystemClassLoader()));
@@ -51,18 +56,29 @@ public class Registry {
     ServiceLoader<TestCase> testcaseLoader = ServiceLoader.load(TestCase.class,new TriviumLoader(ClassLoader.getSystemClassLoader()));
 
     public void reload(){
+        final String PREFIX="META-INF/services/";
+        ClassLoader tvmLoader = ClassLoader.getSystemClassLoader();
         //types
-        typeLoader.reload();
-        Iterator<TypeFactory> typeIter = typeLoader.iterator();
-        while(typeIter.hasNext()){
-            TypeFactory type = typeIter.next();
-            if(!typeFactory.containsKey(type.getTypeId())){
-                typeFactory.put(type.getTypeId(), type);
+        try {
+            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.type.Type");
+            while(resUrl.hasMoreElements()){
+                URL url = resUrl.nextElement();
+                URLConnection connection = url.openConnection();
+                connection.connect();
+                InputStream is = connection.getInputStream();
+                List<String> lines = IOUtils.readLines(is, "UTF-8");
+                is.close();
+                for(String line : lines) {
+                    Class<? extends Type> clazz = (Class<? extends Type>)Class.forName(line);
+                    Type prototype = clazz.newInstance();
+                    if(!types.containsKey(prototype.getTypeId())){
+                        types.put(prototype.getTypeId(), clazz);
+                    }
+                    log.log(Level.FINE,"registered type '{}'", prototype.getTypeName());
+                }
             }
-        }
-        //printing registered Types
-        for(TypeFactory type : typeFactory.values()){
-            log.log(Level.FINE,"registered type factory for '{}'", type.getName());
+        }catch(Exception ex){
+            log.log(Level.SEVERE,"dynamically loading types failed",ex);
         }
 
         //activity

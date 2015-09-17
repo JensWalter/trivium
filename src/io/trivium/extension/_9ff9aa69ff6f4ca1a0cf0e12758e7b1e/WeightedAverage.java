@@ -16,9 +16,14 @@
 
 package io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e;
 
+import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.TypeIds;
 import io.trivium.dep.com.google.common.util.concurrent.AtomicDouble;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
+import io.trivium.glue.om.Element;
 
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class WeightedAverage implements Type {
@@ -26,10 +31,7 @@ public class WeightedAverage implements Type {
     private AtomicDouble avg = new AtomicDouble();
     private AtomicLong count = new AtomicLong(0);
 
-    /**
-     * should not be used, only invoked by reflection
-     */
-    private WeightedAverage(){
+    public WeightedAverage(){
 
     }
 
@@ -55,4 +57,28 @@ public class WeightedAverage implements Type {
         count.incrementAndGet();
     }
 
+    @Override
+    public TriviumObject toTriviumObject() {
+        Instant now = Instant.now();
+        TriviumObject po = new TriviumObject();
+
+        po.addMetadata("contentType", ContentTypes.getMimeType("trivium"));
+        po.addMetadata("type", "object");
+        po.addMetadata("created", now.toString());
+        po.addMetadata("datapoint", this.getDatapoint());
+
+        Element el_root = new Element("statisticData");
+        Element el_datapoint = new Element("datapoint", this.getDatapoint());
+        Element el_timestamp = new Element("timestamp", now.toString());
+        Element el_value = new Element("value", String.format("%.2f", this.getAverage()));
+
+        el_root.addChild(el_datapoint);
+        el_root.addChild(el_timestamp);
+        el_root.addChild(el_value);
+
+        po.setData(el_root);
+        po.setTypeId(TypeIds.PROFILER_WEIGHTEDAVERAGE);
+
+        return po;
+    }
 }

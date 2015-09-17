@@ -20,7 +20,6 @@ import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 
 import java.io.ByteArrayInputStream;
@@ -57,10 +56,10 @@ public class URLConnection extends java.net.URLConnection {
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));
         ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
-        FileTypeFactory factory = new FileTypeFactory();
         byte[] b=new byte[0];
         for(TriviumObject po : objects){
-            FileType file = factory.getInstance(po);
+            FileType file = new FileType();
+            file.populate(po);
             b = Base64.getDecoder().decode(file.data);
         }
         ByteArrayInputStream bis = new ByteArrayInputStream(b);

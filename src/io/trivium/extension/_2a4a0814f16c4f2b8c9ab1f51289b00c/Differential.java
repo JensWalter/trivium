@@ -16,18 +16,20 @@
 
 package io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c;
 
+import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.TypeIds;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
+import io.trivium.glue.om.Element;
 
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Differential implements Type{
     private String datapoint;
     private AtomicLong value = new AtomicLong(0);
 
-    /**
-     * should not be used, only invoked by reflection
-     */
-    private Differential(){
+    public Differential(){
     }
 
     /**
@@ -52,5 +54,28 @@ public class Differential implements Type{
 
     public long getValue(){
         return value.longValue();
+    }
+
+    @Override
+    public TriviumObject toTriviumObject(){
+        TriviumObject po = new TriviumObject();
+        Instant now = Instant.now();
+        po.addMetadata("contentType", ContentTypes.getMimeType("trivium"));
+        po.addMetadata("type", "object");
+        po.addMetadata("created", now.toString());
+        po.addMetadata("datapoint", this.getDatapoint());
+
+        Element el_root = new Element("statisticData");
+        Element el_datapoint = new Element("datapoint", this.getDatapoint());
+        Element el_timestamp = new Element("timestamp", now.toString());
+        Element el_value = new Element("value", String.valueOf(this.getValue()));
+
+        el_root.addChild(el_datapoint);
+        el_root.addChild(el_timestamp);
+        el_root.addChild(el_value);
+
+        po.setData(el_root);
+        po.setTypeId(TypeIds.PROFILER_DIFFERENTIAL);
+        return po;
     }
 }

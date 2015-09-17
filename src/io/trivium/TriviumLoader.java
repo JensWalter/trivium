@@ -22,7 +22,6 @@ import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.ContentTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.FileTypeFactory;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 
 import java.io.DataInputStream;
@@ -58,9 +57,9 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType", ContentTypes.getMimeType("class")));
                 ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
-                FileTypeFactory factory = new FileTypeFactory();
                 for(TriviumObject po : objects){
-                    FileType memFile = factory.getInstance(po);
+                    FileType memFile = new FileType();
+                    memFile.populate(po);
                     b = Base64.getDecoder().decode(memFile.data);
                 }
             }
@@ -93,7 +92,6 @@ public class TriviumLoader extends ClassLoader {
             query.criteria.add(new Value("name", name));
             query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
             ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
-            FileTypeFactory factory = new FileTypeFactory();
             for(TriviumObject po : objects){
                 String uri = "anystore://"+po.getId().toString();
                 URL url = new URL(uri);
@@ -136,9 +134,9 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType","application/java-vm"));
                 ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
-                FileTypeFactory factory = new FileTypeFactory();
                 for(TriviumObject po : objects){
-                    FileType file = factory.getInstance(po);
+                    FileType file = new FileType();
+                    file.populate(po);
                     if(file.contentType.equals(ContentTypes.getMimeType("class"))
                             && file.name.replace('/','.').equals(name + ".class")) {
                         byte[] bytes = Base64.getDecoder().decode(file.data);

@@ -16,9 +16,14 @@
 
 package io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732;
 
+import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.TypeIds;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
+import io.trivium.glue.om.Element;
 import io.trivium.profile.TimeUtils;
 
+import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -28,11 +33,7 @@ public class Ticker implements Type {
     private String datapoint;
     private ConcurrentHashMap<Long, AtomicLong> values = new ConcurrentHashMap<>();
 
-    /**
-     * should not be used, only invoked by reflection
-     */
-    private Ticker(){
-
+    public Ticker(){
     }
 
     /**
@@ -71,5 +72,41 @@ public class Ticker implements Type {
             val = new AtomicLong(1);
             values.put(timeframestart, val);
         }
+    }
+
+    @Override
+    public TriviumObject toTriviumObject() {
+        long ts = TimeUtils.getTimeFrameStart(this.getInterval()) - 1;
+        long timeframestart = TimeUtils.getTimeFrameStart(this.getInterval(), ts);
+        long timeframeend = TimeUtils.getTimeFrameEnd(this.getInterval(), ts);
+        Instant start = Instant.ofEpochMilli(timeframestart);
+        Instant end = Instant.ofEpochMilli(timeframeend);
+        AtomicLong value = this.getValues().remove(timeframestart);
+        if (value != null) {
+            long val = value.get();
+            TriviumObject po = new TriviumObject();
+            po.addMetadata("contentType", ContentTypes.getMimeType("infinup"));
+            po.addMetadata("type", "object");
+            po.addMetadata("timeFrameStart", start.toString());
+            po.addMetadata("timeFrameEnd", end.toString());
+            po.addMetadata("created", end.toString());
+            po.addMetadata("datapoint", this.getDatapoint());
+
+            Element el_root = new Element("statisticData");
+            Element el_datapoint = new Element("datapoint", this.getDatapoint());
+            Element el_timeFrameStart = new Element("timeFrameStart", start.toString());
+            Element el_timeFrameEnd = new Element("timeFrameEnd", end.toString());
+            Element el_value = new Element("value", String.valueOf(val));
+
+            el_root.addChild(el_datapoint);
+            el_root.addChild(el_timeFrameStart);
+            el_root.addChild(el_timeFrameEnd);
+            el_root.addChild(el_value);
+
+            po.setData(el_root);
+            po.setTypeId(TypeIds.PROFILER_TICKER);
+            return po;
+        }
+        return null;
     }
 }
