@@ -27,7 +27,7 @@ import java.time.Instant;
 public class WeightedAverageFactory implements TypeFactory<WeightedAverage> {
     @Override
     public String getName() {
-        return "weighter average type factory";
+        return "weighted average type factory";
     }
 
     @Override
