@@ -45,7 +45,7 @@ public class AnyServer implements Runnable {
 
 	@Override
 	public void run() {
-	    log.info("starting anystore server");
+	    log.log(Level.FINE,"starting anystore server");
 	    if(store==null) init();
 		String locPipeIn = Central.getProperty("basePath") + File.separator + "queues" + File.separator + "queueIn";
 		StoreUtils.createIfNotExists(locPipeIn);

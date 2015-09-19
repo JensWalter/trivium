@@ -83,7 +83,7 @@ public class MapStore {
         //create primary key index - just in case
         new AnyIndex("id", true);
 
-        log.info("MapStore initialized on " + path);
+        log.log(Level.FINE,"MapStore initialized on " + path);
 
         Central.isRunning = true;
     }
