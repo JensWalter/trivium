@@ -21,6 +21,10 @@ import io.trivium.dep.io.qdb.buffer.PersistentMessageBuffer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.LongBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,13 +34,16 @@ public class Queue {
     Logger log = Logger.getLogger(getClass().getName());
 
     PersistentMessageBuffer queue;
-    volatile long writePointer = 0;
-    //buffer for splitting both volatiles into 2 cache lines
-    long[] buffer = new long[32];
-    volatile long readPointer = 0;
+    LongBuffer readPointer;
 
     public Queue(String path){
         try {
+            RandomAccessFile aFile     = new RandomAccessFile(path+".readpos", "rw");
+            FileChannel inChannel = aFile.getChannel();
+            readPointer = inChannel.map(FileChannel.MapMode.READ_WRITE, 0, 16).asLongBuffer();
+            //to prevent a buffer underflow on read
+            readPointer.get();
+
             queue = new PersistentMessageBuffer(new File(path));
             //set size to 100mb
             queue.setMaxSize(100*1024*1024);
@@ -48,15 +55,16 @@ public class Queue {
     public void append(byte[] msg){
         try {
             //routing key is empty since it is not used
-            long id = queue.append(System.currentTimeMillis(),"",msg);
-            writePointer = id;
+            queue.append(System.currentTimeMillis(), "", msg);
         } catch (IOException e) {
             log.log(Level.SEVERE,"error appending message to queue",e);
         }
     }
 
-    public MessageCursor getCursor(long pos){
+    public MessageCursor getCursor(){
         try {
+            readPointer.flip();
+            long pos = readPointer.get();
             return queue.cursor(pos);
         } catch (IOException e) {
             log.log(Level.SEVERE,"error creating cursor",e);
@@ -72,5 +80,10 @@ public class Queue {
             queueList.put(path,q);
             return q;
         }
+    }
+
+    public void setReadPointer(long position){
+        readPointer.flip();
+        readPointer.put(position);
     }
 }

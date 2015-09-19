@@ -185,7 +185,7 @@ public class MapStore {
             });
             return result;
         } catch (Exception e) {
-            log.log(Level.SEVERE, "query was interupted", e);
+            log.log(Level.SEVERE, "query was interrupted", e);
         }
         return new ArrayList<>();
     }

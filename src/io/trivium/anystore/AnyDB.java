@@ -16,30 +16,21 @@
 
 package io.trivium.anystore;
 
-import io.trivium.NVList;
-import io.trivium.NVPair;
-import io.trivium.glue.om.Json;
 import io.trivium.dep.org.iq80.leveldb.CompressionType;
 import io.trivium.dep.org.iq80.leveldb.Options;
 import io.trivium.dep.org.iq80.leveldb.impl.Iq80DBFactory;
 import io.trivium.dep.org.iq80.leveldb.DB;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AnyDB {
     DB map =null;
     Logger log = Logger.getLogger(getClass().getName());
-    public String fileName;
     public String path;
-    public String id;
-    public byte[] idAsBytes;
     /**
-     * valid values are "meta" or "data"
+     * valid values are "meta" or "data" or "local"
      */
     public String type;
 
@@ -53,13 +44,8 @@ public class AnyDB {
     }
 
     public void generate() {
-        generateUniqueId(type,path);
-        buildMap();
-    }
-
-    public void buildMap(){
         try {
-            File file = new File(fileName+".leveldb");
+            File file = new File(path+type);
             try {
                 Options options = new Options();
                 options.createIfMissing(true);
@@ -67,50 +53,11 @@ public class AnyDB {
                 Iq80DBFactory factory = Iq80DBFactory.factory;
                 map = factory.open(file, options);
             } catch (Exception e) {
-                log.log(Level.SEVERE,"cannot initialize leveldb store "+fileName, e);
+                log.log(Level.SEVERE,"cannot initialize leveldb store "+path, e);
             }
-            persist();
         }catch (Exception ex){
             log.log(Level.SEVERE,"creating file store failed",ex);
             System.exit(0);
-        }
-    }
-
-    private void persist(){
-        NVList list = new NVList();
-        list.add(new NVPair("fileName", fileName));
-        list.add(new NVPair("path", path));
-        list.add(new NVPair("id", id));
-        String str = Json.NVPairsToJson(list);
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName + ".json");
-            fos.write(str.getBytes());
-            fos.close();
-        }catch(Exception ex){
-            log.log(Level.SEVERE, "creating store meta information failed", ex);
-        }
-    }
-
-    public void generateUniqueId(String type,String path){
-        this.type=type;
-        this.path=path;
-        boolean exists = true;
-        while(exists){
-            //generate random string
-            String randomStr = new BigInteger(130, new SecureRandom()).toString(32);
-            id = randomStr.substring(0,3);
-            idAsBytes = id.getBytes();
-            switch (type) {
-                case "data":
-                    fileName = path + StoreUtils.data + id;
-                    break;
-                case "meta":
-                    fileName = path + StoreUtils.meta + id;
-                    break;
-                default:
-                    fileName = path + StoreUtils.local + id;
-            }
-            exists = new File(fileName).exists();
         }
     }
 }

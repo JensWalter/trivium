@@ -201,6 +201,6 @@ public class Central {
         long start = TimeUtils.getTimeFrameStart(new Date().getTime() + 60000);
         t.schedule(Profiler.INSTANCE, new Date(start), 60000);
 
-        log.log(Level.INFO,"trivium is running an accessible through the web interface on http://localhost:12345/ui/");
+        log.log(Level.INFO,"trivium is now running and accessible through the web interface on http://localhost:12345/ui/");
     }
 }

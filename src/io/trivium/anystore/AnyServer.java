@@ -47,11 +47,11 @@ public class AnyServer implements Runnable {
 	public void run() {
 	    log.log(Level.FINE,"starting anystore server");
 	    if(store==null) init();
-		String locPipeIn = Central.getProperty("basePath") + File.separator + "queues" + File.separator + "queueIn";
+		String locPipeIn = Central.getProperty("basePath") + File.separator + "queues" + File.separator + "ingestQ";
 		StoreUtils.createIfNotExists(locPipeIn);
         Queue pipeIn = Queue.getQueue(locPipeIn);
 		try {
-            MessageCursor cursor = pipeIn.getCursor(pipeIn.readPointer);
+            MessageCursor cursor = pipeIn.getCursor();
 			while (true) {
 				if (cursor.next(1000)) {
                     long readId = cursor.getId();
@@ -60,7 +60,7 @@ public class AnyServer implements Runnable {
                     tvm.setBinary(payload);
 
                     store.storeObject(tvm);
-                    pipeIn.readPointer = readId;
+                    pipeIn.setReadPointer(readId);
 
                     Profiler.INSTANCE.tick(DataPoints.ANYSTORE_QUEUE_OUT);
                     Profiler.INSTANCE.decrement(DataPoints.ANYSTORE_QUEUE_SIZE);
