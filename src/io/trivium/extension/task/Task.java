@@ -61,10 +61,8 @@ public abstract class Task implements Typed {
     public ArrayList<InputType> getInputTypes() {
         ArrayList<InputType> inputFields = new ArrayList<>();
         try {
-            Class<?> factoryClass = this.getClass();
-            Method method = factoryClass.getMethod("getInstance", TriviumObject.class);
-            Class<?> activityclass = method.getReturnType();
-            Field[] fields = activityclass.getDeclaredFields();
+            Class<?> taskClass = this.getClass();
+            Field[] fields = taskClass.getDeclaredFields();
             for (Field field : fields) {
                 INPUT input = field.getAnnotation(INPUT.class);
                 if (input != null) {
