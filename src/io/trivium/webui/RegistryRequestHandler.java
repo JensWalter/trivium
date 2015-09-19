@@ -22,7 +22,7 @@ import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.binding.State;
-import io.trivium.extension.task.TaskFactory;
+import io.trivium.extension.task.Task;
 import io.trivium.extension.type.Type;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
@@ -57,9 +57,10 @@ public class RegistryRequestHandler implements HttpHandler {
                 Registry.INSTANCE.reload();
 
                 NVList list = new NVList();
-                ConcurrentHashMap<ObjectRef, Binding> bindings = Registry.INSTANCE.bindings;
+                ConcurrentHashMap<ObjectRef, Class<? extends Binding>> bindings = Registry.INSTANCE.bindings;
                 NVPair nvbind = new NVPair("binding");
-                for (Binding binding : bindings.values()) {
+                for (Class<? extends Binding> bindingClass : bindings.values()) {
+                    Binding binding = bindingClass.newInstance();
                     nvbind.addValue(binding.getTypeId().toString());
                     list.add(new NVPair(binding.getTypeId().toString(), binding.getName()));
                 }
@@ -72,11 +73,12 @@ public class RegistryRequestHandler implements HttpHandler {
                     list.add(new NVPair(prototype.getTypeId().toString(), prototype.getTypeName()));
                 }
                 list.add(tybind);
-                ConcurrentHashMap<ObjectRef, TaskFactory> tasks = Registry.INSTANCE.taskFactory;
+                ConcurrentHashMap<ObjectRef, Class<? extends Task>> tasks = Registry.INSTANCE.tasks;
                 NVPair tskpair = new NVPair("task");
-                for (TaskFactory f : tasks.values()) {
-                    tskpair.addValue(f.getTypeId().toString());
-                    list.add(new NVPair(f.getTypeId().toString(), f.getName()));
+                for (Class<? extends Task> clazz : tasks.values()) {
+                    Task prototype = clazz.newInstance();
+                    tskpair.addValue(prototype.getTypeId().toString());
+                    list.add(new NVPair(prototype.getTypeId().toString(), prototype.getName()));
                 }
                 list.add(tskpair);
 
@@ -86,7 +88,7 @@ public class RegistryRequestHandler implements HttpHandler {
             } else if (cmd.equals("status")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Binding bind = Registry.INSTANCE.bindings.get(ref);
+                Binding bind = Registry.INSTANCE.bindingInstances.get(ref);
                 if (bind != null) {
                     State state = bind.getState();
                     NVList list = new NVList();
@@ -106,12 +108,12 @@ public class RegistryRequestHandler implements HttpHandler {
             } else if (cmd.equals("start")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.bindings.get(ref).start();
+                Registry.INSTANCE.bindingInstances.get(ref).start();
                 s.ok();
             } else if (cmd.equals("stop")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.bindings.get(ref).stop();
+                Registry.INSTANCE.bindingInstances.get(ref).stop();
                 s.ok();
             } else {
 

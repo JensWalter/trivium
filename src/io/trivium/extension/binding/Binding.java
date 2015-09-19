@@ -17,6 +17,7 @@
 package io.trivium.extension.binding;
 
 import io.trivium.anystore.AnyClient;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
 import io.trivium.extension.type.Typed;
@@ -26,6 +27,7 @@ import java.util.logging.Logger;
 public abstract class Binding implements Typed {
     protected Logger log = Logger.getLogger(getClass().getName());
     private State state = State.stopped;
+    public final ObjectRef instanceId = ObjectRef.getInstance();
 
     public abstract void start();
 
