@@ -5,8 +5,8 @@
     <title>trivium resource upload site</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
-    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
-    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.13.3.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.13.3.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
       var Dropzone = React.createClass({
@@ -108,8 +108,7 @@ var UploadForm = React.createClass({
     );
   }
 });
-      React.renderComponent(<UploadForm />,
-              document.getElementById("container"));
+      React.render(<UploadForm />,document.getElementById("container"));
     </script>
 </head>
 <body>

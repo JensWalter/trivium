@@ -39,7 +39,7 @@
       	  },
           render: function() {
           var elements = this.props.id.map(function(e){
-                return (<li ley={e}>{all[e]}</li>);
+                return (<li key={e}>{all[e]}</li>);
             });
             return (<div>Type: <ul>{elements}</ul></div>);
           }
@@ -105,8 +105,7 @@
           }
       });
 
-      React.renderComponent(<ExtensionList />,
-              document.getElementById("container"));
+      React.render(<ExtensionList />, document.getElementById("container"));
     </script>
 </head>
 <body>

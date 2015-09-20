@@ -5,8 +5,8 @@
     <title>trvivium stats</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
-    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
-    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.13.3.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.13.3.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
       var updateInterval = 60000;
@@ -479,18 +479,12 @@ var AnystoreWriteDuration = React.createClass({
         return (<span><StackedTimeSeriesLineChart title={"anystore write duration (avg per object)"} data1={this.state.index} name1="index" data2={this.state.meta} name2="meta" data3={this.state.data} name3="data"/></span>);
       }
   });
-       React.renderComponent(<AnystoreSize />,
-              document.getElementById("anystoresize"));
-       React.renderComponent(<AnystoreQueueSize />,
-              document.getElementById("anystorequeuesize"));
-       React.renderComponent(<AnystoreQueueIn />,
-              document.getElementById("anystorequeuein"));
-       React.renderComponent(<AnystoreQueueOut />,
-              document.getElementById("anystorequeueout"));
-       React.renderComponent(<CpuUsage />,
-              document.getElementById("cpuusage"));
-       React.renderComponent(<AnystoreWriteDuration />,
-              document.getElementById("anystorewriteduration"));
+       React.render(<AnystoreSize />,document.getElementById("anystoresize"));
+       React.render(<AnystoreQueueSize />,document.getElementById("anystorequeuesize"));
+       React.render(<AnystoreQueueIn />,document.getElementById("anystorequeuein"));
+       React.render(<AnystoreQueueOut />,document.getElementById("anystorequeueout"));
+       React.render(<CpuUsage />,document.getElementById("cpuusage"));
+       React.render(<AnystoreWriteDuration />,document.getElementById("anystorewriteduration"));
     </script>
 </head>
 <body>

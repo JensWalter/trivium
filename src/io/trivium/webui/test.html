@@ -5,8 +5,8 @@
     <title>trivium testing site</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
-    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
-    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.13.3.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.13.3.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
       var TestNumberSetting = React.createClass({
@@ -72,8 +72,7 @@
           }
       });
 
-      React.renderComponent(<TestSettings/>,
-              document.getElementById("container"));
+      React.render(<TestSettings/>, document.getElementById("container"));
     </script>
 </head>
 <body>

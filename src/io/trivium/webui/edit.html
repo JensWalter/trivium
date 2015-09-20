@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="css/codemirror-4.7.css">
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/codemirror-4.7.js"></script>
-    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
-    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.13.3.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.13.3.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
       var StatusLine = React.createClass({
@@ -53,8 +53,7 @@
           }
         });
 
-      React.renderComponent(<Editor />,
-              document.getElementById("container"));
+      React.render(<Editor />, document.getElementById("container"));
     </script>
 </head>
 <body style="margin: 0 0 0 0;">
