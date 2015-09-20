@@ -7,9 +7,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="bnd-TaskRunner" />
     <orderEntry type="module" module-name="bnd-timer" />
-    <orderEntry type="module" module-name="tpe-logentry" />
+    <orderEntry type="module" module-name="tpe-bondoraloan" />
+    <orderEntry type="module" module-name="tpe-error" />
     <orderEntry type="module" module-name="tpe-timertick" />
+    <orderEntry type="module" module-name="tsk-bondoraLoanDataFetcher" />
+    <orderEntry type="module" module-name="tsk-bondoraLoanDataParser" />
     <orderEntry type="module" module-name="tsk-consoleLogger" />
     <orderEntry type="module" module-name="tsk-TimerTick2LogEntryMapper" />
   </component>
