@@ -19,7 +19,7 @@ package io.trivium;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
@@ -55,7 +55,7 @@ public class TriviumLoader extends ClassLoader {
                 Query query = new Query();
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-                query.criteria.add(new Value("contentType", ContentTypes.getMimeType("class")));
+                query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
                 ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
                 for(TriviumObject po : objects){
                     FileType memFile = new FileType();
@@ -137,7 +137,7 @@ public class TriviumLoader extends ClassLoader {
                 for(TriviumObject po : objects){
                     FileType file = new FileType();
                     file.populate(po);
-                    if(file.contentType.equals(ContentTypes.getMimeType("class"))
+                    if(file.contentType.equals(MimeTypes.getMimeType("class"))
                             && file.name.replace('/','.').equals(name + ".class")) {
                         byte[] bytes = Base64.getDecoder().decode(file.data);
                         Class<?> c= defineClass(name, bytes, 0, bytes.length);

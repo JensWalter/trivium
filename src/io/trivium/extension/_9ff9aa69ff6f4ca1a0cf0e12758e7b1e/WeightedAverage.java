@@ -16,7 +16,7 @@
 
 package io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e;
 
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.dep.com.google.common.util.concurrent.AtomicDouble;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
@@ -62,7 +62,7 @@ public class WeightedAverage implements Type {
         Instant now = Instant.now();
         TriviumObject po = new TriviumObject();
 
-        po.addMetadata("contentType", ContentTypes.getMimeType("trivium"));
+        po.addMetadata("contentType", MimeTypes.getMimeType("trivium"));
         po.addMetadata("type", "object");
         po.addMetadata("created", now.toString());
         po.addMetadata("datapoint", this.getDatapoint());

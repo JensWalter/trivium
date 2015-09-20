@@ -18,7 +18,7 @@ package io.trivium.glue.binding.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.dep.org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class StaticResourceHandler implements HttpHandler {
         if (is != null) {
             byte[] buf = IOUtils.toByteArray(is);
             String ending = uri.substring(uri.lastIndexOf('.') + 1);
-            String contentType = ContentTypes.getMimeType(ending, "text/plain");
+            String contentType = MimeTypes.getMimeType(ending, "text/plain");
             session.ok(contentType, new String(buf));
             return;
         }

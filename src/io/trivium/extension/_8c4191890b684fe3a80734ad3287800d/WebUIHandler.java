@@ -18,8 +18,7 @@ package io.trivium.extension._8c4191890b684fe3a80734ad3287800d;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import io.trivium.anystore.ObjectRef;
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension.binding.Binding;
 import io.trivium.glue.Http;
 import io.trivium.glue.binding.http.Session;
@@ -73,7 +72,7 @@ public class WebUIHandler extends Binding implements HttpHandler {
                 bos.write(buf,0,count);
             }
             String ending = uri.substring(uri.lastIndexOf('.') + 1);
-            String contentType = ContentTypes.getMimeType(ending, "text/plain");
+            String contentType = MimeTypes.getMimeType(ending, "text/plain");
 
             s.ok(contentType, new String(bos.toByteArray()));
             return;

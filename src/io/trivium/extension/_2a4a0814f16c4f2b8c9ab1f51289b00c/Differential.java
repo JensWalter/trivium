@@ -16,7 +16,7 @@
 
 package io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c;
 
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
@@ -60,7 +60,7 @@ public class Differential implements Type{
     public TriviumObject toTriviumObject(){
         TriviumObject po = new TriviumObject();
         Instant now = Instant.now();
-        po.addMetadata("contentType", ContentTypes.getMimeType("trivium"));
+        po.addMetadata("contentType", MimeTypes.getMimeType("trivium"));
         po.addMetadata("type", "object");
         po.addMetadata("created", now.toString());
         po.addMetadata("datapoint", this.getDatapoint());

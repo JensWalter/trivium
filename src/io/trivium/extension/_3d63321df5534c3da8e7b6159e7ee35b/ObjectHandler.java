@@ -26,7 +26,7 @@ import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
 import io.trivium.glue.Http;
@@ -90,7 +90,7 @@ public class ObjectHandler extends Binding implements HttpHandler {
                 }
                 String str = Joiner.on(",").join(sb);
                 String responseText = "[" + str + "]";
-                s.ok(ContentTypes.getMimeType("json"), responseText);
+                s.ok(MimeTypes.getMimeType("json"), responseText);
                 return;
             } else {
                 // unknown method

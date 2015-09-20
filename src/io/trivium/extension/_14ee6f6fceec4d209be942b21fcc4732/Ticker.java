@@ -16,7 +16,7 @@
 
 package io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732;
 
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.type.Type;
@@ -85,7 +85,7 @@ public class Ticker implements Type {
         if (value != null) {
             long val = value.get();
             TriviumObject po = new TriviumObject();
-            po.addMetadata("contentType", ContentTypes.getMimeType("infinup"));
+            po.addMetadata("contentType", MimeTypes.getMimeType("infinup"));
             po.addMetadata("type", "object");
             po.addMetadata("timeFrameStart", start.toString());
             po.addMetadata("timeFrameEnd", end.toString());

@@ -95,6 +95,8 @@ public enum Registry {
                     Binding prototype = clazz.newInstance();
                     if (!bindings.containsKey(prototype.getTypeId())) {
                         bindings.put(prototype.getTypeId(), clazz);
+                        //register prototype
+                        bindingInstances.put(prototype.getTypeId(),prototype);
                     }
                     log.log(Level.FINE, "registered binding '{}'", prototype.getName());
                 }
