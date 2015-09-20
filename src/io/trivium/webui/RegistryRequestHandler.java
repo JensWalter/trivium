@@ -29,7 +29,7 @@ import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Json;
 import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -84,7 +84,7 @@ public class RegistryRequestHandler implements HttpHandler {
 
                 String json = Json.NVPairsToJson(list);
 
-                s.ok(ContentTypes.getMimeType("json"), json);
+                s.ok(MimeTypes.getMimeType("json"), json);
             } else if (cmd.equals("status")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
@@ -101,7 +101,7 @@ public class RegistryRequestHandler implements HttpHandler {
                             break;
                     }
                     String json = Json.NVPairsToJson(list);
-                    s.ok(ContentTypes.getMimeType("json"), json);
+                    s.ok(MimeTypes.getMimeType("json"), json);
                 } else {
                     s.ok();
                 }

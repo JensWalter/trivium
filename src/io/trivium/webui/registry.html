@@ -44,9 +44,9 @@
             return (<div>Type: <ul>{elements}</ul></div>);
           }
       });
-      var Binding = React.createClass({
-      	  getInitialState: function(){
-      	     var that = this;
+      var BindingEntry = React.createClass({
+        getInitialState: function(){
+      	    var that = this;
             $.ajax({
                 type: "POST",
                 url: '/ui/RegistryRequestHandler',
@@ -84,13 +84,34 @@
                     }
                 });
       	  },
-          render: function() {
-            var entry = this.props.id.map(function(e){ return <li key={e}>{all[e]}</li>; });
+      	  render: function() {
+            //var entry = this.props.id.map(function(e){ return <li key={e}>{all[e]}</li>; });
             //<div style={{marginLeft:'50px'}}>
             //{this.state.state=="stopped"?<button onClick={this.start}>start</button>:''}
             //{this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
             //</div>
-            return (<div>Binding: <ul>{entry}</ul></div>);
+            return (<li>{all[this.props.id]} =&gt;
+                {this.state.state=="stopped"?<button onClick={this.start}>start</button>:''}
+                {this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
+                    </li>);
+          }
+      });
+      var Binding = React.createClass({
+      	  getInitialState: function(){
+      	    var that = this;
+            $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({id:this.props.id,command:"status"}),
+                success: function(data){
+                        that.setState({state:data.state});
+                    }
+                });
+      	  	return {};
+      	  },
+          render: function() {
+            var entries = this.props.id.map(function(e){ return <BindingEntry key={e} id={e} />; });
+            return (<div>Binding: <ul>{entries}</ul></div>);
           }
       });
       var Task = React.createClass({

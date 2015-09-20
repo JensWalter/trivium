@@ -20,8 +20,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import io.trivium.NVList;
 import io.trivium.anystore.AnyClient;
-import io.trivium.anystore.ObjectRef;
-import io.trivium.anystore.statics.ContentTypes;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.binding.http.HttpUtils;
@@ -119,7 +118,7 @@ public class UploadRequestHandler implements HttpHandler {
         if(type.equals("")){
             //guess contentType from file ending
             String ending = fileName.substring(fileName.lastIndexOf('.')+1);
-            type = ContentTypes.getMimeType(ending);
+            type = MimeTypes.getMimeType(ending);
         }
 
         TriviumObject po = new TriviumObject();
