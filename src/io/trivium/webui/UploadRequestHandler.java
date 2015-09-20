@@ -53,7 +53,7 @@ public class UploadRequestHandler implements HttpHandler {
          "data":"PGRvbWFpbiB...."
          }
          */
-        Session s = new Session(httpexchange, ObjectRef.getInstance());
+        Session s = new Session(httpexchange);
         try {
             String fileName = upload.findValue("name");
             String type = upload.findValue("type");

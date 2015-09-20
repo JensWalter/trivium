@@ -42,7 +42,7 @@ public class TestRequestHandler implements HttpHandler{
          tc.processCount=this.state.processCount;
          tc.messageCount=this.state.messageCount;
          */
-        Session s = new Session(httpexchange, ObjectRef.getInstance());
+        Session s = new Session(httpexchange);
 
         //use command structure
         String cmd = test.findValue("command");

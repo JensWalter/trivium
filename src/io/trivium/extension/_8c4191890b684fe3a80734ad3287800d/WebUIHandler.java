@@ -27,8 +27,6 @@ import io.trivium.glue.binding.http.Session;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
 
 public class WebUIHandler extends Binding implements HttpHandler {
     @Override
@@ -44,7 +42,7 @@ public class WebUIHandler extends Binding implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        Session s = new Session(httpExchange, ObjectRef.getInstance());
+        Session s = new Session(httpExchange);
         String origURI = httpExchange.getRequestURI().getPath();
         String uri = origURI;
         if (uri.equals("/ui/"))

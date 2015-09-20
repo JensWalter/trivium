@@ -22,4 +22,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface INPUT {
     String condition() default "";
+    String context() default "";
 }

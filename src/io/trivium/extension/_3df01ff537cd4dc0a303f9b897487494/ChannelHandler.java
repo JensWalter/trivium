@@ -46,8 +46,8 @@ public class ChannelHandler extends Binding implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         boolean processed;
-        ObjectRef sourceId = ObjectRef.getInstance();
-        Session s = new Session(httpExchange, sourceId);
+        Session s = new Session(httpExchange);
+        ObjectRef sourceId = s.getId();
 
         try {
             String uri = httpExchange.getRequestURI().getPath();

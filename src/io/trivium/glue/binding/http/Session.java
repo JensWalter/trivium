@@ -28,14 +28,18 @@ public class Session {
 	ObjectRef id;
     Logger log = Logger.getLogger(getClass().getName());
 
-	public Session(HttpExchange httpexchange, ObjectRef id) {
+	public Session(HttpExchange httpexchange) {
 		this.httpexchange = httpexchange;
-		this.id = id;
+		this.id = ObjectRef.getInstance();
 	}
 
 	public HttpExchange getHttpExchange() {
 		return httpexchange;
 	}
+
+    public ObjectRef getId(){
+        return id;
+    }
 
 	public void error(int code, String text) {
 		try {

@@ -31,7 +31,7 @@ public class EditorRequestHandler implements HttpHandler {
     public void handle(HttpExchange httpexchange) {
         log.log(Level.FINE,"editor request handler");
 
-        Session s = new Session(httpexchange, ObjectRef.getInstance());
+        Session s = new Session(httpexchange);
 
         s.ok();
     }

@@ -35,9 +35,8 @@ public class ChannelRequestHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange httpexchange) {
 		boolean processed;
-        ObjectRef sourceId = ObjectRef.getInstance();
-		Session s = new Session(httpexchange, sourceId);
-		
+		Session s = new Session(httpexchange);
+        ObjectRef sourceId = s.getId();
 		try {
 			String uri = httpexchange.getRequestURI().getPath();
 			String[] parts = uri.split("/");

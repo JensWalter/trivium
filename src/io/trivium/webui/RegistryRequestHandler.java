@@ -50,7 +50,7 @@ public class RegistryRequestHandler implements HttpHandler {
          {"id" : "...",
          "command" : "start"|"stop"|"status"}
          */
-        Session s = new Session(httpexchange, ObjectRef.getInstance());
+        Session s = new Session(httpexchange);
         try {
             String cmd = params.findValue("command");
             if (cmd.equals("list")) {

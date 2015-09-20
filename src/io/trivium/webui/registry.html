@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>trivium registry</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/JSXTransformer-0.11.2.js"></script>
-    <script type="text/javascript" src="js/react-with-addons-0.11.2.js"></script>
+    <script type="text/javascript" src="js/JSXTransformer-0.13.3.js"></script>
+    <script type="text/javascript" src="js/react-with-addons-0.13.3.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
       var all = {};
@@ -85,11 +85,12 @@
                 });
       	  },
           render: function() {
-            return (<div>Binding: {all[this.props.id]} =&gt; {this.state.state}
-                    <div style={{marginLeft:'50px'}}>
-                        {this.state.state=="stopped"?<button onClick={this.start}>start</button>:''}
-                        {this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
-                     </div></div>);
+            var entry = this.props.id.map(function(e){ return <li key={e}>{all[e]}</li>; });
+            //<div style={{marginLeft:'50px'}}>
+            //{this.state.state=="stopped"?<button onClick={this.start}>start</button>:''}
+            //{this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
+            //</div>
+            return (<div>Binding: <ul>{entry}</ul></div>);
           }
       });
       var Task = React.createClass({

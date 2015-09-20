@@ -44,7 +44,8 @@ public abstract class Binding implements Typed {
     }
 
     public String getName(){
-        return this.getClass().getCanonicalName();
+        String name = this.getClass().getCanonicalName();
+        return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
     }
 
     protected void emit(Type object){

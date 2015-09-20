@@ -56,8 +56,8 @@ public class ObjectHandler extends Binding implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        ObjectRef sourceId = ObjectRef.getInstance();
-        Session s = new Session(httpExchange, sourceId);
+        Session s = new Session(httpExchange);
+        ObjectRef sourceId = s.getId();
 
         try {
             Headers headers = httpExchange.getRequestHeaders();
