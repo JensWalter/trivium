@@ -18,7 +18,7 @@ package io.trivium.anystore.statics;
 
 import java.util.HashMap;
 
-public class ContentTypes {
+public class MimeTypes {
     private static HashMap<String,String> ending2Mime = new HashMap<>();
     private static HashMap<String,String> mime2Ending = new HashMap<>();
 
