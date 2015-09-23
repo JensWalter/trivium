@@ -95,7 +95,7 @@ public class ObjectHandler extends Binding implements HttpHandler {
             } else {
                 // unknown method
                 s.error(/*BAD_REQUEST*/400,
-                        "method unknown\nplease use the following pattern\nhttp://{server}:{port}/object/{upsert|search|get|update}/{id}\n");
+                        "method unknown\nplease use the following pattern\nhttp://{server}:{port}/object/{upsert|query}/{id}\n");
                 return;
             }
         } catch (Exception ex) {

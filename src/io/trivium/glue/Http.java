@@ -42,9 +42,6 @@ public enum Http {
     }
 
     public boolean registerListener(String host, int port, String uri, HttpHandler handler) {
-        if(! (handler instanceof Binding) ) {
-            return false;
-        }
         String endpoint = host+port+uri;
         String binding = host+port;
         synchronized (this) {
