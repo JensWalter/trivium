@@ -34,14 +34,14 @@ public class StaticResourceHandler implements HttpHandler {
         } else {
             this.httpUri = httpUri+"/";
         }
-        this.packageUri = packageUri+".";
+        this.packageUri = packageUri.replace('.','/')+"/";
     }
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         Session session = new Session(httpExchange);
         String origURI = httpExchange.getRequestURI().getPath();
-        String uri = origURI.replace(httpUri, packageUri).replace('/', '.');
+        String uri = origURI.replace(httpUri, packageUri);
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         InputStream is = cl.getResourceAsStream(uri);
         if (is != null) {
