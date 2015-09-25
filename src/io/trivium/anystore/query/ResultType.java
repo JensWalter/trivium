@@ -16,13 +16,6 @@
 
 package io.trivium.anystore.query;
 
-import io.trivium.anystore.ObjectRef;
-
-import java.util.ArrayList;
-
-public class Query {
-    public ObjectRef id = ObjectRef.getInstance();
-    public ArrayList<Criteria> criteria = new ArrayList<Criteria>();
-    public ResultType resultType = ResultType.ALL;
-    public IdempotencyType idempotency;
+public enum ResultType {
+    ALL, COUNT
 }

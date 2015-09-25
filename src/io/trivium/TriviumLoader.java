@@ -56,7 +56,7 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
-                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).list;
                 for(TriviumObject po : objects){
                     FileType memFile = new FileType();
                     memFile.populate(po);
@@ -91,7 +91,7 @@ public class TriviumLoader extends ClassLoader {
             Query query = new Query();
             query.criteria.add(new Value("name", name));
             query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-            ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+            ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).list;
             for(TriviumObject po : objects){
                 String uri = "anystore://"+po.getId().toString();
                 URL url = new URL(uri);
@@ -133,7 +133,7 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType","application/java-vm"));
-                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).list;
                 for(TriviumObject po : objects){
                     FileType file = new FileType();
                     file.populate(po);

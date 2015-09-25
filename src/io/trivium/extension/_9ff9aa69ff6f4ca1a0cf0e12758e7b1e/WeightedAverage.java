@@ -31,9 +31,7 @@ public class WeightedAverage implements Type {
     private AtomicDouble avg = new AtomicDouble();
     private AtomicLong count = new AtomicLong(0);
 
-    public WeightedAverage(){
-
-    }
+    public WeightedAverage(){}
 
     /**
      * @param datapoint name of the aggregator
@@ -71,11 +69,16 @@ public class WeightedAverage implements Type {
         Element el_datapoint = new Element("datapoint", this.getDatapoint());
         Element el_timestamp = new Element("timestamp", now.toString());
         Element el_value = new Element("value", String.format("%.2f", this.getAverage()));
+        Element el_rawValue = new Element("RawValue");
+        Element el_avg = new Element("average", String.format("%.2f", avg));
+        Element el_count = new Element("count", String.valueOf(count));
+        el_rawValue.addChild(el_avg);
+        el_rawValue.addChild(el_count);
 
         el_root.addChild(el_datapoint);
         el_root.addChild(el_timestamp);
         el_root.addChild(el_value);
-
+        el_root.addChild(el_rawValue);
         po.setData(el_root);
         po.setTypeId(TypeIds.PROFILER_WEIGHTEDAVERAGE);
 

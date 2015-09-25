@@ -55,7 +55,7 @@ public class URLConnection extends java.net.URLConnection {
         //query anystore
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));
-        ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query);
+        ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).list;
         byte[] b=new byte[0];
         for(TriviumObject po : objects){
             FileType file = new FileType();

@@ -40,7 +40,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ObjectHandler extends Binding implements HttpHandler {
+public class WebObjectHandler extends Binding implements HttpHandler {
     private final static Pattern uuidpattern = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
     @Override
@@ -81,7 +81,7 @@ public class ObjectHandler extends Binding implements HttpHandler {
                 for (NVPair pair : criteria) {
                     q.criteria.add(new Value(pair.getName(), pair.getValue()));
                 }
-                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q);
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q).list;
                 ArrayList<String> sb = new ArrayList<>();
                 for (TriviumObject po : objects) {
                     if (po != null) {

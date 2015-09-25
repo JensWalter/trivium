@@ -51,7 +51,7 @@ public class TestStore {
         for(NVPair pair:filter){
             q.criteria.add(new Value(pair.getName(), pair.getValue()));
         }
-		ArrayList<TriviumObject> list = AnyServer.INSTANCE.getStore().loadObjects(q);
+		ArrayList<TriviumObject> list = AnyServer.INSTANCE.getStore().loadObjects(q).list;
 		
 		System.out.println(po.getMetadataJson());
 		System.out.println(list.get(0).getMetadataJson());

@@ -23,6 +23,7 @@ import io.trivium.anystore.query.Criteria;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Range;
 import io.trivium.anystore.query.RangeType;
+import io.trivium.anystore.query.Result;
 import io.trivium.anystore.query.Value;
 import io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e.WeightedAverage;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
@@ -44,6 +45,7 @@ import java.util.logging.Logger;
 
 public class MapStore {
     Logger log = Logger.getLogger(getClass().getName());
+    //TODO size pool after index use not cpu count
     ExecutorService executors = Executors.newWorkStealingPool();
     protected String path;
     AnyDB dataMap = null;
@@ -130,7 +132,7 @@ public class MapStore {
         }
     }
 
-    public ArrayList<TriviumObject> loadObjects(Query query) {
+    public Result loadObjects(Query query) {
         //run query
         ArrayList<Criteria> criteria = query.criteria;
         ArrayList<Callable<ArrayList<ObjectRef>>> jobs = new ArrayList<>();
@@ -153,41 +155,53 @@ public class MapStore {
             refs = executors.invokeAny(jobs);
 
             ArrayList<TriviumObject> result = new ArrayList<>();
-            refs.forEach((ref) -> {
-                TriviumObject po = AnyServer.INSTANCE.getStore().loadObject(ref);
-                //check for correct value
-                boolean valid = true;
-                for (Criteria crit : query.criteria) {
-                    if (crit instanceof Value) {
-                        Value val = (Value) crit;
-                        if (!(po.hasMetaKey(val.getName()) &&
-                                po.findMetaValue(val.getName()).equals(val.getValue()))) {
-                            valid = false;
-                        }
-                    } else if (crit instanceof Range) {
-                        Range range = (Range) crit;
-                        if (range.getRangeOption() == RangeType.within) {
-                            if (po.hasMetaKey(range.getName())) {
-                                String value = po.findMetaValue(range.getName());
-                                //check for int type
-                                try {
-                                    double d_value = Double.parseDouble(value);
-                                } catch (NumberFormatException nfe) {
-                                    log.log(Level.FINE, "looking for number, but value is not convertible", nfe);
+            switch (query.resultType) {
+                case COUNT:
+                    //only return the count
+                    break;
+                default:
+                    //build up object list from id list
+                    refs.forEach((ref) -> {
+                        TriviumObject po = AnyServer.INSTANCE.getStore().loadObject(ref);
+                        //check for correct value
+                        boolean valid = true;
+                        for (Criteria crit : query.criteria) {
+                            if (crit instanceof Value) {
+                                Value val = (Value) crit;
+                                if (!(po.hasMetaKey(val.getName()) &&
+                                        po.findMetaValue(val.getName()).equals(val.getValue()))) {
+                                    valid = false;
+                                }
+                            } else if (crit instanceof Range) {
+                                Range range = (Range) crit;
+                                if (range.getRangeOption() == RangeType.within) {
+                                    if (po.hasMetaKey(range.getName())) {
+                                        String value = po.findMetaValue(range.getName());
+                                        //check for int type
+                                        try {
+                                            Double.parseDouble(value);
+                                        } catch (NumberFormatException nfe) {
+                                            log.log(Level.FINE, "looking for number, but value is not convertible", nfe);
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                if (valid) {
-                    result.add(po);
-                }
-            });
-            return result;
+                        if (valid) {
+                            result.add(po);
+                        }
+                    });
+                    break;
+            }
+            Result rslt = new Result();
+            rslt.list=result;
+            rslt.count=result.size();
+            return rslt;
         } catch (Exception e) {
             log.log(Level.SEVERE, "query was interrupted", e);
         }
-        return new ArrayList<>();
+        Result rslt = new Result();
+        return rslt;
     }
 
     public TriviumObject loadObject(ObjectRef key) {
