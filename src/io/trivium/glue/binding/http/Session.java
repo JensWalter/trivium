@@ -49,7 +49,7 @@ public class Session {
             httpexchange.getResponseBody().close();
             httpexchange.close();
 		} catch (Exception ex) {
-			log.log(Level.SEVERE,"error while sending 'error' response",ex);
+			log.log(Level.FINE,"error while sending 'error' response",ex);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class Session {
             httpexchange.getResponseBody().close();
             httpexchange.close();
 		} catch (Exception ex) {
-            log.log(Level.SEVERE, "error while sending 'ok' response", ex);
+            log.log(Level.FINE, "error while sending 'ok' response", ex);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class Session {
             httpexchange.close();
 
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "error while sending 'ok' response", ex);
+            log.log(Level.FINE, "error while sending 'ok' response", ex);
         }
     }
 }
