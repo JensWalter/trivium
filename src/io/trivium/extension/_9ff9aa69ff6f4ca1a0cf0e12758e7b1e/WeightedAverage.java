@@ -70,8 +70,8 @@ public class WeightedAverage implements Type {
         Element el_timestamp = new Element("timestamp", now.toString());
         Element el_value = new Element("value", String.format("%.2f", this.getAverage()));
         Element el_rawValue = new Element("RawValue");
-        Element el_avg = new Element("average", String.format("%.2f", avg));
-        Element el_count = new Element("count", String.valueOf(count));
+        Element el_avg = new Element("average", String.format("%.2f", avg.get()));
+        Element el_count = new Element("count", String.valueOf(count.get()));
         el_rawValue.addChild(el_avg);
         el_rawValue.addChild(el_count);
 
