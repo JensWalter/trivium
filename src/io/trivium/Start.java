@@ -16,23 +16,18 @@
 
 package io.trivium;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.dep.org.apache.commons.io.IOUtils;
 import io.trivium.glue.binding.http.channel.ChannelConfig;
+import sun.misc.UUEncoder;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class Start {
 
 	public static void main(String[] args) throws Exception {
-        if("--build".equals(args[0])){
+        if(args.length>0 && "--build".equals(args[0])){
             uuencode();
             System.exit(0);
         }
@@ -64,15 +59,16 @@ public class Start {
             FileOutputStream fos = new FileOutputStream(new File("trivium.sh"));
 
             String head="#!/bin/bash\n" +
-                    "uudecode -o trivium.jar $0\n" +
-                    "java -jar trivium.jar\n" +
+                    "uudecode $0\n" +
+                    "java -jar trivium.jar -Djava.system.class.loader=io.trivium.TriviumLoader -Djava.protocol.handler.pkgs=io.trivium.urlhandler\n" +
                     "exit\n\n";
             fos.write(head.getBytes());
-
-            OutputStream os = MimeUtility.encode(fos, "uuencode");
-            IOUtils.copy(fis,os);
-            os.flush();
-            os.close();
+            UUEncoder uuec = new UUEncoder("trivium.jar");
+            uuec.encodeBuffer(fis, fos);
+//            OutputStream os = MimeUtility.encode(fos, "uuencode");
+  //          IOUtils.copy(fis,os);
+            fos.flush();
+            fos.close();
             fis.close();
         } catch (Exception e) {
             e.printStackTrace();
