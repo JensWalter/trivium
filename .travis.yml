@@ -1,4 +1,4 @@
 language: java
-ant dist
+script: ant dist
 jdk:
   - oraclejdk8
