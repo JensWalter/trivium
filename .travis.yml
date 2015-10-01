@@ -1,0 +1,4 @@
+language: java
+ant dist
+jdk:
+  - oraclejdk8
