@@ -20,6 +20,7 @@ import io.trivium.Central;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
@@ -30,30 +31,45 @@ import java.util.ArrayList;
 public class TestStore {
 	public static void main(String[] args) {
 		Central.setProperty("basePath", "/Users/jens/tmp/store");
-		
-		persist();
+		//Central.start();
+		test();
 	}
 	
 	
-	public static void persist(){
-		TriviumObject po = new TriviumObject();
+	public static void test(){
+		TriviumObject tvm = new TriviumObject();
         Element el = new Element("node","hallo world");
 
-		po.setData(el);
-		po.addMetadata("id", po.getId().toString());
-		po.addMetadata("contentType", "text/plain");
+		tvm.setData(el);
+		tvm.addMetadata("id", tvm.getId().toString());
+		tvm.addMetadata("contentType", "text/plain");
+        ObjectRef typeId = ObjectRef.getInstance("39d3af87-5fca-4066-ae7f-b88bc2ae6dc2");
+        tvm.setTypeId(typeId);
 
-		AnyServer.INSTANCE.getStore().storeObject(po);
+		AnyServer.INSTANCE.getStore().storeObject(tvm);
 		
 		NVList filter = new NVList();
-		filter.add(new NVPair("id",po.getId().toString()));
+		filter.add(new NVPair("id",tvm.getId().toString()));
         Query q = new Query();
         for(NVPair pair:filter){
             q.criteria.add(new Value(pair.getName(), pair.getValue()));
         }
+        q.reducePartitionBy="typeId";
+        q.reduceOrderBy="created";
+        q.reduceOrderDirection="desc";
 		ArrayList<TriviumObject> list = AnyServer.INSTANCE.getStore().loadObjects(q).list;
 		
-		System.out.println(po.getMetadataJson());
+		System.out.println(tvm.getMetadataJson());
 		System.out.println(list.get(0).getMetadataJson());
+
+        //do partition query
+        q = new Query();
+        q.criteria.add(new Value("typeId", typeId.toString()));
+        list = AnyServer.INSTANCE.getStore().loadObjects(q).list;
+
+        System.out.println("query results : "+list.size());
+        System.out.println(list.get(0).getMetadataJson());
+
+        System.exit(0);
 	}
 }

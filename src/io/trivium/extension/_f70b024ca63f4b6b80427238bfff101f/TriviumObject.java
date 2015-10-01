@@ -281,7 +281,6 @@ public class TriviumObject implements Type {
         if (!meta.hasKey("created")) {
             meta.add(new NVPair("created", Instant.now().toString()));
         }
-        meta.add(new NVPair("sourceKey", "infinup"));
         if (!meta.hasKey("type")) {
             meta.add(new NVPair("type", "object"));
         }

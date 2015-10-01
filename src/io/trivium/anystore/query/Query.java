@@ -24,5 +24,9 @@ public class Query {
     public ObjectRef id = ObjectRef.getInstance();
     public ArrayList<Criteria> criteria = new ArrayList<Criteria>();
     public ResultType resultType = ResultType.ALL;
-    public IdempotencyType idempotency;
+
+    public String reducePartitionBy;
+    public String reduceOrderBy;
+    public String reduceOrderDirection;
+    public long reduceLimit = 1;
 }
