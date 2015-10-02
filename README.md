@@ -1,8 +1,13 @@
-# trivium-core
-core system without dependencies.
+# trivium
+[![Build Status](https://travis-ci.org/trivium-io/trivium.svg)](https://travis-ci.org/trivium-io/trivium)
 
-start the engine:
+The core system without dependencies.
 
-vm arguments: -Xmx2G -Djava.system.class.loader=io.trivium.TriviumLoader -Djava.protocol.handler.pkgs=io.trivium.urlhandler -server
+There are multiple ways to start the engine. 
+###shell script
 
-app arguments: -cq -cs -ll debug -p /Users/jens/tmp/store -t 1m
+./trivium.sh.
+
+###jar file
+
+java -Djava.system.class.loader=io.trivium.TriviumLoader -Djava.protocol.handler.pkgs=io.trivium.urlhandler -jar trivium.jar
