@@ -2,7 +2,9 @@ language: java
 script: ant dist
 jdk:
   - oraclejdk8
+  - oraclejdk9
 addons:
   apt:
     packages:
       - oracle-java8-installer
+      - oracle-java9-installer
