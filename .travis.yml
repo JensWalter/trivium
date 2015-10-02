@@ -1,7 +1,9 @@
 language: java
+env:
+  - targets=compile
+  - targets=dist
 script:
-  - ant compile
-  - ant dist
+  - ant $targets
 jdk:
   - oraclejdk8
 addons:
