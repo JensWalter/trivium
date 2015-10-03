@@ -1,7 +1,7 @@
 language: java
 env:
-  - targets=compile
   - targets=dist
+  - targets=test
 script:
   - ant $targets
 jdk:
