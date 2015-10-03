@@ -1,5 +1,4 @@
-# trivium
-[![Build Status](https://travis-ci.org/trivium-io/trivium.svg)](https://travis-ci.org/trivium-io/trivium)
+# trivium [![Build Status](https://travis-ci.org/trivium-io/trivium.svg)](https://travis-ci.org/trivium-io/trivium)
 
 The core system without dependencies.
 
