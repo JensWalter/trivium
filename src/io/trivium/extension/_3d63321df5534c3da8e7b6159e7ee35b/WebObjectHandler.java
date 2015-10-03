@@ -36,6 +36,7 @@ import io.trivium.glue.om.Json;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,11 +82,13 @@ public class WebObjectHandler extends Binding implements HttpHandler {
                 for (NVPair pair : criteria) {
                     q.criteria.add(new Value(pair.getName(), pair.getValue()));
                 }
-                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q).list;
                 ArrayList<String> sb = new ArrayList<>();
-                for (TriviumObject po : objects) {
-                    if (po != null) {
-                        sb.add(Json.elementToJson(po.getData()));
+                HashMap<String, ArrayList<TriviumObject>> list = AnyClient.INSTANCE.loadObjects(q).partition;
+                for(ArrayList<TriviumObject> objects : list.values()) {
+                    for (TriviumObject po : objects) {
+                        if (po != null) {
+                            sb.add(Json.elementToJson(po.getData()));
+                        }
                     }
                 }
                 String str = Joiner.on(",").join(sb);

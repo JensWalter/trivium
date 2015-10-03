@@ -201,9 +201,16 @@ public class TriviumObject implements Type {
     public <T extends Type> T getTypedData(){
         ObjectRef typeId = this.getTypeId();
         try {
-            T obj = (T) Registry.INSTANCE.types.get(typeId).newInstance();
-            obj.populate(this);
-            return obj;
+            Class<? extends Type> clazz = Registry.INSTANCE.types.get(typeId);
+            if(clazz==null){
+                //no registered type found
+                return (T) this;
+            }else {
+                //build from factory
+                T obj = (T) Registry.INSTANCE.types.get(typeId).newInstance();
+                obj.populate(this);
+                return obj;
+            }
         }catch(Exception ex){
             log.log(Level.SEVERE,"error constructing object", ex);
             return null;

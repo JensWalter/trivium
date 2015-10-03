@@ -27,6 +27,7 @@ import io.trivium.anystore.query.Result;
 import io.trivium.anystore.query.Value;
 import io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e.WeightedAverage;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.type.Type;
 import io.trivium.glue.om.Trivium;
 import io.trivium.glue.om.Json;
 import io.trivium.profile.DataPoints;
@@ -37,6 +38,7 @@ import io.trivium.dep.org.iq80.snappy.Snappy;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -160,57 +162,84 @@ public class MapStore {
             refs = executors.invokeAny(jobs);
             //evaluate index results and filter results
             Result rslt = new Result();
-            switch (query.resultType) {
-                case COUNT:
-                    //only return the count
-                    //build up object list from id list
-                    refs.forEach((ref) -> {
-                        evaluate(ref, query, rslt);
-                    });
-                    break;
-                default:
-                    //build up object list from id list
-                    refs.forEach((ref) -> {
-                        evaluate(ref, query, rslt);
-                    });
-                  //  rslt.list=result;
-                    break;
-            }
+            refs.forEach((ref) -> evaluate(ref, query, rslt));
+//            switch (query.resultType) {
+//                case COUNT:
+//                    //only return the count
+//                    //build up object list from id list
+//                    refs.forEach((ref) -> {
+//                        evaluate(ref, query, rslt);
+//                    });
+//                    break;
+//                default:
+//                    //build up object list from id list
+//                    refs.forEach((ref) -> {
+//                        evaluate(ref, query, rslt);
+//                    });
+//                  //  rslt.list=result;
+//                    break;
+//            }
             return rslt;
         } catch (Exception e) {
             log.log(Level.SEVERE, "query was interrupted", e);
         }
-        Result rslt = new Result();
-        return rslt;
+        return new Result();
     }
 
     private void evaluate(ObjectRef ref, Query query, Result result){
         TriviumObject tvm = AnyServer.INSTANCE.getStore().loadObject(ref);
         ScriptEngine engine = result.scriptEngine;
-        engine.put("_"+ref.toString(),tvm.getTypedData());
-        //check for correct value
-        boolean valid = true;
-        for (Criteria crit : query.criteria) {
-            if (crit instanceof Value) {
-                Value val = (Value) crit;
-                if (!(tvm.hasMetaKey(val.getName()) &&
-                        tvm.findMetaValue(val.getName()).equals(val.getValue()))) {
-                    valid = false;
-                }
-            } else if (crit instanceof Range) {
-                Range range = (Range) crit;
-                if (range.getRangeOption() == RangeType.within) {
-                    if (tvm.hasMetaKey(range.getName())) {
-                        String value = tvm.findMetaValue(range.getName());
-                        //check for int type
-                        try {
-                            Double.parseDouble(value);
-                        } catch (NumberFormatException nfe) {
-                            log.log(Level.FINE, "looking for number, but value is not convertible", nfe);
+        String id = "_"+ref.toString();
+        //put data object
+        engine.put(id,tvm.getTypedData());
+        //add header data
+        engine.put("header",tvm.getMetadata());
+        try {
+            String partitionKey = "";
+            //get partition
+            if(tvm.getMetadata().hasKey(query.reducePartitionBy)){
+                //partition key is in the header
+                partitionKey = tvm.getMetadata().findValue(query.reducePartitionBy);
+            }else{
+                //partition key is in the content
+                engine.eval("var partition = "+id+"."+query.reducePartitionBy);
+                partitionKey = engine.get("partition").toString();
+            }
+            //check criteria
+            boolean valid = true;
+            for (Criteria crit : query.criteria) {
+                if (crit instanceof Value) {
+                    Value val = (Value) crit;
+                    if (!(tvm.hasMetaKey(val.getName()) &&
+                            tvm.findMetaValue(val.getName()).equals(val.getValue()))) {
+                        valid = false;
+                    }
+                } else if (crit instanceof Range) {
+                    Range range = (Range) crit;
+                    if (range.getRangeOption() == RangeType.within) {
+                        if (tvm.hasMetaKey(range.getName())) {
+                            String value = tvm.findMetaValue(range.getName());
+                            //check for int type
+                            try {
+                                Double.parseDouble(value);
+                            } catch (NumberFormatException nfe) {
+                                log.log(Level.FINE, "looking for number, but value is not convertible", nfe);
+                            }
                         }
                     }
                 }
             }
+            if(valid) {
+                if (result.partition.containsKey(partitionKey)) {
+                    result.partition.get(partitionKey).add(tvm);
+                } else {
+                    ArrayList<TriviumObject> list = new ArrayList<>();
+                    list.add(tvm);
+                    result.partition.put(partitionKey,list);
+                }
+            }
+        } catch (ScriptException e) {
+            //ignore
         }
     }
 

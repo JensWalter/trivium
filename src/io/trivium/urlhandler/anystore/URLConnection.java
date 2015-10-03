@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,12 +56,14 @@ public class URLConnection extends java.net.URLConnection {
         //query anystore
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));
-        ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).list;
-        byte[] b=new byte[0];
-        for(TriviumObject po : objects){
-            FileType file = new FileType();
-            file.populate(po);
-            b = Base64.getDecoder().decode(file.data);
+        byte[] b = new byte[0];
+        HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
+        for(ArrayList<TriviumObject> objects : partition.values()) {
+            for (TriviumObject po : objects) {
+                FileType file = new FileType();
+                file.populate(po);
+                b = Base64.getDecoder().decode(file.data);
+            }
         }
         ByteArrayInputStream bis = new ByteArrayInputStream(b);
         return bis;

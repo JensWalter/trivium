@@ -27,11 +27,13 @@ import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TestStore {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Central.setProperty("basePath", "/Users/jens/tmp/store");
-		//Central.start();
+		Central.start();
+        Thread.sleep(1000);
 		test();
 	}
 	
@@ -57,15 +59,22 @@ public class TestStore {
         q.reducePartitionBy="typeId";
         q.reduceOrderBy="created";
         q.reduceOrderDirection="desc";
-		ArrayList<TriviumObject> list = AnyServer.INSTANCE.getStore().loadObjects(q).list;
-		
+        HashMap<String,ArrayList<TriviumObject>> all = AnyServer.INSTANCE.getStore().loadObjects(q).partition;
+        ArrayList<TriviumObject> list = new ArrayList<>();
+        for(ArrayList<TriviumObject> objects: all.values()){
+            list.addAll(objects);
+        }
 		System.out.println(tvm.getMetadataJson());
 		System.out.println(list.get(0).getMetadataJson());
 
         //do partition query
         q = new Query();
         q.criteria.add(new Value("typeId", typeId.toString()));
-        list = AnyServer.INSTANCE.getStore().loadObjects(q).list;
+        all = AnyServer.INSTANCE.getStore().loadObjects(q).partition;
+        list = new ArrayList<>();
+        for(ArrayList<TriviumObject> objects: all.values()){
+            list.addAll(objects);
+        }
 
         System.out.println("query results : "+list.size());
         System.out.println(list.get(0).getMetadataJson());
