@@ -130,8 +130,8 @@ public class Central {
             Central.setProperty("compression","true");
         }
         if (cmd.hasOption("test")) {
-            String count = cmd.getOptionValue("test");
-            Central.setProperty("test", resolveUnits(count));
+            String target = cmd.getOptionValue("test");
+            Central.setProperty("test", target);
         }
         if (cmd.hasOption("path")) {
             String val = cmd.getOptionValue("path");
@@ -176,6 +176,14 @@ public class Central {
         return true;
     }
 
+    /**
+     * transform human readable units into machine values
+     * 1g=1000000000
+     * 1m=1000000
+     * 1k=1000
+     * @param val
+     * @return
+     */
     public static String resolveUnits(String val) {
         String rslt ;
         if (val.contains("g") || val.contains("b"))
@@ -233,6 +241,7 @@ public class Central {
         }
         //start anystore server
         Thread td = new Thread(AnyServer.INSTANCE, "anystore");
+        td.setDaemon(true);
         td.start();
 
         // init profiler

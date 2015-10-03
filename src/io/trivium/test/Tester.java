@@ -16,6 +16,8 @@
 
 package io.trivium.test;
 
+import io.trivium.Registry;
+
 import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
@@ -39,21 +41,26 @@ public class Tester {
             logger.log(Level.INFO,"error", args);
         }
     }
-    
-    public static void runAll(){
+
+    /**
+     * runs all registered test cases
+     * @return whether an error happened during testing
+     */
+    public static boolean runAll(){
         logger.info("running test suite");
-        ServiceLoader<TestCase> typeLoader = ServiceLoader.load(TestCase.class);
-        typeLoader.reload();
-        Iterator<TestCase> iter = typeLoader.iterator();
+        boolean errorHappened = false;
+        Iterator<TestCase> iter = Registry.INSTANCE.testcases.values().iterator();
         while(iter.hasNext()){
             TestCase tc = iter.next();
-            logger.log(Level.INFO,"test {}: {} {}",new Object[]{tc.getTypeId().toString(),tc.getClassName(),tc.getMethodName()});
+            logger.log(Level.INFO,"test {0}: {1} {2}",new String[]{tc.getTypeId().toString(),tc.getClassName(),tc.getMethodName()});
             try {
                 tc.run();
-                logger.log(Level.INFO,"test {}: succeeded", tc.getTypeId().toString());
+                logger.log(Level.INFO,"test {0}: succeeded", tc.getTypeId().toString());
             }catch(Exception ex){
-                logger.log(Level.SEVERE,"test {}: failed with exception {}", ex);
+                logger.log(Level.SEVERE,"test "+tc.getTypeId().toString()+": failed with exception", ex);
+                errorHappened=true;
             }
         }
+        return errorHappened;
     }
 }

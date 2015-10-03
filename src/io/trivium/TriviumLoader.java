@@ -40,9 +40,14 @@ public class TriviumLoader extends ClassLoader {
 
     //TODO is a class loader single threaded or multi threaded?
     private ConcurrentHashMap<String,Class<?>> classes = new ConcurrentHashMap<>();
+    private boolean localOnly = false;
 
     public TriviumLoader(ClassLoader parent) {
         super(parent);
+    }
+    public TriviumLoader(ClassLoader parent,boolean localOnly) {
+        super(parent);
+        this.localOnly = localOnly;
     }
 
     private Class<?> getClass(String name) throws ClassNotFoundException {
@@ -51,7 +56,7 @@ public class TriviumLoader extends ClassLoader {
         try {
             // This loads the byte code data from the file
             b = loadClassData(file);
-            if((b==null || b.length==0 ) && Central.isRunning){
+            if((b==null || b.length==0 ) && Central.isRunning && !localOnly){
                 //load from anystore
                 Query query = new Query();
                 query.criteria.add(new Value("canonicalName", name));
@@ -89,7 +94,7 @@ public class TriviumLoader extends ClassLoader {
         while(orgResult.hasMoreElements()){
             result.add(orgResult.nextElement());
         }
-        if(name.startsWith("META-INF/services/")){
+        if(Central.isRunning && !localOnly && name.startsWith("META-INF/services/")){
             //enrich with anystore
             Query query = new Query();
             query.criteria.add(new Value("name", name));
@@ -130,7 +135,7 @@ public class TriviumLoader extends ClassLoader {
             throws ClassNotFoundException {
         try{
             //look up anystore
-            if(Central.isRunning) {
+            if(Central.isRunning && !localOnly) {
                 if(classes.containsKey(name)){
                     return classes.get(name);
                 }

@@ -18,6 +18,7 @@ package io.trivium;
 
 import io.trivium.anystore.ObjectRef;
 import io.trivium.glue.binding.http.channel.ChannelConfig;
+import io.trivium.test.Tester;
 import sun.misc.UUEncoder;
 
 import java.io.File;
@@ -31,6 +32,16 @@ public class Start {
         if(proceed) {
             Central.start();
 
+            //run test if started in test mode
+            if(Central.getProperty("test") != null) {
+                Thread.sleep(1000);
+                boolean errorHappened = Tester.runAll();
+                if (errorHappened) {
+                    System.exit(-1);
+                } else {
+                    System.exit(0);
+                }
+            }
             //create dummy json channel for testing
             ChannelConfig c = new ChannelConfig();
             c.id = ObjectRef.getInstance("1d26e2f1-7161-4d5c-b2ac-17ffb4f0a97d");
