@@ -3,7 +3,7 @@ id=`uuidgen | tr '[:upper:]' '[:lower:]'`;
 name="_`echo $id | tr -d '-'`";
 echo "package io.trivium.test.cases;
 
-import io.trivium.anystore.ObjectType;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
@@ -19,7 +19,7 @@ public class $name implements TestCase{
     }
     
     @Override
-    public String getName() {
+    public String getTestName() {
         return null;
     }
 
@@ -28,8 +28,8 @@ public class $name implements TestCase{
     }
 
     @Override
-    public ObjectType getTypeId() {
-        return ObjectType.getInstance(\"$id\",\"v1\");
+    public ObjectRef getTypeId() {
+        return ObjectRef.getInstance(\"$id\");
     }
 }
 " > "$name.java"

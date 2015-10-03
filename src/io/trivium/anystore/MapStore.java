@@ -157,28 +157,11 @@ public class MapStore {
                 });
             }
         }
-        ArrayList<ObjectRef> refs = null;
         try {
-            refs = executors.invokeAny(jobs);
+            ArrayList<ObjectRef> refs = executors.invokeAny(jobs);
             //evaluate index results and filter results
             Result rslt = new Result();
             refs.forEach((ref) -> evaluate(ref, query, rslt));
-//            switch (query.resultType) {
-//                case COUNT:
-//                    //only return the count
-//                    //build up object list from id list
-//                    refs.forEach((ref) -> {
-//                        evaluate(ref, query, rslt);
-//                    });
-//                    break;
-//                default:
-//                    //build up object list from id list
-//                    refs.forEach((ref) -> {
-//                        evaluate(ref, query, rslt);
-//                    });
-//                  //  rslt.list=result;
-//                    break;
-//            }
             return rslt;
         } catch (Exception e) {
             log.log(Level.SEVERE, "query was interrupted", e);
