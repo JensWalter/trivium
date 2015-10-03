@@ -46,21 +46,24 @@ public class Tester {
      * @return whether an error happened during testing
      */
     public static boolean runAll(){
-        logger.info("running test suite");
-        logger.log(Level.INFO,"running test suite 2");
-        boolean errorHappened = false;
+        logger.log(Level.INFO,"running test suite");
+        int count=0;
+        int success=0;
         Iterator<TestCase> iter = Registry.INSTANCE.testcases.values().iterator();
         while(iter.hasNext()){
+            count++;
             TestCase tc = iter.next();
-            logger.log(Level.INFO,"test {0}: {1} {2}",new String[]{tc.getTypeId().toString(),tc.getClassName(),tc.getMethodName()});
+            logger.log(Level.INFO,"{1} {2} -> test {0}",new String[]{tc.getTypeId().toString(),tc.getClassName(),tc.getMethodName()});
             try {
                 tc.run();
+                success++;
                 logger.log(Level.INFO,"test {0}: succeeded", tc.getTypeId().toString());
             }catch(Exception ex){
                 logger.log(Level.SEVERE,"test "+tc.getTypeId().toString()+": failed with exception", ex);
-                errorHappened=true;
             }
         }
-        return errorHappened;
+        logger.log(Level.INFO,"tests complete {0}/{1} success rate",
+                    new String[]{String.valueOf(success),String.valueOf(count)});
+        return count==success;
     }
 }
