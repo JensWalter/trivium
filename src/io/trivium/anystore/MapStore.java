@@ -188,7 +188,6 @@ public class MapStore {
         TriviumObject tvm = AnyServer.INSTANCE.getStore().loadObject(ref);
         ScriptEngine engine = result.scriptEngine;
         engine.put("_"+ref.toString(),tvm.getTypedData());
-//        engine.getBindings(ScriptContext.ENGINE_SCOPE).remove()
         //check for correct value
         boolean valid = true;
         for (Criteria crit : query.criteria) {

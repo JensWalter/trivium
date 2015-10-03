@@ -25,8 +25,8 @@ public class Query {
     public ArrayList<Criteria> criteria = new ArrayList<Criteria>();
     public ResultType resultType = ResultType.ALL;
 
-    public String reducePartitionBy;
-    public String reduceOrderBy;
-    public String reduceOrderDirection;
-    public long reduceLimit = 1;
+    public String reducePartitionBy = "id";
+    public String reduceOrderBy = "created";
+    public String reduceOrderDirection = "descending";
+    public long reduceTo = 1;
 }
