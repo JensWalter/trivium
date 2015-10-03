@@ -19,7 +19,6 @@ package io.trivium.test;
 import io.trivium.Registry;
 
 import java.util.Iterator;
-import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +47,7 @@ public class Tester {
      */
     public static boolean runAll(){
         logger.info("running test suite");
+        logger.log(Level.INFO,"running test suite 2");
         boolean errorHappened = false;
         Iterator<TestCase> iter = Registry.INSTANCE.testcases.values().iterator();
         while(iter.hasNext()){
