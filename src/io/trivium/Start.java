@@ -27,51 +27,27 @@ import java.io.FileOutputStream;
 public class Start {
 
 	public static void main(String[] args) throws Exception {
-        if(args.length>0 && "--build".equals(args[0])){
-            uuencode();
-            System.exit(0);
-        }
-		Central.setup(args);
-		Central.start();
-		
-		//create dummy json channel for testing
-		ChannelConfig c = new ChannelConfig();
-		c.id= ObjectRef.getInstance("1d26e2f1-7161-4d5c-b2ac-17ffb4f0a97d");
-		c.name="dummy json channel";
-		c.className="io.trivium.glue.binding.http.channel.JsonChannel";
-		c.retention =4320000000L;//50 days in ms
-		c.setTypeId(ObjectRef.getInstance("8a7d067a-0feb-4a7f-9636-1df269999cbb"));
-		ChannelConfig.addConfig(c);
+		boolean proceed = Central.setup(args);
+        if(proceed) {
+            Central.start();
 
-        //create dummy xml channel for testing
-        c = new ChannelConfig();
-        c.id= ObjectRef.getInstance("f34781e4-aa32-4d9b-ac61-96a7ccb3791f");
-        c.name="dummy xml channel";
-        c.className="io.trivium.glue.binding.http.channel.XmlChannel";
-        c.retention =4320000000L;//50 days in ms
-        c.setTypeId(ObjectRef.getInstance("05ca9d63-ae71-4ca8-99bb-0387aef53556"));
-        ChannelConfig.addConfig(c);
+            //create dummy json channel for testing
+            ChannelConfig c = new ChannelConfig();
+            c.id = ObjectRef.getInstance("1d26e2f1-7161-4d5c-b2ac-17ffb4f0a97d");
+            c.name = "dummy json channel";
+            c.className = "io.trivium.glue.binding.http.channel.JsonChannel";
+            c.retention = 4320000000L;//50 days in ms
+            c.setTypeId(ObjectRef.getInstance("8a7d067a-0feb-4a7f-9636-1df269999cbb"));
+            ChannelConfig.addConfig(c);
+
+            //create dummy xml channel for testing
+            c = new ChannelConfig();
+            c.id = ObjectRef.getInstance("f34781e4-aa32-4d9b-ac61-96a7ccb3791f");
+            c.name = "dummy xml channel";
+            c.className = "io.trivium.glue.binding.http.channel.XmlChannel";
+            c.retention = 4320000000L;//50 days in ms
+            c.setTypeId(ObjectRef.getInstance("05ca9d63-ae71-4ca8-99bb-0387aef53556"));
+            ChannelConfig.addConfig(c);
+        }
 	}
-
-    public static void uuencode(){
-        try {
-            FileInputStream fis = new FileInputStream(new File("trivium.jar"));
-            FileOutputStream fos = new FileOutputStream(new File("trivium.sh"));
-
-            String head="#!/bin/bash\n" +
-                    "uudecode $0\n" +
-                    "java -jar trivium.jar -Djava.system.class.loader=io.trivium.TriviumLoader -Djava.protocol.handler.pkgs=io.trivium.urlhandler\n" +
-                    "exit\n\n";
-            fos.write(head.getBytes());
-            UUEncoder uuec = new UUEncoder("trivium.jar");
-            uuec.encodeBuffer(fis, fos);
-//            OutputStream os = MimeUtility.encode(fos, "uuencode");
-  //          IOUtils.copy(fis,os);
-            fos.flush();
-            fos.close();
-            fis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

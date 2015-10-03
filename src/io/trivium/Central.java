@@ -27,8 +27,11 @@ import io.trivium.dep.org.apache.commons.cli.CommandLineParser;
 import io.trivium.dep.org.apache.commons.cli.HelpFormatter;
 import io.trivium.dep.org.apache.commons.cli.Options;
 import io.trivium.dep.org.apache.commons.cli.PosixParser;
+import sun.misc.UUEncoder;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,7 +77,14 @@ public class Central {
         return peers.get(pos);
     }
 
-    public static void setup(String[] args) throws Exception {
+    /**
+     * parses command line arguments and sets up the server.
+     *
+     * @param args command line arguments
+     * @return true, if normal startup can proceed
+     * @throws Exception
+     */
+    public static boolean setup(String[] args) throws Exception {
         CommandLineParser parser = new PosixParser();
         Options opts = new Options();
         opts.addOption("ll", "loglevel", true, "turn logging to one of the following levels: fine,info,warning,severe");
@@ -87,13 +97,19 @@ public class Central {
         opts.addOption("a", "autosize", false, "sizes the jvm according to the environment");
         opts.addOption("t", "test", true, "starts test mode with {x} dummy messages");
         opts.addOption("c", "compress", true, "enable/disbale snappy comrepssion (default=true)");
+        opts.addOption("b", "build", false, "generate executable shell script");
 
         CommandLine cmd = parser.parse(opts, args);
         if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("trivium", opts);
-            return;
+            return false;
         }
+        if (cmd.hasOption("build")) {
+            uuencode();
+            return false;
+        }
+
         if (cmd.hasOption("loglevel")) {
             String val = cmd.getOptionValue("loglevel");
             try {
@@ -156,6 +172,8 @@ public class Central {
         }
 
         Hardware.discover();
+
+        return true;
     }
 
     public static String resolveUnits(String val) {
@@ -168,6 +186,28 @@ public class Central {
             rslt = val.substring(0, val.length() - 1) + "000";
         else rslt = val;
         return rslt;
+    }
+
+    /**
+     * creates a executable shell script from the original trivium.jar file
+     */
+    public static void uuencode(){
+        try {
+            FileInputStream fis = new FileInputStream(new File("trivium.jar"));
+            FileOutputStream fos = new FileOutputStream(new File("trivium.sh"));
+            String head="#!/bin/bash\n" +
+                    "uudecode $0\n" +
+                    "java -jar trivium.jar -Djava.system.class.loader=io.trivium.TriviumLoader -Djava.protocol.handler.pkgs=io.trivium.urlhandler\n" +
+                    "exit\n\n";
+            fos.write(head.getBytes());
+            UUEncoder uuec = new UUEncoder("trivium.jar");
+            uuec.encodeBuffer(fis, fos);
+            fos.flush();
+            fos.close();
+            fis.close();
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "error creating script",e);
+        }
     }
 
     public static void start() {
