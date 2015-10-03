@@ -33,7 +33,7 @@ public class _d716ac2d8d2c42009e430061c3739340 implements TestCase{
     }
     
     @Override
-    public String getName() {
+    public String getTestName() {
         return "Central set property";
     }
 
