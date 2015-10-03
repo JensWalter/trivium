@@ -131,10 +131,10 @@ public class Hardware {
 
             Central.setProperty("fsType", fsType);
             log.log(Level.INFO, "system is running on linux.");
-            log.log(Level.INFO, "cpu count is {}", cpuCount);
-            log.log(Level.INFO, "memory size is {}", memSize);
-            log.log(Level.INFO, "anystore path is {}", basePath);
-            log.log(Level.INFO, "anystore filesystem type is {}", fsType);
+            log.log(Level.INFO, "cpu count is {0}", cpuCount);
+            log.log(Level.INFO, "memory size is {0}", memSize);
+            log.log(Level.INFO, "anystore path is {0}", basePath);
+            log.log(Level.INFO, "anystore filesystem type is {0}", fsType);
         } catch (Exception e) {
             log.log(Level.SEVERE, "os discovery failed", e);
         }
