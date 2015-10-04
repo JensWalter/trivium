@@ -50,37 +50,37 @@ public class TriviumLoader extends ClassLoader {
         this.localOnly = localOnly;
     }
 
-    private Class<?> getClass(String name) throws ClassNotFoundException {
-        String file = name.replace('.', File.separatorChar) + ".class";
-        byte[] b = null;
-        try {
-            // This loads the byte code data from the file
-            b = loadClassData(file);
-            if((b==null || b.length==0 ) && Central.isRunning && !localOnly){
-                //load from anystore
-                Query query = new Query();
-                query.criteria.add(new Value("canonicalName", name));
-                query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-                query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
-                HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
-                for(ArrayList<TriviumObject> objects : partition.values()) {
-                    for (TriviumObject po : objects) {
-                        FileType memFile = new FileType();
-                        memFile.populate(po);
-                        b = Base64.getDecoder().decode(memFile.data);
-                    }
-                }
-            }
-            // defineClass is inherited from the ClassLoader class
-            // and converts the byte array into a Class
-            Class<?> c = defineClass(name, b, 0, b.length);
-            resolveClass(c);
-            return c;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    private Class<?> getClass(String name) throws ClassNotFoundException {
+//        String file = name.replace('.', File.separatorChar) + ".class";
+//        byte[] b = null;
+//        try {
+//            // This loads the byte code data from the file
+//            b = loadClassData(file);
+//            if((b==null || b.length==0 ) && Central.isRunning && !localOnly){
+//                //load from anystore
+//                Query query = new Query();
+//                query.criteria.add(new Value("canonicalName", name));
+//                query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
+//                query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
+//                HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
+//                for(ArrayList<TriviumObject> objects : partition.values()) {
+//                    for (TriviumObject po : objects) {
+//                        FileType memFile = new FileType();
+//                        memFile.populate(po);
+//                        b = Base64.getDecoder().decode(memFile.data);
+//                    }
+//                }
+//            }
+//            // defineClass is inherited from the ClassLoader class
+//            // and converts the byte array into a Class
+//            Class<?> c = defineClass(name, b, 0, b.length);
+//            resolveClass(c);
+//            return c;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     @Override
     public URL getResource(String name) {

@@ -30,8 +30,8 @@
 
     <target name="test" depends="dist" description="runs all test cases">
         <java jar="${dist}/trivium.jar" fork="true" dir="${dist}">
-            <jvmarg value="-Djava.system.class.loader=io.trivium.TriviumLoader" />
-            <jvmarg value="-Djava.protocol.handler.pkgs=io.trivium.urlhandler" />
+            <!--jvmarg value="-Djava.system.class.loader=io.trivium.TriviumLoader" />
+            <jvmarg value="-Djava.protocol.handler.pkgs=io.trivium.urlhandler" /-->
             <arg value="--test"/>
             <arg value="all"/>
             <classpath>
