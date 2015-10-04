@@ -21,11 +21,12 @@
 
         <java jar="${dist}/trivium.jar" fork="true" dir="${dist}">
             <arg value="--build"/>
-            <classpath>
-                <pathelement location="${dist}"/>
-                <pathelement path="${java.class.path}"/>
-            </classpath>
         </java>
+
+        <exec executable="/usr/bin/unzip">
+            <arg value="-v"/>
+            <arg value="${dist}/trivium.jar"/>
+        </exec>
     </target>
 
     <target name="test" depends="dist" description="runs all test cases">
