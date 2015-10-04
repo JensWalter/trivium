@@ -16,6 +16,7 @@
 
 package io.trivium.test;
 
+import io.trivium.Central;
 import io.trivium.Registry;
 
 import java.util.Iterator;
@@ -46,7 +47,8 @@ public class Tester {
      * @return all tests ran successful
      */
     public static boolean runAll(){
-        logger.log(Level.INFO,"running test suite");
+        String scope = Central.getProperty("test","core");
+        logger.log(Level.INFO,"running test suite for target {0}",scope);
         int count=0;
         int success=0;
         Iterator<TestCase> iter = Registry.INSTANCE.testcases.values().iterator();
@@ -62,7 +64,7 @@ public class Tester {
                 logger.log(Level.SEVERE,"test "+tc.getTypeId().toString()+": failed with exception", ex);
             }
         }
-        logger.log(Level.INFO,"tests complete {0}/{1} successful",
+        logger.log(Level.INFO,"tests completed with {0}/{1} successful",
                     new String[]{String.valueOf(success),String.valueOf(count)});
         return count==success;
     }
