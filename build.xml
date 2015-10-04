@@ -17,7 +17,11 @@
 
     <target name="dist" depends="compile" description="generate the distribution">
         <jar jarfile="${dist}/trivium.jar" basedir="${build}"
-                manifest="src/META-INF/MANIFEST.MF" />
+                manifest="src/META-INF/MANIFEST.MF" >
+            <fileset dir="${src}" casesensitive="true">
+                <include name="src/META-INF/services/*" />
+            </fileset>
+        </jar>
 
         <java jar="${dist}/trivium.jar" fork="true" dir="${dist}">
             <arg value="--build"/>
