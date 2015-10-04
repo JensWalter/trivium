@@ -19,7 +19,7 @@
         <jar jarfile="${dist}/trivium.jar" basedir="${build}"
                 manifest="src/META-INF/MANIFEST.MF" >
             <fileset dir="${src}" casesensitive="true">
-                <include name="src/META-INF/services/*" />
+                <include name="META-INF/services/*" />
             </fileset>
         </jar>
 
