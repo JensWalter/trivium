@@ -52,7 +52,6 @@ public enum Registry {
     public ConcurrentHashMap<ObjectRef, Binding> bindingInstances = new ConcurrentHashMap<>();
 
     public ConcurrentHashMap<ObjectRef, TestCase> testcases = new ConcurrentHashMap<>();
-    ServiceLoader<TestCase> testcaseLoader = ServiceLoader.load(TestCase.class, new TriviumLoader(ClassLoader.getSystemClassLoader()));
 
     public void reload() {
         final String PREFIX = "META-INF/services/";
@@ -73,7 +72,7 @@ public enum Registry {
                     if (!types.containsKey(prototype.getTypeId())) {
                         types.put(prototype.getTypeId(), clazz);
                     }
-                    log.log(Level.FINE, "registered type '{}'", prototype.getTypeName());
+                    log.log(Level.FINE, "registered type '{0}'", prototype.getTypeName());
                 }
             }
         } catch (Exception ex) {
@@ -98,7 +97,7 @@ public enum Registry {
                         //register prototype
                         bindingInstances.put(prototype.getTypeId(),prototype);
                     }
-                    log.log(Level.FINE, "registered binding '{}'", prototype.getName());
+                    log.log(Level.FINE, "registered binding '{0}'", prototype.getName());
                 }
             }
         } catch (Exception ex) {
@@ -136,7 +135,7 @@ public enum Registry {
                             }
                         }
                     }
-                    log.log(Level.FINE, "registered binding '{}'", prototype.getName());
+                    log.log(Level.FINE, "registered binding '{0}'", prototype.getName());
                 }
             }
         } catch (Exception ex) {
@@ -144,13 +143,36 @@ public enum Registry {
         }
 
         //testcases
-        testcaseLoader.reload();
-        Iterator<TestCase> testIter = testcaseLoader.iterator();
-        while (testIter.hasNext()) {
-            TestCase testcase = testIter.next();
-            if (!testcases.containsKey(testcase.getTypeId())) {
-                testcases.put(testcase.getTypeId(), testcase);
+//        testcaseLoader.reload();
+//        Iterator<TestCase> testIter = testcaseLoader.iterator();
+//        while (testIter.hasNext()) {
+//            TestCase testcase = testIter.next();
+//            if (!testcases.containsKey(testcase.getTypeId())) {
+//                testcases.put(testcase.getTypeId(), testcase);
+//            }
+//        }
+
+        //testcases
+        try {
+            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.test.TestCase");
+            while (resUrl.hasMoreElements()) {
+                URL url = resUrl.nextElement();
+                URLConnection connection = url.openConnection();
+                connection.connect();
+                InputStream is = connection.getInputStream();
+                List<String> lines = IOUtils.readLines(is, "UTF-8");
+                is.close();
+                for (String line : lines) {
+                    Class<? extends TestCase> clazz = (Class<? extends TestCase>) Class.forName(line);
+                    TestCase prototype = clazz.newInstance();
+                    if (!testcases.containsKey(prototype.getTypeId())) {
+                        testcases.put(prototype.getTypeId(), prototype);
+                    }
+                    log.log(Level.FINE, "registered testcase '{0}'", prototype.getTypeId());
+                }
             }
+        } catch (Exception ex) {
+            log.log(Level.SEVERE, "dynamically loading testcases failed", ex);
         }
     }
 
@@ -170,7 +192,7 @@ public enum Registry {
                             AnyClient.INSTANCE.storeObject(o);
                         }
                     } catch (Exception ex) {
-                        log.log(Level.SEVERE, "error while running task '{}'", prototype.getName());
+                        log.log(Level.SEVERE, "error while running task '{0}'", prototype.getName());
                         log.log(Level.SEVERE, "got exception", ex);
                     }
                 }

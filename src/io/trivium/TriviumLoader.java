@@ -40,47 +40,42 @@ public class TriviumLoader extends ClassLoader {
 
     //TODO is a class loader single threaded or multi threaded?
     private ConcurrentHashMap<String,Class<?>> classes = new ConcurrentHashMap<>();
-    private boolean localOnly = false;
 
     public TriviumLoader(ClassLoader parent) {
         super(parent);
     }
-    public TriviumLoader(ClassLoader parent,boolean localOnly) {
-        super(parent);
-        this.localOnly = localOnly;
-    }
 
-//    private Class<?> getClass(String name) throws ClassNotFoundException {
-//        String file = name.replace('.', File.separatorChar) + ".class";
-//        byte[] b = null;
-//        try {
-//            // This loads the byte code data from the file
-//            b = loadClassData(file);
-//            if((b==null || b.length==0 ) && Central.isRunning && !localOnly){
-//                //load from anystore
-//                Query query = new Query();
-//                query.criteria.add(new Value("canonicalName", name));
-//                query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-//                query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
-//                HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
-//                for(ArrayList<TriviumObject> objects : partition.values()) {
-//                    for (TriviumObject po : objects) {
-//                        FileType memFile = new FileType();
-//                        memFile.populate(po);
-//                        b = Base64.getDecoder().decode(memFile.data);
-//                    }
-//                }
-//            }
-//            // defineClass is inherited from the ClassLoader class
-//            // and converts the byte array into a Class
-//            Class<?> c = defineClass(name, b, 0, b.length);
-//            resolveClass(c);
-//            return c;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+    private Class<?> getClass(String name) throws ClassNotFoundException {
+        String file = name.replace('.', File.separatorChar) + ".class";
+        byte[] b = null;
+        try {
+            // This loads the byte code data from the file
+            b = loadClassData(file);
+            if((b==null || b.length==0 ) && Central.isRunning && name.startsWith("io.trivium.")){
+                //load from anystore
+                Query query = new Query();
+                query.criteria.add(new Value("canonicalName", name));
+                query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
+                query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
+                HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
+                for(ArrayList<TriviumObject> objects : partition.values()) {
+                    for (TriviumObject po : objects) {
+                        FileType memFile = new FileType();
+                        memFile.populate(po);
+                        b = Base64.getDecoder().decode(memFile.data);
+                    }
+                }
+            }
+            // defineClass is inherited from the ClassLoader class
+            // and converts the byte array into a Class
+            Class<?> c = defineClass(name, b, 0, b.length);
+            resolveClass(c);
+            return c;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public URL getResource(String name) {
@@ -89,12 +84,15 @@ public class TriviumLoader extends ClassLoader {
 
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
-        Enumeration<URL> orgResult = super.getResources(name);
+        Enumeration<URL> orgResult;
         Vector<URL> result = new Vector<URL>();
-        while(orgResult.hasMoreElements()){
-            result.add(orgResult.nextElement());
-        }
-        if(Central.isRunning && !localOnly && name.startsWith("META-INF/services/")){
+
+            orgResult = super.getResources(name);
+            while (orgResult.hasMoreElements()) {
+                result.add(orgResult.nextElement());
+            }
+        //do internal lookup on trivium types
+        if(Central.isRunning && name.startsWith("META-INF/services/io.trivium.")){
             //enrich with anystore
             Query query = new Query();
             query.criteria.add(new Value("name", name));
@@ -131,41 +129,46 @@ public class TriviumLoader extends ClassLoader {
     }
 
     @Override
-    public Class<?> loadClass(String name)
-            throws ClassNotFoundException {
-        try{
-            //look up anystore
-            if(Central.isRunning && !localOnly) {
-                if(classes.containsKey(name)){
-                    return classes.get(name);
-                }
-                Query query = new Query();
-                query.criteria.add(new Value("canonicalName", name));
-                query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-                query.criteria.add(new Value("contentType","application/java-vm"));
-                HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
-                for(ArrayList<TriviumObject> objects : partition.values()) {
-                    for (TriviumObject po : objects) {
-                        FileType file = new FileType();
-                        file.populate(po);
-                        if (file.contentType.equals(MimeTypes.getMimeType("class"))
-                                && file.name.replace('/', '.').equals(name + ".class")) {
-                            byte[] bytes = Base64.getDecoder().decode(file.data);
-                            Class<?> c = defineClass(name, bytes, 0, bytes.length);
-                            classes.put(name, c);
-                            return c;
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        Class<?> clazz = super.loadClass(name);
+        if(clazz == null) {
+            //try anystore
+            try {
+                //look up anystore
+                if (Central.isRunning) {
+                    if (classes.containsKey(name)) {
+                        return classes.get(name);
+                    }
+                    Query query = new Query();
+                    query.criteria.add(new Value("canonicalName", name));
+                    query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
+                    query.criteria.add(new Value("contentType", "application/java-vm"));
+                    HashMap<String, ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
+                    for (ArrayList<TriviumObject> objects : partition.values()) {
+                        for (TriviumObject po : objects) {
+                            FileType file = new FileType();
+                            file.populate(po);
+                            if (file.contentType.equals(MimeTypes.getMimeType("class"))
+                                    && file.name.replace('/', '.').equals(name + ".class")) {
+                                byte[] bytes = Base64.getDecoder().decode(file.data);
+                                Class<?> c = defineClass(name, bytes, 0, bytes.length);
+                                classes.put(name, c);
+                                clazz=c;
+                                //TODO break inner and outer loop
+                                break;
+                            }
                         }
                     }
                 }
+            } catch (Exception ex) {
             }
-        }catch(Exception ex){}
-        return super.loadClass(name);
+        }
+        return clazz;
     }
 
     private byte[] loadClassData(String name) throws IOException {
         // Opening the file
-        InputStream stream = getClass().getClassLoader()
-                .getResourceAsStream(name);
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
         int size = stream.available();
         byte buff[] = new byte[size];
         DataInputStream in = new DataInputStream(stream);

@@ -34,10 +34,6 @@
             <jvmarg value="-Djava.protocol.handler.pkgs=io.trivium.urlhandler" />
             <arg value="--test"/>
             <arg value="all"/>
-            <classpath>
-                <pathelement location="${dist}"/>
-                <pathelement path="${java.class.path}"/>
-            </classpath>
         </java>
     </target>
 

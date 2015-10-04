@@ -25,6 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Result {
-    public ScriptEngine scriptEngine = new ScriptEngineManager(new TriviumLoader(ClassLoader.getSystemClassLoader(),true)).getEngineByName("nashorn");
+    public ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
     public HashMap<String, ArrayList<TriviumObject>> partition = new HashMap<>();
 }
