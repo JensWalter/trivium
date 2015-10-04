@@ -1,7 +1,4 @@
 language: java
-os:
-  - linux
-  - osx
 env:
   - targets=dist
   - targets=test
