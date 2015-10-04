@@ -43,7 +43,7 @@ public class Tester {
 
     /**
      * runs all registered test cases
-     * @return whether an error happened during testing
+     * @return all tests ran successful
      */
     public static boolean runAll(){
         logger.log(Level.INFO,"running test suite");
@@ -62,7 +62,7 @@ public class Tester {
                 logger.log(Level.SEVERE,"test "+tc.getTypeId().toString()+": failed with exception", ex);
             }
         }
-        logger.log(Level.INFO,"tests complete {0}/{1} success rate",
+        logger.log(Level.INFO,"tests complete {0}/{1} successful",
                     new String[]{String.valueOf(success),String.valueOf(count)});
         return count==success;
     }

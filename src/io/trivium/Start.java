@@ -35,11 +35,11 @@ public class Start {
             //run test if started in test mode
             if(Central.getProperty("test") != null) {
                 Thread.sleep(1000);
-                boolean errorHappened = Tester.runAll();
-                if (errorHappened) {
-                    System.exit(-1);
-                } else {
+                boolean success = Tester.runAll();
+                if (success) {
                     System.exit(0);
+                } else {
+                    System.exit(-1);
                 }
             }
             //create dummy json channel for testing
