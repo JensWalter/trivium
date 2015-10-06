@@ -17,21 +17,21 @@
 package io.trivium.test;
 
 public class Assert {
-    public static void equalsString(String string1, String string2){
+    public static void equalsString(String string1, String string2) throws Exception{
         if(!string1.equals(string2)) {
-            throw new AssertionError();
+            throw new Exception("string equality assertion failed");
         }
     }
     
-    public static void isTrue(boolean bool){
+    public static void isTrue(boolean bool) throws Exception{
         if(!bool){
-            throw new AssertionError();
+            throw new Exception("boolean assertion failed");
         }
     }
 
-    public static void isFalse(boolean bool){
+    public static void isFalse(boolean bool) throws Exception{
         if(bool){
-            throw new AssertionError();
+            throw new Exception("boolean assertion failed");
         }
     }
 }
