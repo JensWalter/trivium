@@ -16,5 +16,6 @@
     <orderEntry type="module" module-name="tsk-bondoraLoanDataParser" />
     <orderEntry type="module" module-name="tsk-consoleLogger" />
     <orderEntry type="module" module-name="tsk-TimerTick2LogEntryMapper" />
+    <orderEntry type="module" module-name="bnd-bondoraWebUI" />
   </component>
 </module>
