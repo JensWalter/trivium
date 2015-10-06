@@ -24,9 +24,11 @@ public class _3f7c8b880b6a437484460c62e4f05f10 implements TestCase{
 
     @Override
     public void run() throws Exception {
+        //TODO make work
         String str= "<a xmlns=\"urn://ns1\" xmlns:b=\"urn://urn2\"><b>blah</b><b:c a='b'>blah2</b:c></a>";
         Element root = Xml.xmlToElement(str);
-        Assert.equalsString(str,root.toString());
+        String str2 = root.toString();
+        Assert.equalsString(str,str2);
     }
 
     @Override
