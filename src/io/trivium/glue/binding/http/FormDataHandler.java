@@ -86,7 +86,7 @@ public abstract class FormDataHandler implements HttpHandler {
         }
     }
 
-    public abstract void handle(HttpExchange httpExchange,List<MultiPart> multiParts) throws IOException;
+    public abstract void handle(HttpExchange httpExchange,List<MultiPart> parts) throws IOException;
 
     public String getInputAsString(HttpExchange exchange) {
         InputStream requestStream = exchange.getRequestBody();
@@ -109,9 +109,9 @@ public abstract class FormDataHandler implements HttpHandler {
     }
 
     public static class MultiPart {
-        String contentType;
-        String name;
-        String filename;
-        String value;
+        public String contentType;
+        public String name;
+        public String filename;
+        public String value;
     }
 }
