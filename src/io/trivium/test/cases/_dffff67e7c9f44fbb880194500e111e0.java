@@ -8,12 +8,12 @@ import io.trivium.test.TestCase;
 
 public class _dffff67e7c9f44fbb880194500e111e0 implements TestCase{
     @Override
-    public String getClassName() {
-        return "io.trivium.glue.om.Xml";
+    public Class<?> getTargetClass() {
+        return Xml.class;
     }
 
     @Override
-    public String getMethodName() {
+    public String getTargetMethodName() {
         return "xmlToElement";
     }
     

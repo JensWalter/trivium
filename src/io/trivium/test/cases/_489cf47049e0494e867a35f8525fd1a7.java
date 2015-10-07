@@ -8,12 +8,12 @@ import io.trivium.test.TestCase;
 
 public class _489cf47049e0494e867a35f8525fd1a7 implements TestCase{
     @Override
-    public String getClassName() {
-        return "io.trivium.glue.om.Json";
+    public Class<?> getTargetClass() {
+        return Json.class;
     }
 
     @Override
-    public String getMethodName() {
+    public String getTargetMethodName() {
         return "elementToJson";
     }
     

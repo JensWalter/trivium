@@ -16,12 +16,12 @@ import java.util.HashMap;
 
 public class _2116057b522d4ce2a793a859288e34a8 implements TestCase{
     @Override
-    public String getClassName() {
-        return "io.trivium.anystore.AnyServer";
+    public Class<?> getTargetClass() {
+        return AnyServer.class;
     }
 
     @Override
-    public String getMethodName() {
+    public String getTargetMethodName() {
         return "loadObjects";
     }
     

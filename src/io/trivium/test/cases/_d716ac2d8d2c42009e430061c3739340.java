@@ -23,12 +23,12 @@ import io.trivium.test.TestCase;
 
 public class _d716ac2d8d2c42009e430061c3739340 implements TestCase{
     @Override
-    public String getClassName() {
-        return "io.trivium.Central";
+    public Class<?> getTargetClass() {
+        return Central.class;
     }
 
     @Override
-    public String getMethodName() {
+    public String getTargetMethodName() {
         return "getProperty";
     }
     

@@ -3,6 +3,7 @@ package io.trivium.test.cases;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
+import io.trivium.anystore.MapStore;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
@@ -16,12 +17,12 @@ import java.util.HashMap;
 
 public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
     @Override
-    public String getClassName() {
-        return "io.trivium.anystore.MapStore";
+    public Class<?> getTargetClass() {
+        return MapStore.class;
     }
 
     @Override
-    public String getMethodName() {
+    public String getTargetMethodName() {
         return "loadObjects";
     }
     

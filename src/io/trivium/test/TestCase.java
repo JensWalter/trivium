@@ -19,8 +19,11 @@ package io.trivium.test;
 import io.trivium.extension.type.Typed;
 
 public interface TestCase extends Typed{
-    String getClassName();
-    String getMethodName();
+    Class<?> getTargetClass();
     String getTestName();
     void run() throws Exception;
+
+    default String getTargetMethodName(){
+        return "";
+    }
 }
