@@ -88,10 +88,13 @@ public interface Type extends Typed{
                         || field.getType() == boolean.class || field.getType() == byte.class || field.getType() == float.class
                         || field.getType() == double.class || field.getType() == short.class || field.getType() == char.class
                         || field.getType() == String.class) {
-                    root.addChild(new Element(name,field.get(this).toString()));
+                    Object obj = field.get(this);
+                    if(obj != null) {
+                        root.addChild(new Element(name, obj.toString()));
+                    }
                 }
             } catch (Exception ex) {
-                getLogger().log(Level.SEVERE,"error while building typed object", ex);
+                getLogger().log(Level.SEVERE,"error while building typed object", (Throwable)ex);
             }
         }
         tvm.setData(root);

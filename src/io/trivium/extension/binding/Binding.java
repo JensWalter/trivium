@@ -29,9 +29,19 @@ public abstract class Binding implements Typed {
     private State state = State.stopped;
     public final ObjectRef instanceId = ObjectRef.getInstance();
 
-    public abstract void start();
+    public void startBinding(){
+        start();
+        setState(State.running);
+    }
 
-    public abstract void stop();
+    protected abstract void start();
+
+    public void stopBinding(){
+        stop();
+        setState(State.stopped);
+    }
+
+    protected abstract void stop();
 
     public void check() throws Exception{}
 

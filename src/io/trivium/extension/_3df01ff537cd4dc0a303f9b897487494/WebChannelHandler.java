@@ -33,13 +33,13 @@ public class WebChannelHandler extends Binding implements HttpHandler {
     private final static Pattern uuidpattern = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
 
     @Override
-    public void start() {
+    protected void start() {
         //TODO default port
         Http.INSTANCE.registerListener("/channel/",this);
     }
 
     @Override
-    public void stop() {
+    protected void stop() {
         Http.INSTANCE.unregisterListener(this);
     }
 

@@ -29,13 +29,13 @@ import java.io.InputStream;
 
 public class WebUIHandler extends Binding implements HttpHandler {
     @Override
-    public void start() {
+    protected void start() {
         //TODO default port
         Http.INSTANCE.registerListener("/ui/",this);
     }
 
     @Override
-    public void stop() {
+    protected void stop() {
         Http.INSTANCE.unregisterListener(this);
     }
 

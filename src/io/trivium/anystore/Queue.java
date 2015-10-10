@@ -66,6 +66,13 @@ public class Queue {
             readPointer.flip();
             long pos = readPointer.get();
             return queue.cursor(pos);
+        } catch (IllegalArgumentException ex) {
+            log.log(Level.INFO,"cursor position is invalid, resetting to position 0",ex);
+            try {
+                return queue.cursor(0);
+            }catch(IOException io){
+                //ignore
+            }
         } catch (IOException e) {
             log.log(Level.SEVERE,"error creating cursor",e);
         }

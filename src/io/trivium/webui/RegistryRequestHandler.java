@@ -108,12 +108,12 @@ public class RegistryRequestHandler implements HttpHandler {
             } else if (cmd.equals("start")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.bindingInstances.get(ref).start();
+                Registry.INSTANCE.bindingInstances.get(ref).startBinding();
                 s.ok();
             } else if (cmd.equals("stop")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.bindingInstances.get(ref).stop();
+                Registry.INSTANCE.bindingInstances.get(ref).stopBinding();
                 s.ok();
             } else {
 

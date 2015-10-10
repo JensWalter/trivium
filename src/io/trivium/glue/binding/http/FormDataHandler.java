@@ -117,8 +117,6 @@ public abstract class FormDataHandler implements HttpHandler {
             byte[] buf = new byte[100000];
             int bytesRead=0;
             while ((bytesRead = requestStream.read(buf)) != -1){
-            //while (requestStream.available() > 0) {
-            //    int i = requestStream.read(buf);
                 bos.write(buf, 0, bytesRead);
             }
             requestStream.close();
