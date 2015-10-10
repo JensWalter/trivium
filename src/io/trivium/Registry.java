@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -48,8 +49,8 @@ public enum Registry {
 
     public ConcurrentHashMap<ObjectRef, Class<? extends Type>> types = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<ObjectRef, Class<? extends Binding>> bindings = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<ObjectRef, Binding> bindingInstances = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<ObjectRef, Class<? extends Binding>> bindings = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<ObjectRef, Binding> bindingInstances = new ConcurrentHashMap<>();
 
     public ConcurrentHashMap<ObjectRef, TestCase> testcases = new ConcurrentHashMap<>();
 
@@ -143,16 +144,6 @@ public enum Registry {
         }
 
         //testcases
-//        testcaseLoader.reload();
-//        Iterator<TestCase> testIter = testcaseLoader.iterator();
-//        while (testIter.hasNext()) {
-//            TestCase testcase = testIter.next();
-//            if (!testcases.containsKey(testcase.getTypeId())) {
-//                testcases.put(testcase.getTypeId(), testcase);
-//            }
-//        }
-
-        //testcases
         try {
             Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.test.TestCase");
             while (resUrl.hasMoreElements()) {
@@ -198,5 +189,13 @@ public enum Registry {
                 }
             }
         }
+    }
+
+    public Binding getBinding(ObjectRef typeId){
+        return bindingInstances.get(typeId);
+    }
+
+    public Collection<Binding> getAllBindings(){
+        return bindingInstances.values();
     }
 }

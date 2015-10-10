@@ -225,16 +225,13 @@ public class Central {
 
         try {
             //init ui handler
-            Binding b = Registry.INSTANCE.bindings.get(ObjectRef.getInstance("8c419189-0b68-4fe3-a807-34ad3287800d")).newInstance();
-            Registry.INSTANCE.bindingInstances.put(b.getTypeId(), b);
+            Binding b = Registry.INSTANCE.getBinding(ObjectRef.getInstance("8c419189-0b68-4fe3-a807-34ad3287800d"));
             b.startBinding();
             //init object handler
-            b = Registry.INSTANCE.bindings.get(ObjectRef.getInstance("3d63321d-f553-4c3d-a8e7-b6159e7ee35b")).newInstance();
-            Registry.INSTANCE.bindingInstances.put(b.getTypeId(), b);
+            b = Registry.INSTANCE.getBinding(ObjectRef.getInstance("3d63321d-f553-4c3d-a8e7-b6159e7ee35b"));
             b.startBinding();
             //init channel handler
-            b = Registry.INSTANCE.bindings.get(ObjectRef.getInstance("3df01ff5-37cd-4dc0-a303-f9b897487494")).newInstance();
-            Registry.INSTANCE.bindingInstances.put(b.getTypeId(),b);
+            b = Registry.INSTANCE.getBinding(ObjectRef.getInstance("3df01ff5-37cd-4dc0-a303-f9b897487494"));
             b.startBinding();
         }catch (Exception ex){
             log.log(Level.SEVERE,"error initializing the builtin http handler",ex);

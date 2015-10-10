@@ -31,6 +31,7 @@ import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.MimeTypes;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,10 +58,9 @@ public class RegistryRequestHandler implements HttpHandler {
                 Registry.INSTANCE.reload();
 
                 NVList list = new NVList();
-                ConcurrentHashMap<ObjectRef, Class<? extends Binding>> bindings = Registry.INSTANCE.bindings;
+                Collection<Binding> bindings = Registry.INSTANCE.getAllBindings();
                 NVPair nvbind = new NVPair("binding");
-                for (Class<? extends Binding> bindingClass : bindings.values()) {
-                    Binding binding = bindingClass.newInstance();
+                for (Binding binding : bindings) {
                     nvbind.addValue(binding.getTypeId().toString());
                     list.add(new NVPair(binding.getTypeId().toString(), binding.getName()));
                 }
@@ -88,7 +88,7 @@ public class RegistryRequestHandler implements HttpHandler {
             } else if (cmd.equals("status")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Binding bind = Registry.INSTANCE.bindingInstances.get(ref);
+                Binding bind = Registry.INSTANCE.getBinding(ref);
                 if (bind != null) {
                     State state = bind.getState();
                     NVList list = new NVList();
@@ -108,12 +108,12 @@ public class RegistryRequestHandler implements HttpHandler {
             } else if (cmd.equals("start")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.bindingInstances.get(ref).startBinding();
+                Registry.INSTANCE.getBinding(ref).startBinding();
                 s.ok();
             } else if (cmd.equals("stop")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.bindingInstances.get(ref).stopBinding();
+                Registry.INSTANCE.getBinding(ref).stopBinding();
                 s.ok();
             } else {
 
