@@ -48,7 +48,7 @@ public class Central {
     public static ArrayList<String> peers = new ArrayList<>();
     public static AtomicInteger currentPeer = new AtomicInteger(0);
 
-    public static boolean isRunning = false;
+    public static volatile boolean isRunning = false;
 
     public synchronized static void setProperty(String name, String value) {
         properties.put(name, value);
@@ -94,7 +94,6 @@ public class Central {
         opts.addOption("hp", "http", true, "port for the http interface, defaults to port 12345");
         opts.addOption("cs", "cleanStore", false, "re-initializes the local store (all information will be lost)");
         opts.addOption("cq", "cleanQueue", false, "re-initializes the local ingestion queue");
-        opts.addOption("a", "autosize", false, "sizes the jvm according to the environment");
         opts.addOption("t", "test", true, "starts test mode with {x} dummy messages");
         opts.addOption("c", "compress", true, "enable/disbale snappy comrepssion (default=true)");
         opts.addOption("b", "build", false, "generate executable shell script");

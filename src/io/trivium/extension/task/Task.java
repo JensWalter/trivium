@@ -36,7 +36,6 @@ import java.util.logging.Logger;
 public abstract class Task implements Typed {
     protected Logger log = Logger.getLogger(getClass().getName());
     public final ObjectRef instanceId = ObjectRef.getInstance();
-    protected String context = "";
 
     public abstract boolean eval() throws Exception;
 
