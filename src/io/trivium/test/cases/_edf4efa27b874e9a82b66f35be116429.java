@@ -23,16 +23,6 @@ import io.trivium.test.TestCase;
 
 public class _edf4efa27b874e9a82b66f35be116429 implements TestCase{
     @Override
-    public Class<?> getTargetClass() {
-        return NVPair.class;
-    }
-
-    @Override
-    public String getTargetMethodName() {
-        return "isArray";
-    }
-    
-    @Override
     public String getTestName() {
         return "multiple values for one nvpair";
     }

@@ -8,16 +8,6 @@ import io.trivium.test.TestCase;
 
 public class _3f7c8b880b6a437484460c62e4f05f10 implements TestCase{
     @Override
-    public Class<?> getTargetClass() {
-        return Xml.class;
-    }
-
-    @Override
-    public String getTargetMethodName() {
-        return "xmlToElement";
-    }
-    
-    @Override
     public String getTestName() {
         return "xml with attribute";
     }

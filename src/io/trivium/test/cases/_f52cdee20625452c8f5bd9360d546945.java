@@ -8,16 +8,6 @@ import io.trivium.test.TestCase;
 
 public class _f52cdee20625452c8f5bd9360d546945 implements TestCase{
     @Override
-    public Class<?> getTargetClass() {
-        return Json.class;
-    }
-
-    @Override
-    public String getTargetMethodName() {
-        return "elementToJson";
-    }
-    
-    @Override
     public String getTestName() {
         return "tranform swagger json";
     }

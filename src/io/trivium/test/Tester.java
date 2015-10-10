@@ -55,7 +55,7 @@ public class Tester {
         while(iter.hasNext()){
             count++;
             TestCase tc = iter.next();
-            logger.log(Level.INFO,"{1} {2} -> test {0}",new String[]{tc.getTypeId().toString(),tc.getTargetClass().getCanonicalName(),tc.getTargetMethodName()});
+            logger.log(Level.INFO,"{0} -> test {1}",new String[]{tc.getTypeId().toString(),tc.getTestName()});
             try {
                 tc.run();
                 success++;

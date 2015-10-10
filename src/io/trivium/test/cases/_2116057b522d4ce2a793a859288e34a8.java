@@ -16,16 +16,6 @@ import java.util.HashMap;
 
 public class _2116057b522d4ce2a793a859288e34a8 implements TestCase{
     @Override
-    public Class<?> getTargetClass() {
-        return AnyServer.class;
-    }
-
-    @Override
-    public String getTargetMethodName() {
-        return "loadObjects";
-    }
-    
-    @Override
     public String getTestName() {
         return "load object by object id";
     }

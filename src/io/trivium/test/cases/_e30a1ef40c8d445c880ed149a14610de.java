@@ -17,16 +17,6 @@ import java.util.HashMap;
 
 public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
     @Override
-    public Class<?> getTargetClass() {
-        return MapStore.class;
-    }
-
-    @Override
-    public String getTargetMethodName() {
-        return "loadObjects";
-    }
-    
-    @Override
     public String getTestName() {
         return "simple store query";
     }
