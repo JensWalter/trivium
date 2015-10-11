@@ -26,25 +26,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public enum Http {
-    INSTANCE;
+public class Http {
+    private static ConcurrentHashMap<String,HttpHandler> listeners = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, HttpServer> servers = new ConcurrentHashMap<>();
+    static Logger log = Logger.getLogger(Http.class.getName());
 
-    private ConcurrentHashMap<String,HttpHandler> listeners = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, HttpServer> servers = new ConcurrentHashMap<>();
-    Logger log = Logger.getLogger(getClass().getName());
-
-    public void registerListener(String uri, HttpHandler handler) {
+    public static void registerListener(String uri, HttpHandler handler) {
         registerListener("localhost", 12345, uri, handler);
     }
 
-    public void registerListener(int port, String uri, HttpHandler handler) {
+    public static void registerListener(int port, String uri, HttpHandler handler) {
         registerListener("localhost", port, uri, handler);
     }
 
-    public boolean registerListener(String host, int port, String uri, HttpHandler handler) {
+    public static boolean registerListener(String host, int port, String uri, HttpHandler handler) {
         String endpoint = host+port+uri;
         String binding = host+port;
-        synchronized (this) {
+        synchronized (listeners) {
             for (String entry : listeners.keySet()) {
                 if (entry.startsWith(endpoint)) {
                     return false;
@@ -54,7 +52,7 @@ public enum Http {
         }
         //look for an existing server
         HttpServer server = null;
-        synchronized (this) {
+        synchronized (servers) {
             for (String entry : servers.keySet()) {
                 if (entry.equals(binding)) {
                     server = servers.get(entry);
@@ -78,5 +76,5 @@ public enum Http {
         return true;
     }
 
-    public void unregisterListener(HttpHandler handler){}
+    public static void unregisterListener(HttpHandler handler){}
 }

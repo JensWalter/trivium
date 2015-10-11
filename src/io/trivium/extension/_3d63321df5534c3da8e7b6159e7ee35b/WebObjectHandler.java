@@ -47,12 +47,12 @@ public class WebObjectHandler extends Binding implements HttpHandler {
     @Override
     protected void start() {
         //TODO default port
-        Http.INSTANCE.registerListener("/object/",this);
+        Http.registerListener("/object/",this);
     }
 
     @Override
     protected void stop() {
-        Http.INSTANCE.unregisterListener(this);
+        Http.unregisterListener(this);
     }
 
     @Override

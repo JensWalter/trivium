@@ -31,12 +31,12 @@ public class WebUIHandler extends Binding implements HttpHandler {
     @Override
     protected void start() {
         //TODO default port
-        Http.INSTANCE.registerListener("/ui/",this);
+        Http.registerListener("/ui/",this);
     }
 
     @Override
     protected void stop() {
-        Http.INSTANCE.unregisterListener(this);
+        Http.unregisterListener(this);
     }
 
     @Override
