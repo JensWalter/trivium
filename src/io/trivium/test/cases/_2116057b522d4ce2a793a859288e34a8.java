@@ -34,12 +34,9 @@ public class _2116057b522d4ce2a793a859288e34a8 implements TestCase{
 
         AnyServer.INSTANCE.getStore().storeObject(tvm);
 
-        NVList filter = new NVList();
-        filter.add(new NVPair("id",tvm.getId().toString()));
         Query q = new Query();
-        for(NVPair pair:filter){
-            q.criteria.add(new Value(pair.getName(), pair.getValue()));
-        }
+        q.criteria.add(new Value("id", tvm.getId().toString()));
+
         HashMap<String,ArrayList<TriviumObject>> all = AnyServer.INSTANCE.getStore().loadObjects(q).partition;
         ArrayList<TriviumObject> list = new ArrayList<>();
         for(ArrayList<TriviumObject> objects: all.values()){
