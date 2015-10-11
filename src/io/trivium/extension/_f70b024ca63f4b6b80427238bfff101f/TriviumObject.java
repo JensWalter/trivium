@@ -56,6 +56,7 @@ public class TriviumObject implements Type {
         metadata = new NVList();
         replaceMeta("id", id.toString());
         data = Element.EMPTY;
+        checkMetadata();
     }
 
     public TriviumObject(ObjectRef id){
@@ -64,6 +65,7 @@ public class TriviumObject implements Type {
         metadata = new NVList();
         replaceMeta("id",id.toString());
         data = Element.EMPTY;
+        checkMetadata();
     }
 
     public ObjectRef getId(){
