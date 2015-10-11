@@ -241,10 +241,10 @@ public class MapStore {
         NVList meta = Json.JsonToNVPairs(data);
         for (NVPair pair : meta) {
             if (pair.isArray()) {
-                po.addMetadata(pair.getName(), pair.getValue());
+                po.replaceMeta(pair.getName(), pair.getValue());
             } else {
                 for (String val : pair.getValues()) {
-                    po.addMetadata(pair.getName(), val);
+                    po.replaceMeta(pair.getName(), val);
                 }
             }
         }
