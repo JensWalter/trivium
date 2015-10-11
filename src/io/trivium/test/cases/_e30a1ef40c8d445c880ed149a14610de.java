@@ -27,8 +27,8 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
         Element el = new Element("node","hallo world");
 
         tvm.setData(el);
-        tvm.addMetadata("id", tvm.getId().toString());
-        tvm.addMetadata("contentType", "text/plain");
+        tvm.replaceMeta("id", tvm.getId().toString());
+        tvm.replaceMeta("contentType", "text/plain");
         ObjectRef typeId = ObjectRef.getInstance("39d3af87-5fca-4066-ae7f-b88bc2ae6dc2");
         tvm.setTypeId(typeId);
 
