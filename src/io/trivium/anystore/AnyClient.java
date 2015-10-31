@@ -57,8 +57,8 @@ public class AnyClient {
         pipeIn.append(msg);
     }
 
-	public void delete(Query query) {
-        AnyServer.INSTANCE.getStore().delete(query);
+	public void deleteById(ObjectRef id) {
+        AnyServer.INSTANCE.getStore().deleteById(id);
 	}
 
 	public Result loadObjects(Query query) {

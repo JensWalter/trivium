@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AnyDB {
-    DB map =null;
-    Logger log = Logger.getLogger(getClass().getName());
+    private DB map =null;
+    private Logger log = Logger.getLogger(getClass().getName());
     public String path;
     /**
      * valid values are "meta" or "data" or "local"
@@ -59,5 +59,9 @@ public class AnyDB {
             log.log(Level.SEVERE,"creating file store failed",ex);
             System.exit(0);
         }
+    }
+
+    public void delete(byte[] key){
+        map.delete(key);
     }
 }

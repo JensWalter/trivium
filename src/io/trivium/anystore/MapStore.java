@@ -262,8 +262,8 @@ public class MapStore {
         return po;
     }
 
-    public void delete(Query query) {
-        //TODO implement
+    public void deleteById(ObjectRef id) {
+        metaMap.delete(id.toBytes());
     }
 
 }

@@ -9,16 +9,6 @@ import io.trivium.test.TestCase;
 
 public class $name implements TestCase{
     @Override
-    public String getClassName() {
-        return null;
-    }
-
-    @Override
-    public String getMethodName() {
-        return null;
-    }
-    
-    @Override
     public String getTestName() {
         return null;
     }

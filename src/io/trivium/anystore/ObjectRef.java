@@ -28,8 +28,8 @@ public class ObjectRef {
     private static Interner<ObjectRef> refs;
     public static ObjectRef INVALID;
 
-    String id;
-    byte[] bytes;
+    private String id;
+    private byte[] bytes;
 
     static {
         refs = Interners.newWeakInterner();
