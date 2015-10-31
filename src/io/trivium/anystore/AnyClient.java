@@ -58,10 +58,10 @@ public class AnyClient {
     }
 
 	public void deleteById(ObjectRef id) {
-        AnyServer.INSTANCE.getStore().deleteById(id);
+        AnyServer.INSTANCE.deleteById(id);
 	}
 
 	public Result loadObjects(Query query) {
-		return AnyServer.INSTANCE.getStore().loadObjects(query);
+		return AnyServer.INSTANCE.loadObjects(query);
 	}
 }

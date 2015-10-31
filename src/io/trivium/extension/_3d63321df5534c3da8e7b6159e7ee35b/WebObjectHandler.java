@@ -83,12 +83,10 @@ public class WebObjectHandler extends Binding implements HttpHandler {
                     q.criteria.add(new Value(pair.getName(), pair.getValue()));
                 }
                 ArrayList<String> sb = new ArrayList<>();
-                HashMap<String, ArrayList<TriviumObject>> list = AnyClient.INSTANCE.loadObjects(q).partition;
-                for(ArrayList<TriviumObject> objects : list.values()) {
-                    for (TriviumObject po : objects) {
-                        if (po != null) {
-                            sb.add(Json.elementToJson(po.getData()));
-                        }
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q).getAllAsList();
+                for (TriviumObject po : objects) {
+                    if (po != null) {
+                        sb.add(Json.elementToJson(po.getData()));
                     }
                 }
                 String str = Joiner.on(",").join(sb);

@@ -32,16 +32,12 @@ public class _2116057b522d4ce2a793a859288e34a8 implements TestCase{
         ObjectRef typeId = ObjectRef.getInstance("39d3af87-5fca-4066-ae7f-b88bc2ae6dc2");
         tvm.setTypeId(typeId);
 
-        AnyServer.INSTANCE.getStore().storeObject(tvm);
+        AnyServer.INSTANCE.storeObject(tvm);
 
         Query q = new Query();
         q.criteria.add(new Value("id", tvm.getId().toString()));
 
-        HashMap<String,ArrayList<TriviumObject>> all = AnyServer.INSTANCE.getStore().loadObjects(q).partition;
-        ArrayList<TriviumObject> list = new ArrayList<>();
-        for(ArrayList<TriviumObject> objects: all.values()){
-            list.addAll(objects);
-        }
+        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
 
         Assert.isTrue(orgId==list.get(0).getId());
     }

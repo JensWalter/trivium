@@ -3,7 +3,6 @@ package io.trivium.test.cases;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
-import io.trivium.anystore.MapStore;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
@@ -32,7 +31,7 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
         ObjectRef typeId = ObjectRef.getInstance("39d3af87-5fca-4066-ae7f-b88bc2ae6dc2");
         tvm.setTypeId(typeId);
 
-        AnyServer.INSTANCE.getStore().storeObject(tvm);
+        AnyServer.INSTANCE.storeObject(tvm);
 
         NVList filter = new NVList();
         filter.add(new NVPair("id",tvm.getId().toString()));
@@ -43,11 +42,7 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
         q.reducePartitionBy="typeId";
         q.reduceOrderBy="created";
         q.reduceOrderDirection="desc";
-        HashMap<String,ArrayList<TriviumObject>> all = AnyServer.INSTANCE.getStore().loadObjects(q).partition;
-        ArrayList<TriviumObject> list = new ArrayList<>();
-        for(ArrayList<TriviumObject> objects: all.values()){
-            list.addAll(objects);
-        }
+        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
         String str1 = tvm.getMetadataJson();
         String str2 = list.get(0).getMetadataJson();
         Assert.equalsString(str1,str2);

@@ -57,13 +57,11 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("canonicalName", name));
                 query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                 query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
-                HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
-                for(ArrayList<TriviumObject> objects : partition.values()) {
-                    for (TriviumObject po : objects) {
-                        FileType memFile = new FileType();
-                        memFile.populate(po);
-                        b = Base64.getDecoder().decode(memFile.data);
-                    }
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+                for (TriviumObject po : objects) {
+                    FileType memFile = new FileType();
+                    memFile.populate(po);
+                    b = Base64.getDecoder().decode(memFile.data);
                 }
             }
             // defineClass is inherited from the ClassLoader class
@@ -97,13 +95,11 @@ public class TriviumLoader extends ClassLoader {
             Query query = new Query();
             query.criteria.add(new Value("name", name));
             query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-            HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
-            for(ArrayList<TriviumObject> objects : partition.values()) {
-                for (TriviumObject po : objects) {
-                    String uri = "anystore://" + po.getId().toString();
-                    URL url = new URL(uri);
-                    result.add(url);
-                }
+            ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+            for (TriviumObject po : objects) {
+                String uri = "anystore://" + po.getId().toString();
+                URL url = new URL(uri);
+                result.add(url);
             }
         }
         return result.elements();
@@ -143,20 +139,18 @@ public class TriviumLoader extends ClassLoader {
                     query.criteria.add(new Value("canonicalName", name));
                     query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
                     query.criteria.add(new Value("contentType", "application/java-vm"));
-                    HashMap<String, ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
-                    for (ArrayList<TriviumObject> objects : partition.values()) {
-                        for (TriviumObject po : objects) {
-                            FileType file = new FileType();
-                            file.populate(po);
-                            if (file.contentType.equals(MimeTypes.getMimeType("class"))
-                                    && file.name.replace('/', '.').equals(name + ".class")) {
-                                byte[] bytes = Base64.getDecoder().decode(file.data);
-                                Class<?> c = defineClass(name, bytes, 0, bytes.length);
-                                classes.put(name, c);
-                                clazz=c;
-                                //TODO break inner and outer loop
-                                break;
-                            }
+                    ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+                    for (TriviumObject po : objects) {
+                        FileType file = new FileType();
+                        file.populate(po);
+                        if (file.contentType.equals(MimeTypes.getMimeType("class"))
+                                && file.name.replace('/', '.').equals(name + ".class")) {
+                            byte[] bytes = Base64.getDecoder().decode(file.data);
+                            Class<?> c = defineClass(name, bytes, 0, bytes.length);
+                            classes.put(name, c);
+                            clazz=c;
+                            //TODO break inner and outer loop
+                            break;
                         }
                     }
                 }

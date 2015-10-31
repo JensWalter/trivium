@@ -57,13 +57,11 @@ public class URLConnection extends java.net.URLConnection {
         Query query = new Query();
         query.criteria.add(new Value("id", url.getHost()));
         byte[] b = new byte[0];
-        HashMap<String,ArrayList<TriviumObject>> partition = AnyClient.INSTANCE.loadObjects(query).partition;
-        for(ArrayList<TriviumObject> objects : partition.values()) {
-            for (TriviumObject po : objects) {
-                FileType file = new FileType();
-                file.populate(po);
-                b = Base64.getDecoder().decode(file.data);
-            }
+        ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+        for (TriviumObject po : objects) {
+            FileType file = new FileType();
+            file.populate(po);
+            b = Base64.getDecoder().decode(file.data);
         }
         ByteArrayInputStream bis = new ByteArrayInputStream(b);
         return bis;

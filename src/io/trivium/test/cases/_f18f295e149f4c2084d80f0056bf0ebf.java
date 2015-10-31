@@ -1,7 +1,5 @@
 package io.trivium.test.cases;
 
-import io.trivium.NVList;
-import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
@@ -12,7 +10,6 @@ import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class _f18f295e149f4c2084d80f0056bf0ebf implements TestCase{
     @Override
@@ -31,19 +28,11 @@ public class _f18f295e149f4c2084d80f0056bf0ebf implements TestCase{
         ObjectRef typeId = ObjectRef.getInstance("39d3af87-5fca-4066-ae7f-b88bc2ae6dc2");
         tvm.setTypeId(typeId);
 
-        AnyServer.INSTANCE.getStore().storeObject(tvm);
+        AnyServer.INSTANCE.storeObject(tvm);
 
-        NVList filter = new NVList();
-        filter.add(new NVPair("typeId",typeId.toString()));
         Query q = new Query();
-        for(NVPair pair:filter){
-            q.criteria.add(new Value(pair.getName(), pair.getValue()));
-        }
-        HashMap<String,ArrayList<TriviumObject>> all = AnyServer.INSTANCE.getStore().loadObjects(q).partition;
-        ArrayList<TriviumObject> list = new ArrayList<>();
-        for(ArrayList<TriviumObject> objects: all.values()){
-            list.addAll(objects);
-        }
+        q.criteria.add(new Value("typeId",typeId.toString()));
+        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
 
         Assert.isTrue(typeId==list.get(0).getTypeId());
     }
