@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.trivium.webui;
+package io.trivium.extension._8c4191890b684fe3a80734ad3287800d;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

@@ -27,17 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class WebUIHandler extends Binding implements HttpHandler {
-    @Override
-    protected void start() {
-        //TODO default port
-        Http.registerListener("/ui/",this);
-    }
-
-    @Override
-    protected void stop() {
-        Http.unregisterListener(this);
-    }
+public class WebUIHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -45,9 +35,9 @@ public class WebUIHandler extends Binding implements HttpHandler {
         String origURI = httpExchange.getRequestURI().getPath();
         String uri = origURI;
         if (uri.equals("/ui/"))
-            uri = "io/trivium/webui/index.html";
+            uri = "io/trivium/extension/_8c4191890b684fe3a80734ad3287800d/res/index.html";
         else
-            uri = "io/trivium/webui" + uri.substring(3);
+            uri = "io/trivium/extension/_8c4191890b684fe3a80734ad3287800d" + uri.substring(3);
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         try {
             Class<?> clazz = cl.loadClass(uri.replace('/', '.'));
