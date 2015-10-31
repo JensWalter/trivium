@@ -255,7 +255,11 @@ public class AnyServer implements Runnable {
             }
             if(valid) {
                 if (result.partition.containsKey(partitionKey)) {
-                    result.partition.get(partitionKey).add(tvm);
+                    ArrayList<TriviumObject> list = result.partition.get(partitionKey);
+                    if(list.size()>=query.reduceTo) {
+                        list.remove(0);
+                    }
+                    list.add(tvm);
                 } else {
                     ArrayList<TriviumObject> list = new ArrayList<>();
                     list.add(tvm);
