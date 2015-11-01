@@ -35,8 +35,8 @@ public class Json {
 		Element root = new Element("dummy");
 		try {
 			JsonReader reader = new JsonReader(new StringReader(in));
-			LinkedList<Element> stack = new LinkedList<Element>();
-			LinkedList<Element> arrayStack = new LinkedList<Element>();
+			LinkedList<Element> stack = new LinkedList<>();
+			LinkedList<Element> arrayStack = new LinkedList<>();
 			stack.push(root);
 			boolean running = true;
 			while (running) {
