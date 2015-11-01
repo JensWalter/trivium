@@ -5,6 +5,7 @@ import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
+import io.trivium.anystore.query.SortOrder;
 import io.trivium.anystore.query.Value;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
@@ -12,7 +13,6 @@ import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
     @Override
@@ -40,8 +40,8 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
             q.criteria.add(new Value(pair.getName(), pair.getValue()));
         }
         q.partitionBy="typeId";
-        q.partitionOrder="created";
-        q.partitionDirection="desc";
+        q.partitionOrderBy ="created";
+        q.partitionSortOrder= SortOrder.DESCENDING;
         ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
         String str1 = tvm.getMetadataJson();
         String str2 = list.get(0).getMetadataJson();

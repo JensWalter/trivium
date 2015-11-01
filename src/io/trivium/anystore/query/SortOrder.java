@@ -16,16 +16,6 @@
 
 package io.trivium.anystore.query;
 
-import io.trivium.anystore.ObjectRef;
-
-import java.util.ArrayList;
-
-public class Query {
-    public ObjectRef id = ObjectRef.getInstance();
-    public ArrayList<Criteria> criteria = new ArrayList<>();
-
-    public String partitionBy = "id";
-    public String partitionOrderBy = "created";
-    public SortOrder partitionSortOrder = SortOrder.DESCENDING;
-    public long reduceTo = 1;
+public enum SortOrder {
+    ASCENDING,DESCENDING
 }

@@ -24,6 +24,7 @@ import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Range;
 import io.trivium.anystore.query.RangeType;
 import io.trivium.anystore.query.Result;
+import io.trivium.anystore.query.SortOrder;
 import io.trivium.anystore.query.Value;
 import io.trivium.dep.io.qdb.buffer.MessageCursor;
 import io.trivium.Central;
@@ -257,10 +258,17 @@ public class AnyServer implements Runnable {
                 if (result.partition.containsKey(partitionKey)) {
                     //window already exists
                     ArrayList<TriviumObject> list = result.partition.get(partitionKey);
-                    if(list.size()>=query.reduceTo) {
-                        list.remove(0);
-                    }
                     list.add(tvm);
+                    list.sort((one,two) -> {
+                        if(query.partitionSortOrder== SortOrder.ASCENDING)
+                            return one.findMetaValue(query.partitionOrderBy).compareTo(two.findMetaValue(query.partitionOrderBy));
+                        else
+                            //negate the value
+                            return -1 * one.findMetaValue(query.partitionOrderBy).compareTo(two.findMetaValue(query.partitionOrderBy));
+                    });
+                    if(list.size()>query.reduceTo) {
+                        list.remove(list.size()-1);
+                    }
                 } else {
                     //create new window
                     ArrayList<TriviumObject> list = new ArrayList<>();

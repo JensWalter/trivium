@@ -14,10 +14,10 @@ import io.trivium.test.TestCase;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
+public class _9a03753646024475b7c75ab34f76cec2 implements TestCase{
     @Override
     public String getTestName() {
-        return "check descending order on window query";
+        return "check ascending order on window query";
     }
 
     @Override
@@ -61,7 +61,7 @@ public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
         q.criteria.add(new Value("typeId", typeId.toString()));
         q.partitionBy="custom";
         q.partitionOrderBy ="order";
-        q.partitionSortOrder= SortOrder.DESCENDING;
+        q.partitionSortOrder= SortOrder.ASCENDING;
         q.reduceTo=3;
 
 
@@ -88,13 +88,13 @@ public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
         store.deleteById(object3Id);
 
         //check test assertion
-        Assert.isTrue(erster > zweiter);
-        Assert.isTrue(zweiter > dritter);
+        Assert.isTrue(erster < zweiter);
+        Assert.isTrue(zweiter < dritter);
     }
 
     @Override
     public ObjectRef getTypeId() {
-        return ObjectRef.getInstance("9bfc796b-4943-430a-b2fb-ac1d17fb6248");
+        return ObjectRef.getInstance("9a037536-4602-4475-b7c7-5ab34f76cec2");
     }
 }
 
