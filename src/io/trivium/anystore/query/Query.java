@@ -22,11 +22,10 @@ import java.util.ArrayList;
 
 public class Query {
     public ObjectRef id = ObjectRef.getInstance();
-    public ArrayList<Criteria> criteria = new ArrayList<Criteria>();
-    public ResultType resultType = ResultType.ALL;
+    public ArrayList<Criteria> criteria = new ArrayList<>();
 
-    public String reducePartitionBy = "id";
-    public String reduceOrderBy = "created";
-    public String reduceOrderDirection = "descending";
+    public String partitionBy = "id";
+    public String partitionOrder = "created";
+    public String partitionDirection = "descending";
     public long reduceTo = 1;
 }

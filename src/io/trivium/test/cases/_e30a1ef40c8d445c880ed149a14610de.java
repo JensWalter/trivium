@@ -39,9 +39,9 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
         for(NVPair pair:filter){
             q.criteria.add(new Value(pair.getName(), pair.getValue()));
         }
-        q.reducePartitionBy="typeId";
-        q.reduceOrderBy="created";
-        q.reduceOrderDirection="desc";
+        q.partitionBy="typeId";
+        q.partitionOrder="created";
+        q.partitionDirection="desc";
         ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
         String str1 = tvm.getMetadataJson();
         String str2 = list.get(0).getMetadataJson();

@@ -221,12 +221,12 @@ public class AnyServer implements Runnable {
         try {
             String partitionKey = "";
             //get partition
-            if(tvm.getMetadata().hasKey(query.reducePartitionBy)){
+            if(tvm.getMetadata().hasKey(query.partitionBy)){
                 //partition key is in the header
-                partitionKey = tvm.getMetadata().findValue(query.reducePartitionBy);
+                partitionKey = tvm.getMetadata().findValue(query.partitionBy);
             }else{
                 //partition key is in the content
-                engine.eval("var partition = "+id+"."+query.reducePartitionBy);
+                engine.eval("var partition = "+id+"."+query.partitionBy);
                 partitionKey = engine.get("partition").toString();
             }
             //check criteria
@@ -255,12 +255,14 @@ public class AnyServer implements Runnable {
             }
             if(valid) {
                 if (result.partition.containsKey(partitionKey)) {
+                    //window already exists
                     ArrayList<TriviumObject> list = result.partition.get(partitionKey);
                     if(list.size()>=query.reduceTo) {
                         list.remove(0);
                     }
                     list.add(tvm);
                 } else {
+                    //create new window
                     ArrayList<TriviumObject> list = new ArrayList<>();
                     list.add(tvm);
                     result.partition.put(partitionKey,list);

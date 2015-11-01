@@ -55,7 +55,7 @@ public class _45c1bb4cba834156a83935d23578f4f8 implements TestCase{
         //search for custom meta tag
         Query q = new Query();
         q.criteria.add(new Value("typeId", typeId.toString()));
-        q.reducePartitionBy="custom";
+        q.partitionBy="custom";
 
 
         Result rslt = store.loadObjects(q);

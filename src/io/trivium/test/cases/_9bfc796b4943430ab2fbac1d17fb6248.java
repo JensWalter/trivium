@@ -10,14 +10,13 @@ import io.trivium.glue.om.Element;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
     @Override
     public String getTestName() {
-        return "check order on window query";
+        return "check descending order on window query";
     }
 
     @Override
@@ -32,6 +31,7 @@ public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
         tvm.setData(el);
         tvm.addMetadata("contentType", "text/plain");
         tvm.addMetadata("custom", "element1");
+        tvm.addMetadata("order","1");
         tvm.setTypeId(typeId);
         store.storeObject(tvm);
 
@@ -41,16 +41,27 @@ public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
         tvm.setData(el);
         tvm.addMetadata("contentType", "text/plain");
         tvm.addMetadata("custom", "element1");
+        tvm.addMetadata("order","3");
+        tvm.setTypeId(typeId);
+        store.storeObject(tvm);
+
+        //object 3
+        tvm = new TriviumObject();
+        ObjectRef object3Id = tvm.getId();
+        tvm.setData(el);
+        tvm.addMetadata("contentType", "text/plain");
+        tvm.addMetadata("custom", "element1");
+        tvm.addMetadata("order","2");
         tvm.setTypeId(typeId);
         store.storeObject(tvm);
 
         //search for custom meta tag
         Query q = new Query();
         q.criteria.add(new Value("typeId", typeId.toString()));
-        q.reducePartitionBy="custom";
-        q.reduceOrderBy="created";
-        q.reduceOrderDirection="descending";
-        q.reduceTo=2;
+        q.partitionBy="custom";
+        q.partitionOrder="order";
+        q.partitionDirection="descending";
+        q.reduceTo=3;
 
 
         Result rslt = store.loadObjects(q);
@@ -62,16 +73,20 @@ public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
 
         TriviumObject first = all.get(0);
         TriviumObject second = all.get(1);
+        TriviumObject third = all.get(2);
 
-        Instant erster = Instant.parse(first.findMetaValue("created"));
-        Instant zweiter = Instant.parse(second.findMetaValue("created"));
+        int erster = Integer.parseInt(first.findMetaValue("order"));
+        int zweiter = Integer.parseInt(second.findMetaValue("order"));
+        int dritter = Integer.parseInt(third.findMetaValue("order"));
 
         //delete created objects
         store.deleteById(object1Id);
         store.deleteById(object2Id);
+        store.deleteById(object3Id);
 
         //check test assertion
-        Assert.isTrue(erster.isAfter(zweiter));
+        Assert.isTrue(erster > zweiter);
+        Assert.isTrue(zweiter > dritter);
     }
 
     @Override
