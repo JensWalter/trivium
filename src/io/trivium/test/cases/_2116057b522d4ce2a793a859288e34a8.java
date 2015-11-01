@@ -1,7 +1,5 @@
 package io.trivium.test.cases;
 
-import io.trivium.NVList;
-import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
@@ -12,7 +10,6 @@ import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class _2116057b522d4ce2a793a859288e34a8 implements TestCase{
     @Override
