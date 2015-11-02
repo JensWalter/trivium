@@ -72,10 +72,30 @@ public class ObjectRef {
         return bb.array();
     }
 
+    /**
+     * returns a uuid representation of the id
+     * sample: "00000000-0000-0000-0000-000000000000"
+     * @return
+     */
     public String toString() {
         return this.id;
     }
 
+    /**
+     * returns a string represnting the uuid,
+     * but differs in form so it can be used in other environments (code generators)
+     * sample: "_00000000000000000000000000000000"
+     * @return
+     */
+    public String toMangledString() {
+        return "_"+this.id.replace("-", "");
+    }
+
+    /**
+     * return a byte[] representation of the uuid
+     * uuid.getLeastSignificantBits() + uuid.getMostSignificantBits()
+     * @return
+     */
     public byte[] toBytes() {
         return bytes;
     }
@@ -102,16 +122,44 @@ public class ObjectRef {
         return ByteBuffer.wrap(bytes).getInt();
     }
 
+    /**
+     * generates a random object id
+     * @return
+     */
     public static ObjectRef getInstance() {
         ObjectRef ref = new ObjectRef();
         return refs.intern(ref);
     }
 
+    /**
+     * generates an object id from the given string
+     * supported formats are:
+     *  "00000000-0000-0000-0000-000000000000"
+     *  "_00000000000000000000000000000000"
+     * @param id
+     * @return
+     */
     public static ObjectRef getInstance(String id) {
-        ObjectRef ref = new ObjectRef(id);
+        ObjectRef ref;
+        if(id.charAt(0)=='_'){
+            //format "_00000000000000000000000000000000"
+            String uuid = id.substring(1,9)+"-"+id.substring(9,13)+"-"+id.substring(13,17)
+                    +"-"+id.substring(17,21)+"-"+id.substring(21,33);
+            ref = new ObjectRef(uuid);
+        }else {
+            //format "00000000-0000-0000-0000-000000000000"
+            ref = new ObjectRef(id);
+
+        }
         return refs.intern(ref);
     }
 
+    /**
+     * generates an object id form the given byte[]
+     * byte order is uuid.getLeastSignificantBits() + uuid.getMostSignificantBits()
+     * @param id
+     * @return
+     */
     public static ObjectRef getInstance(byte[] id) {
         ObjectRef ref = new ObjectRef(id);
         return refs.intern(ref);

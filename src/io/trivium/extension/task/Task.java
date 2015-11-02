@@ -70,10 +70,8 @@ public abstract class Task implements Typed {
                     //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
                     String[] arr = path.split("\\.");
                     String typeId = arr[arr.length-2];
-                    String inputType = typeId.substring(1,9)+"-"+typeId.substring(9,13)+"-"+typeId.substring(13,17)
-                            +"-"+typeId.substring(17,21)+"-"+typeId.substring(21,33);
                     String condition = input.condition();
-                    ObjectRef type = ObjectRef.getInstance(inputType);
+                    ObjectRef type = ObjectRef.getInstance(typeId);
                     InputType it = new InputType();
                     it.condition = condition;
                     it.typeId = type;
@@ -102,9 +100,7 @@ public abstract class Task implements Typed {
                     //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
                     String[] arr = path.split("\\.");
                     String typeId = arr[arr.length-2];
-                    String outputType = typeId.substring(1,9)+"-"+typeId.substring(9,13)+"-"+typeId.substring(13,17)
-                            +"-"+typeId.substring(17,21)+"-"+typeId.substring(21,33);
-                    ObjectRef type = ObjectRef.getInstance(outputType);
+                    ObjectRef type = ObjectRef.getInstance(typeId);
                     OutputType ot = new OutputType();
                     ot.typeId = type;
                     ot.field = field;
