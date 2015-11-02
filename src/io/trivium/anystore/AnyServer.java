@@ -213,22 +213,15 @@ public class AnyServer implements Runnable {
 
     private void evaluate(ObjectRef ref, Query query, Result result){
         TriviumObject tvm = loadObjectById(ref);
-        ScriptEngine engine = result.scriptEngine;
-        String id = "_"+ref.toString();
-        //put data object
-        engine.put(id,tvm.getTypedData());
-        //add header data
-        engine.put("header",tvm.getMetadata());
         try {
-            String partitionKey = "";
+            String partitionKey;
             //get partition
             if(tvm.getMetadata().hasKey(query.partitionBy)){
                 //partition key is in the header
                 partitionKey = tvm.getMetadata().findValue(query.partitionBy);
             }else{
                 //partition key is in the content
-                engine.eval("var partition = "+id+"."+query.partitionBy);
-                partitionKey = engine.get("partition").toString();
+                partitionKey = tvm.getData().getChild(0).getFirstChild(query.partitionBy).getValue();
             }
             //check criteria
             boolean valid = true;
@@ -276,8 +269,9 @@ public class AnyServer implements Runnable {
                     result.partition.put(partitionKey,list);
                 }
             }
-        } catch (ScriptException e) {
+        } catch (Exception e) {
             //ignore
+            log.log(Level.SEVERE,"error while evaluating script",e);
         }
     }
 

@@ -18,13 +18,10 @@ package io.trivium.anystore.query;
 
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Result {
-    public ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
     public HashMap<String, ArrayList<TriviumObject>> partition = new HashMap<>();
 
     public ArrayList<TriviumObject> getAllAsList(){
