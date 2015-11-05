@@ -36,7 +36,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public enum Registry {
@@ -165,6 +167,25 @@ public enum Registry {
         } catch (Exception ex) {
             log.log(Level.SEVERE, "dynamically loading testcases failed", ex);
         }
+    }
+
+    public ArrayList<LogRecord> startBinding(ObjectRef bindingTypeId){
+        Logger logger = Logger.getLogger("io.trivium.extension."+bindingTypeId.toMangledString());
+        ArrayList<LogRecord> logs = new ArrayList<>();
+        Handler handler = new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+                logs.add(record);
+            }
+            @Override
+            public void flush() {}
+            @Override
+            public void close() throws SecurityException {}
+        };
+        logger.addHandler(handler);
+        Registry.INSTANCE.getBinding(bindingTypeId).startBinding();
+        logger.removeHandler(handler);
+        return logs;
     }
 
     public void notify(TriviumObject tvm) {

@@ -31,9 +31,11 @@ import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.MimeTypes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class RegistryRequestHandler implements HttpHandler {
@@ -108,8 +110,17 @@ public class RegistryRequestHandler implements HttpHandler {
             } else if (cmd.equals("start")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
-                Registry.INSTANCE.getBinding(ref).startBinding();
-                s.ok();
+                ArrayList<LogRecord> logs = Registry.INSTANCE.startBinding(ref);
+                if(logs.size()==0) {
+                    s.ok();
+                }else{
+                    StringBuilder sb = new StringBuilder();
+                    for(LogRecord record: logs) {
+                        sb.append(record.getLevel().toString() + " "+record.getLoggerName()
+                                + ": " + record.getMessage());
+                    }
+                    s.ok("text/plain",sb.toString());
+                }
             } else if (cmd.equals("stop")) {
                 String id = params.findValue("id");
                 ObjectRef ref = ObjectRef.getInstance(id);
