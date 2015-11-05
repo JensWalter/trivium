@@ -18,10 +18,10 @@ package io.trivium.glue;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import io.trivium.extension.binding.Binding;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,14 +31,23 @@ public class Http {
     private static ConcurrentHashMap<String, HttpServer> servers = new ConcurrentHashMap<>();
     static Logger log = Logger.getLogger(Http.class.getName());
 
+    /**
+     * registers a http handler under the given URI
+     * @param uri
+     * @param handler
+     */
     public static void registerListener(String uri, HttpHandler handler) {
         registerListener("localhost", 12345, uri, handler);
     }
 
-    public static void registerListener(int port, String uri, HttpHandler handler) {
-        registerListener("localhost", port, uri, handler);
-    }
-
+    /**
+     * registers a http handler for a certain host,port and URI
+     * @param host
+     * @param port
+     * @param uri
+     * @param handler
+     * @return
+     */
     public static boolean registerListener(String host, int port, String uri, HttpHandler handler) {
         String endpoint = host+port+uri;
         String binding = host+port;
@@ -76,5 +85,29 @@ public class Http {
         return true;
     }
 
-    public static void unregisterListener(HttpHandler handler){}
+    /**
+     * unregister existing handler
+     * if handler does not exists, the function will fail silently
+     * @param handler
+     */
+    public static void unregisterListener(HttpHandler handler){
+        synchronized (listeners){
+            for(Map.Entry<String,HttpHandler> entry : listeners.entrySet()){
+                if(entry.getValue().equals(handler)){
+                    listeners.remove(entry.getKey());
+                }
+            }
+        }
+    }
+
+    /**
+     * unregister existing URI
+     * if URI does not exists, the function will fail silently
+     * @param uri
+     */
+    public static void unregisterListener(String uri){
+        synchronized (listeners){
+            listeners.remove(uri);
+        }
+    }
 }
