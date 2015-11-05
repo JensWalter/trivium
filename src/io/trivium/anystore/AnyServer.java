@@ -264,7 +264,7 @@ public class AnyServer implements Runnable {
                     }
                 } else {
                     //create new window
-                    ArrayList<TriviumObject> list = new ArrayList<>();
+                    ArrayList<TriviumObject> list = new ArrayList<>((int)query.reduceTo+1);
                     list.add(tvm);
                     result.partition.put(partitionKey,list);
                 }
