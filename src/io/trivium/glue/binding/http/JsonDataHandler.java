@@ -22,12 +22,10 @@ import com.sun.net.httpserver.HttpHandler;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.glue.binding.http.channel.Channel;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 
 import java.io.IOException;
-import java.util.Date;
 
 public class JsonDataHandler implements HttpHandler{
 
