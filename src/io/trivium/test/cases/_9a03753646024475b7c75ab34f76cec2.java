@@ -59,10 +59,10 @@ public class _9a03753646024475b7c75ab34f76cec2 implements TestCase{
         //search for custom meta tag
         Query q = new Query();
         q.criteria.add(new Value("typeId", typeId.toString()));
-        q.partitionBy="custom";
+        q.partitionOver ="custom";
         q.partitionOrderBy ="order";
         q.partitionSortOrder= SortOrder.ASCENDING;
-        q.reduceTo=3;
+        q.partitionReduceTo =3;
 
 
         Result rslt = store.loadObjects(q);

@@ -24,8 +24,8 @@ public class Query {
     public ObjectRef id = ObjectRef.getInstance();
     public ArrayList<Criteria> criteria = new ArrayList<>();
 
-    public String partitionBy = "id";
+    public String partitionOver = "id";
     public String partitionOrderBy = "created";
     public SortOrder partitionSortOrder = SortOrder.DESCENDING;
-    public long reduceTo = 1;
+    public long partitionReduceTo = 1;
 }

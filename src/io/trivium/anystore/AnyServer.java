@@ -38,8 +38,6 @@ import io.trivium.glue.om.Trivium;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -216,12 +214,12 @@ public class AnyServer implements Runnable {
         try {
             String partitionKey;
             //get partition
-            if(tvm.getMetadata().hasKey(query.partitionBy)){
+            if(tvm.getMetadata().hasKey(query.partitionOver)){
                 //partition key is in the header
-                partitionKey = tvm.getMetadata().findValue(query.partitionBy);
+                partitionKey = tvm.getMetadata().findValue(query.partitionOver);
             }else{
                 //partition key is in the content
-                partitionKey = tvm.getData().getChild(0).getFirstChild(query.partitionBy).getValue();
+                partitionKey = tvm.getData().getChild(0).getFirstChild(query.partitionOver).getValue();
             }
             //check criteria
             boolean valid = true;
@@ -259,12 +257,12 @@ public class AnyServer implements Runnable {
                             //negate the value
                             return -1 * one.findMetaValue(query.partitionOrderBy).compareTo(two.findMetaValue(query.partitionOrderBy));
                     });
-                    if(list.size()>query.reduceTo) {
+                    if(list.size()>query.partitionReduceTo) {
                         list.remove(list.size()-1);
                     }
                 } else {
                     //create new window
-                    ArrayList<TriviumObject> list = new ArrayList<>((int)query.reduceTo+1);
+                    ArrayList<TriviumObject> list = new ArrayList<>((int)query.partitionReduceTo +1);
                     list.add(tvm);
                     result.partition.put(partitionKey,list);
                 }

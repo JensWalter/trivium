@@ -39,7 +39,7 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
         for(NVPair pair:filter){
             q.criteria.add(new Value(pair.getName(), pair.getValue()));
         }
-        q.partitionBy="typeId";
+        q.partitionOver ="typeId";
         q.partitionOrderBy ="created";
         q.partitionSortOrder= SortOrder.DESCENDING;
         ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();

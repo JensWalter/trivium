@@ -16,14 +16,7 @@
 
 package io.trivium;
 
-import io.trivium.anystore.ObjectRef;
-import io.trivium.glue.binding.http.channel.ChannelConfig;
 import io.trivium.test.Tester;
-import sun.misc.UUEncoder;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 public class Start {
 
@@ -42,23 +35,6 @@ public class Start {
                     System.exit(-1);
                 }
             }
-            //create dummy json channel for testing
-            ChannelConfig c = new ChannelConfig();
-            c.id = ObjectRef.getInstance("1d26e2f1-7161-4d5c-b2ac-17ffb4f0a97d");
-            c.name = "dummy json channel";
-            c.className = "io.trivium.glue.binding.http.channel.JsonChannel";
-            c.retention = 4320000000L;//50 days in ms
-            c.setTypeId(ObjectRef.getInstance("8a7d067a-0feb-4a7f-9636-1df269999cbb"));
-            ChannelConfig.addConfig(c);
-
-            //create dummy xml channel for testing
-            c = new ChannelConfig();
-            c.id = ObjectRef.getInstance("f34781e4-aa32-4d9b-ac61-96a7ccb3791f");
-            c.name = "dummy xml channel";
-            c.className = "io.trivium.glue.binding.http.channel.XmlChannel";
-            c.retention = 4320000000L;//50 days in ms
-            c.setTypeId(ObjectRef.getInstance("05ca9d63-ae71-4ca8-99bb-0387aef53556"));
-            ChannelConfig.addConfig(c);
         }
 	}
 }

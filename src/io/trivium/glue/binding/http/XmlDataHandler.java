@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package io.trivium.glue.binding.http.channel;
+package io.trivium.glue.binding.http;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.glue.binding.http.HttpUtils;
-import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Xml;
 
-import java.util.Date;
+import java.io.IOException;
 
-public class XmlChannel extends Channel {
+public class XmlDataHandler implements HttpHandler{
 
-    public XmlChannel(ObjectRef id) {
-        super(id);
+    private ObjectRef typeId;
+
+    public XmlDataHandler(ObjectRef typeId){
+        this.typeId = typeId;
     }
 
     @Override
-    public void process(Session session, ObjectRef sourceId) {
+    public void handle(HttpExchange httpExchange) throws IOException {
+        Session session = new Session(httpExchange);
         // read payload
-        HttpExchange httpexchange = session.getHttpExchange();
-        String requestData = HttpUtils.getInputAsString(httpexchange);
+        String requestData = HttpUtils.getInputAsString(httpExchange);
 
         //construct persistence object
         TriviumObject po = new TriviumObject();
@@ -53,23 +54,11 @@ public class XmlChannel extends Channel {
             }
         }
 
-
-        //setting channel data
-        //ttl -> stale after retention
-        po.addMetadata("stale", String.valueOf(new Date().getTime() + config.retention));
-        //type = object
-        po.addMetadata("type", "object");
-
         // parse the payload
         Element el = Xml.xmlToElement(requestData);
-
-
         po.setData(el);
-        po.setTypeId(config.getTypeId());
-
+        po.setTypeId(typeId);
         AnyClient.INSTANCE.storeObject(po);
-
         session.ok();
     }
-
 }

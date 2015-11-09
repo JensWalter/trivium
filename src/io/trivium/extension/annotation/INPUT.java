@@ -23,4 +23,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface INPUT {
     String condition() default "";
     String context() default "";
+    String partition() default "over id order by created desc limit 1";
 }
