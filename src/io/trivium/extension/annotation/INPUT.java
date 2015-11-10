@@ -16,6 +16,8 @@
 
 package io.trivium.extension.annotation;
 
+import io.trivium.anystore.query.SortOrder;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -23,5 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 public @interface INPUT {
     String condition() default "";
     String context() default "";
-    String partition() default "over id order by created desc limit 1";
+    String partitionOver() default "id";
+    SortOrder partitionSortOrder() default SortOrder.DESCENDING;
+    String partitionOrderBy() default "created";
+    long partitionReduceTo() default 1;
 }
