@@ -20,6 +20,8 @@ import io.trivium.anystore.query.SortOrder;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.fact.Fact;
 
+import java.util.ArrayList;
+
 public class Query2<T extends Fact>{
     public BooleanClosure<T> condition;
 
@@ -29,18 +31,26 @@ public class Query2<T extends Fact>{
 
     public SortOrder partitionSortOrder =  SortOrder.DESCENDING;
 
-    public StringClosure<T> partitionOrderBy = (T item) -> item.toString();
+    public StringClosure<T> partitionOrderBy;
 
     public long partitionReduceTo = 1;
 
     public ConnectClosure<T,? extends Fact> connect;
 
+    /**
+     * dummy return method to ensure compile safety
+     * @return always null
+     */
     public T getObject() {
-        return (T) new TriviumObject();
+        return null;
     }
 
+    /**
+     * dummy return method to ensure compile safety
+     * @return always null
+     */
     public T[] getObjects() {
-        return (T[]) new TriviumObject[1];
+        return null;
     }
 
 }

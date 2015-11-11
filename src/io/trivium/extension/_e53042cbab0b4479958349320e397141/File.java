@@ -23,7 +23,7 @@ import io.trivium.glue.om.Element;
 
 import java.time.Instant;
 
-public class FileType implements Fact {
+public class File implements Fact {
     /**
      * {
      "dummy": {

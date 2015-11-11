@@ -19,7 +19,7 @@ package io.trivium.urlhandler.anystore;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
+import io.trivium.extension._e53042cbab0b4479958349320e397141.File;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 
 import java.io.ByteArrayInputStream;
@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +58,7 @@ public class URLConnection extends java.net.URLConnection {
         byte[] b = new byte[0];
         ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
         for (TriviumObject po : objects) {
-            FileType file = new FileType();
+            File file = new File();
             file.populate(po);
             b = Base64.getDecoder().decode(file.data);
         }

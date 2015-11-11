@@ -21,18 +21,16 @@ import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.FileType;
+import io.trivium.extension._e53042cbab0b4479958349320e397141.File;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,7 +44,7 @@ public class TriviumLoader extends ClassLoader {
     }
 
     private Class<?> getClass(String name) throws ClassNotFoundException {
-        String file = name.replace('.', File.separatorChar) + ".class";
+        String file = name.replace('.', java.io.File.separatorChar) + ".class";
         byte[] b = null;
         try {
             // This loads the byte code data from the file
@@ -59,7 +57,7 @@ public class TriviumLoader extends ClassLoader {
                 query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
                 ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
                 for (TriviumObject po : objects) {
-                    FileType memFile = new FileType();
+                    File memFile = new File();
                     memFile.populate(po);
                     b = Base64.getDecoder().decode(memFile.data);
                 }
@@ -141,7 +139,7 @@ public class TriviumLoader extends ClassLoader {
                     query.criteria.add(new Value("contentType", "application/java-vm"));
                     ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
                     for (TriviumObject po : objects) {
-                        FileType file = new FileType();
+                        File file = new File();
                         file.populate(po);
                         if (file.contentType.equals(MimeTypes.getMimeType("class"))
                                 && file.name.replace('/', '.').equals(name + ".class")) {
