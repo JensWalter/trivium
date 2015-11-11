@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package io.trivium.test;
+package io.trivium.extension;
 
-import io.trivium.extension.Typed;
+import io.trivium.anystore.ObjectRef;
 
-public interface TestCase extends Typed{
-    default String getTestName(){
-        return getClass().getCanonicalName();
+import java.util.logging.Logger;
+
+public interface Typed {
+    default Logger getLogger() {
+        return Logger.getLogger(getClass().getName());
     }
 
-    void run() throws Exception;
+    default ObjectRef getTypeId(){
+        String path = this.getClass().getCanonicalName();
+        //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
+        String[] arr = path.split("\\.");
+        String typeId = arr[arr.length-2];
+        return ObjectRef.getInstance(typeId);
+    }
 }

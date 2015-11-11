@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.type;
+package io.trivium.extension.fact;
 
 import io.trivium.anystore.ObjectRef;
+import io.trivium.extension.Typed;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 
-public interface Type extends Typed{
-    default String getTypeName(){
+public interface Fact extends Typed {
+    default String getFactName(){
         String name = this.getClass().getCanonicalName();
         return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
     }

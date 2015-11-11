@@ -19,8 +19,8 @@ package io.trivium.extension.binding;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.extension.type.Type;
-import io.trivium.extension.type.Typed;
+import io.trivium.extension.fact.Fact;
+import io.trivium.extension.Typed;
 
 import java.util.logging.Logger;
 
@@ -58,7 +58,7 @@ public abstract class Binding implements Typed {
         return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
     }
 
-    protected void emit(Type object){
+    protected void emit(Fact object){
         TriviumObject obj = object.toTriviumObject();
         AnyClient.INSTANCE.storeObject(obj);
     }

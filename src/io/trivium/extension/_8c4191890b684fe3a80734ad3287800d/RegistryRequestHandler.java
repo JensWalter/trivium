@@ -22,8 +22,8 @@ import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.binding.State;
+import io.trivium.extension.fact.Fact;
 import io.trivium.extension.task.Task;
-import io.trivium.extension.type.Type;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Json;
@@ -67,12 +67,12 @@ public class RegistryRequestHandler implements HttpHandler {
                     list.add(new NVPair(binding.getTypeId().toString(), binding.getName()));
                 }
                 list.add(nvbind);
-                ConcurrentHashMap<ObjectRef, Class<?extends Type>> types = Registry.INSTANCE.types;
+                ConcurrentHashMap<ObjectRef, Class<?extends Fact>> types = Registry.INSTANCE.types;
                 NVPair tybind = new NVPair("type");
-                for (Class<? extends Type> clazz : types.values()) {
-                    Type prototype = clazz.newInstance();
+                for (Class<? extends Fact> clazz : types.values()) {
+                    Fact prototype = clazz.newInstance();
                     tybind.addValue(prototype.getTypeId().toString());
-                    list.add(new NVPair(prototype.getTypeId().toString(), prototype.getTypeName()));
+                    list.add(new NVPair(prototype.getTypeId().toString(), prototype.getFactName()));
                 }
                 list.add(tybind);
                 ConcurrentHashMap<ObjectRef, Class<? extends Task>> tasks = Registry.INSTANCE.tasks;

@@ -20,13 +20,13 @@ import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.dep.com.google.common.util.concurrent.AtomicDouble;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.extension.type.Type;
+import io.trivium.extension.fact.Fact;
 import io.trivium.glue.om.Element;
 
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class WeightedAverage implements Type {
+public class WeightedAverage implements Fact {
     private String datapoint;
     private AtomicDouble avg = new AtomicDouble();
     private AtomicLong count = new AtomicLong(0);

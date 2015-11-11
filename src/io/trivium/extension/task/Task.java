@@ -20,16 +20,14 @@ import io.trivium.anystore.ObjectRef;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.annotation.INPUT;
 import io.trivium.extension.annotation.OUTPUT;
-import io.trivium.extension.type.Type;
-import io.trivium.extension.type.Typed;
+import io.trivium.extension.fact.Fact;
+import io.trivium.extension.Typed;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +47,7 @@ public abstract class Task implements Typed {
     public boolean isApplicable(TriviumObject po) {
         boolean result = false;
         ArrayList<InputType> input = getInputTypes();
-        Type obj = po.getTypedData();
+        Fact obj = po.getTypedData();
         for(InputType it : input){
             if(it.typeId==obj.getTypeId()) {
                 result |= evalCondition(obj, it);
@@ -114,7 +112,7 @@ public abstract class Task implements Typed {
         return outputFields;
     }
 
-    private boolean evalCondition(Type obj, InputType input){
+    private boolean evalCondition(Fact obj, InputType input){
         if(input.condition==null || input.condition.length()==0){
             //no condition present
             return true;
@@ -149,7 +147,7 @@ public abstract class Task implements Typed {
         //TODO populate all inputs
         ArrayList<InputType> input = getInputTypes();
         for (InputType f : input) {
-            Type obj = tvm.getTypedData();
+            Fact obj = tvm.getTypedData();
             if (obj.getTypeId() == f.typeId) {
                 try {
                     f.field.setAccessible(true);
@@ -167,7 +165,7 @@ public abstract class Task implements Typed {
         for (OutputType f : outputs) {
             try {
                 f.field.setAccessible(true);
-                Type obj = (Type) f.field.get(this);
+                Fact obj = (Fact) f.field.get(this);
                 result.add(TriviumObject.getTriviumObject(obj));
             } catch (Exception ex) {
                 log.log(Level.SEVERE,"error population activity input", ex);

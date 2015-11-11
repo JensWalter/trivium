@@ -19,13 +19,13 @@ package io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.extension.type.Type;
+import io.trivium.extension.fact.Fact;
 import io.trivium.glue.om.Element;
 
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Differential implements Type{
+public class Differential implements Fact{
     private String datapoint;
     private AtomicLong value = new AtomicLong(0);
 

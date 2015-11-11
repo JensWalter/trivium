@@ -19,7 +19,7 @@ package io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.extension.type.Type;
+import io.trivium.extension.fact.Fact;
 import io.trivium.glue.om.Element;
 import io.trivium.profile.TimeUtils;
 
@@ -27,7 +27,7 @@ import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Ticker implements Type {
+public class Ticker implements Fact {
 
     private long interval;
     private String datapoint;

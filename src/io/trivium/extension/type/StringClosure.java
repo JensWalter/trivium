@@ -16,20 +16,6 @@
 
 package io.trivium.extension.type;
 
-import io.trivium.anystore.ObjectRef;
-
-import java.util.logging.Logger;
-
-public interface Typed {
-    default Logger getLogger() {
-        return Logger.getLogger(getClass().getName());
-    }
-
-    default ObjectRef getTypeId(){
-        String path = this.getClass().getCanonicalName();
-        //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
-        String[] arr = path.split("\\.");
-        String typeId = arr[arr.length-2];
-        return ObjectRef.getInstance(typeId);
-    }
+public interface StringClosure<T> {
+    String invoke(T item);
 }

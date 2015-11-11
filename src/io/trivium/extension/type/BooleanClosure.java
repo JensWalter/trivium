@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package io.trivium.test;
+package io.trivium.extension.type;
 
-import io.trivium.extension.Typed;
-
-public interface TestCase extends Typed{
-    default String getTestName(){
-        return getClass().getCanonicalName();
-    }
-
-    void run() throws Exception;
+public interface BooleanClosure<T> {
+    boolean invoke(T item);
 }

@@ -21,8 +21,8 @@ import io.trivium.anystore.ObjectRef;
 import io.trivium.dep.org.apache.commons.io.IOUtils;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
+import io.trivium.extension.fact.Fact;
 import io.trivium.extension.task.InputType;
-import io.trivium.extension.type.Type;
 import io.trivium.extension.task.Task;
 import io.trivium.test.TestCase;
 
@@ -32,9 +32,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -49,7 +47,7 @@ public enum Registry {
     public ConcurrentHashMap<ObjectRef, Class<? extends Task>> tasks = new ConcurrentHashMap<>();
     public ConcurrentHashMap<ObjectRef, ArrayList<Task>> taskSubscription = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<ObjectRef, Class<? extends Type>> types = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<ObjectRef, Class<? extends Fact>> types = new ConcurrentHashMap<>();
 
     private ConcurrentHashMap<ObjectRef, Class<? extends Binding>> bindings = new ConcurrentHashMap<>();
     private ConcurrentHashMap<ObjectRef, Binding> bindingInstances = new ConcurrentHashMap<>();
@@ -61,7 +59,7 @@ public enum Registry {
         ClassLoader tvmLoader = ClassLoader.getSystemClassLoader();
         //types
         try {
-            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.type.Type");
+            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.fact.Fact");
             while (resUrl.hasMoreElements()) {
                 URL url = resUrl.nextElement();
                 URLConnection connection = url.openConnection();
@@ -70,12 +68,12 @@ public enum Registry {
                 List<String> lines = IOUtils.readLines(is, "UTF-8");
                 is.close();
                 for (String line : lines) {
-                    Class<? extends Type> clazz = (Class<? extends Type>) Class.forName(line);
-                    Type prototype = clazz.newInstance();
+                    Class<? extends Fact> clazz = (Class<? extends Fact>) Class.forName(line);
+                    Fact prototype = clazz.newInstance();
                     if (!types.containsKey(prototype.getTypeId())) {
                         types.put(prototype.getTypeId(), clazz);
                     }
-                    log.log(Level.FINE, "registered type '{0}'", prototype.getTypeName());
+                    log.log(Level.FINE, "registered type '{0}'", prototype.getFactName());
                 }
             }
         } catch (Exception ex) {

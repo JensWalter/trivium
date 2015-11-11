@@ -21,7 +21,7 @@ import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.extension.type.Type;
+import io.trivium.extension.fact.Fact;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Trivium;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TriviumObject implements Type {
+public class TriviumObject implements Fact {
     /**
      * typeByte
      * 0 uncompressed json
@@ -200,10 +200,10 @@ public class TriviumObject implements Type {
         return b_data;
     }
 
-    public <T extends Type> T getTypedData(){
+    public <T extends Fact> T getTypedData(){
         ObjectRef typeId = this.getTypeId();
         try {
-            Class<? extends Type> clazz = Registry.INSTANCE.types.get(typeId);
+            Class<? extends Fact> clazz = Registry.INSTANCE.types.get(typeId);
             if(clazz==null){
                 //no registered type found
                 return (T) this;
@@ -318,7 +318,7 @@ public class TriviumObject implements Type {
         }
     }
 
-    public static TriviumObject getTriviumObject(Type t){
+    public static TriviumObject getTriviumObject(Fact t){
         try {
             return t.toTriviumObject();
         }catch(Exception ex){
