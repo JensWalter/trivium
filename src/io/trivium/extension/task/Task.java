@@ -17,17 +17,31 @@
 package io.trivium.extension.task;
 
 import io.trivium.anystore.ObjectRef;
+import io.trivium.dep.org.objectweb.asm.ClassReader;
+import io.trivium.dep.org.objectweb.asm.Opcodes;
+import io.trivium.dep.org.objectweb.asm.tree.AbstractInsnNode;
+import io.trivium.dep.org.objectweb.asm.tree.ClassNode;
+import io.trivium.dep.org.objectweb.asm.tree.FieldInsnNode;
+import io.trivium.dep.org.objectweb.asm.tree.InsnList;
+import io.trivium.dep.org.objectweb.asm.tree.MethodInsnNode;
+import io.trivium.dep.org.objectweb.asm.tree.MethodNode;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.annotation.INPUT;
 import io.trivium.extension.annotation.OUTPUT;
 import io.trivium.extension.fact.Fact;
 import io.trivium.extension.Typed;
+import io.trivium.extension.type.Query2;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +70,67 @@ public abstract class Task implements Typed {
         return result;
     }
 
+    public HashMap<String,Query2> getInputQueries() {
+        HashMap<String,Query2> list = new HashMap<>();
+        try{
+            Class<?> c = this.getClass();
+            Field[] fields = c.getDeclaredFields();
+            for(Field field : fields){
+                Class<?> fieldClass = field.getType();
+                Class<?>[] interfaces = fieldClass.getInterfaces();
+                for(Class<?> iface : interfaces){
+                    if(iface.isAssignableFrom(Fact.class)){
+                        String queryClass = getFieldAssignment(field.getName());
+                        if(queryClass.length()>0) {
+                            Class<?> q = Class.forName(queryClass.replace('/', '.'));
+                            Constructor con = q.getDeclaredConstructors()[0];
+                            con.setAccessible(true);
+                            Object obj = con.newInstance(new Object[]{this});
+                            Query2<Fact> query = (Query2<Fact>) obj;
+                            list.put(field.getName(), query);
+                        }
+                    }
+                }
+            }
+        }catch(Exception ex){
+            log.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
+            log.log(Level.SEVERE,"got exception", ex);
+        }
+        return list;
+    }
+    private String getFieldAssignment(String fieldName) throws IOException {
+        String url = "/" + getClass().getName().replace('.', '/') + ".class";
+        InputStream in = getClass().getResourceAsStream(url);
+        ClassReader classReader = new ClassReader(in);
+        ClassNode classNode = new ClassNode();
+        classReader.accept(classNode, 0);
+
+        List<MethodNode> methods = classNode.methods;
+        String lastOwner = "";
+
+        for (MethodNode method : methods) {
+            // only look for constructor
+            if (method.name.equals("<init>")) {
+                InsnList instructions = method.instructions;
+                for (AbstractInsnNode instr : instructions.toArray()) {
+                    if (instr instanceof FieldInsnNode) {
+                        FieldInsnNode n = (FieldInsnNode) instr;
+                        if (fieldName.equals(n.name)) {
+                            return lastOwner;
+                        }
+                    }
+                    if (instr instanceof MethodInsnNode) {
+                        MethodInsnNode m = (MethodInsnNode) instr;
+                        if (Opcodes.INVOKESPECIAL == m.getOpcode()) {
+                            lastOwner = m.owner;
+                        }
+                    }
+                }
+
+            }
+        }
+        return "";
+    }
     public ArrayList<InputType> getInputTypes() {
         ArrayList<InputType> inputFields = new ArrayList<>();
         try {
