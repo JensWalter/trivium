@@ -17,22 +17,37 @@
 package io.trivium.extension.type;
 
 import io.trivium.anystore.query.SortOrder;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.fact.Fact;
 
-import java.util.ArrayList;
-
 public class Query2<T extends Fact>{
+    /**
+     * evaluates the condition for a query
+     */
     public BooleanClosure<T> condition;
 
+    /**
+     * provides the context string
+     */
     public StringClosure<T> context;
 
+    /**
+     * field the result set gets partitioned by
+     */
     public StringClosure<T> partitionOver;
 
+    /**
+     * define order within the partition
+     */
     public SortOrder partitionSortOrder =  SortOrder.DESCENDING;
 
+    /**
+     * field the order in the partition is determined by
+     */
     public StringClosure<T> partitionOrderBy;
 
+    /**
+     * amount of result in one partition
+     */
     public long partitionReduceTo = 1;
 
     public ConnectClosure<T,? extends Fact> connect;

@@ -50,11 +50,11 @@ public class Query <T extends Fact>{
     }
 
     public T getObject() {
-        return (T) new TriviumObject();
+        return null;
     }
 
     public T[] getObjects() {
-        return (T[]) new TriviumObject[1];
+        return null;
     }
 
 }
