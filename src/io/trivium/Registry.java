@@ -18,12 +18,10 @@ package io.trivium;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
-import io.trivium.anystore.query.Query;
 import io.trivium.dep.org.apache.commons.io.IOUtils;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.fact.Fact;
-import io.trivium.extension.task.InputType;
 import io.trivium.extension.task.Task;
 import io.trivium.test.TestCase;
 
@@ -33,9 +31,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;
