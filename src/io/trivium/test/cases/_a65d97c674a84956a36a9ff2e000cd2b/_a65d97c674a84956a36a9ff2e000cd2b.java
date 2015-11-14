@@ -17,7 +17,7 @@
 package io.trivium.test.cases._a65d97c674a84956a36a9ff2e000cd2b;
 
 import io.trivium.anystore.ObjectRef;
-import io.trivium.extension.type.Query2;
+import io.trivium.anystore.query.Query;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
@@ -33,7 +33,7 @@ public class _a65d97c674a84956a36a9ff2e000cd2b implements TestCase{
     @Override
     public void run() throws Exception {
         Task1 t = new Task1();
-        HashMap<String,Query2> queries = t.getInputQueries();
+        HashMap<String,Query> queries = t.getInputQueries();
 
         Assert.isTrue(queries.size()==1);
     }

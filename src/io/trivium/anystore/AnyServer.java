@@ -19,20 +19,18 @@ package io.trivium.anystore;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.Registry;
-import io.trivium.anystore.query.Criteria;
 import io.trivium.anystore.query.Query;
-import io.trivium.anystore.query.Range;
-import io.trivium.anystore.query.RangeType;
 import io.trivium.anystore.query.Result;
 import io.trivium.anystore.query.SortOrder;
-import io.trivium.anystore.query.Value;
 import io.trivium.dep.io.qdb.buffer.MessageCursor;
 import io.trivium.Central;
+import io.trivium.dep.org.iq80.leveldb.DBIterator;
 import io.trivium.dep.org.iq80.snappy.Snappy;
 import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
 import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
 import io.trivium.extension._9ff9aa69ff6f4ca1a0cf0e12758e7b1e.WeightedAverage;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.Fact;
 import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Trivium;
 import io.trivium.profile.DataPoints;
@@ -41,6 +39,7 @@ import io.trivium.profile.Profiler;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -179,104 +178,71 @@ public class AnyServer implements Runnable {
     }
 
     public Result loadObjects(Query query) {
-        //run query
-        ArrayList<Criteria> criteria = query.criteria;
-        ArrayList<Callable<ArrayList<ObjectRef>>> jobs = new ArrayList<>();
-        //run index jobs
-        for (Criteria crit : criteria) {
-            if (crit instanceof Value) {
-                jobs.add(() -> {
-                    try {
-                        Value val = (Value) crit;
-                        ArrayList<ObjectRef> refs = AnyIndex.lookup(val.getName(), val.getValue());
-                        return refs;
-                    }catch (Throwable e){
-                        //ignore
-                    }
-                    return new ArrayList<>();
-                });
-            }
+        ArrayList<ObjectRef> refs = new ArrayList<>();
+        //iterate over all values
+        DBIterator iter = AnyIndex.iterator("id");
+        while(iter.hasNext()){
+            Map.Entry<byte[],byte[]> entry = iter.next();
+            byte[] key = entry.getKey();
+            //key consists of uuid.toString() + uuid but the constructor only reads the first value
+            byte[] uuid = Arrays.copyOfRange(key,key.length-16,key.length);
+            ObjectRef ref = ObjectRef.getInstance(uuid);
+            refs.add(ref);
         }
         try {
-            ArrayList<ObjectRef> refs = executors.invokeAny(jobs);
-            //evaluate index results and filter results
-            Result rslt = new Result();
-            refs.forEach((ref) -> evaluate(ref, query, rslt));
-            return rslt;
+            Result result = new Result();
+            //check for sort criteria
+            if(query.partitionOrderBy==null){
+                query.partitionOrderBy = (obj) -> String.valueOf(obj.hashCode());
+            }
+            //check for partition criteria
+            if(query.partitionOver==null){
+                query.partitionOver = (obj) -> "";
+            }
+            for(ObjectRef ref : refs) {
+                TriviumObject tvm = loadObjectById(ref);
+                Fact f = query.castType(tvm);
+                if(query.condition.invoke(f)){
+                    //matches, so now determine partition
+                    String partitionKey = query.partitionOver.invoke(f);
+
+                    if (result.partition.containsKey(partitionKey)) {
+                        //window already exists
+                        ArrayList<TriviumObject> list = result.partition.get(partitionKey);
+                        list.add(tvm);
+                        list.sort((one,two) -> {
+                            if(query.partitionSortOrder== SortOrder.ASCENDING)
+                                return query.partitionOrderBy.invoke(one).compareTo(query.partitionOrderBy.invoke(two));
+                            else
+                                //negate the value
+                                return -1 * query.partitionOrderBy.invoke(one).compareTo(query.partitionOrderBy.invoke(two));
+                        });
+                        if(list.size()>query.partitionReduceTo) {
+                            list.remove(list.size()-1);
+                        }
+                    } else {
+                        //create new window
+                        ArrayList<TriviumObject> list = new ArrayList<>((int)query.partitionReduceTo +1);
+                        list.add(tvm);
+                        result.partition.put(partitionKey,list);
+                    }
+                }
+            }
+            return result;
         } catch (Exception e) {
             log.log(Level.SEVERE, "query was interrupted", e);
         }
         return new Result();
     }
 
-    private void evaluate(ObjectRef ref, Query query, Result result){
-        TriviumObject tvm = loadObjectById(ref);
-        try {
-            String partitionKey;
-            //get partition
-            if(tvm.getMetadata().hasKey(query.partitionOver)){
-                //partition key is in the header
-                partitionKey = tvm.getMetadata().findValue(query.partitionOver);
-            }else{
-                //partition key is in the content
-                partitionKey = tvm.getData().getChild(0).getFirstChild(query.partitionOver).getValue();
-            }
-            //check criteria
-            boolean valid = true;
-            for (Criteria crit : query.criteria) {
-                if (crit instanceof Value) {
-                    Value val = (Value) crit;
-                    if (!(tvm.hasMetaKey(val.getName()) &&
-                            tvm.findMetaValue(val.getName()).equals(val.getValue()))) {
-                        valid = false;
-                    }
-                } else if (crit instanceof Range) {
-                    Range range = (Range) crit;
-                    if (range.getRangeOption() == RangeType.within) {
-                        if (tvm.hasMetaKey(range.getName())) {
-                            String value = tvm.findMetaValue(range.getName());
-                            //check for int type
-                            try {
-                                Double.parseDouble(value);
-                            } catch (NumberFormatException nfe) {
-                                log.log(Level.FINE, "looking for number, but value is not convertible", nfe);
-                            }
-                        }
-                    }
-                }
-            }
-            if(valid) {
-                if (result.partition.containsKey(partitionKey)) {
-                    //window already exists
-                    ArrayList<TriviumObject> list = result.partition.get(partitionKey);
-                    list.add(tvm);
-                    list.sort((one,two) -> {
-                        if(query.partitionSortOrder== SortOrder.ASCENDING)
-                            return one.findMetaValue(query.partitionOrderBy).compareTo(two.findMetaValue(query.partitionOrderBy));
-                        else
-                            //negate the value
-                            return -1 * one.findMetaValue(query.partitionOrderBy).compareTo(two.findMetaValue(query.partitionOrderBy));
-                    });
-                    if(list.size()>query.partitionReduceTo) {
-                        list.remove(list.size()-1);
-                    }
-                } else {
-                    //create new window
-                    ArrayList<TriviumObject> list = new ArrayList<>((int)query.partitionReduceTo +1);
-                    list.add(tvm);
-                    result.partition.put(partitionKey,list);
-                }
-            }
-        } catch (Exception e) {
-            //ignore
-            log.log(Level.SEVERE,"error while evaluating script",e);
-        }
-    }
-
     public TriviumObject loadObjectById(ObjectRef key) {
         TriviumObject po = new TriviumObject(key);
 
         byte[] b_metadata = metaMap.get(key.toBytes());
+        if(b_metadata==null){
+            //nothing found here, return empty object
+            return po;
+        }
         String data;
         if (b_metadata[0] == 1) {
             //decompress

@@ -16,5 +16,6 @@
 
 package io.trivium.anystore.query;
 
-public interface Criteria {
+public interface DataLink<T,R>{
+    default boolean join(T from, R to){ return true;}
 }

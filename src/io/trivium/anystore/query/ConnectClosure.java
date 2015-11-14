@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.type;
+package io.trivium.anystore.query;
 
-public interface StringClosure<T> {
-    String invoke(T item);
+public interface ConnectClosure<T,Q> {
+    boolean invoke(T from,Q to);
 }

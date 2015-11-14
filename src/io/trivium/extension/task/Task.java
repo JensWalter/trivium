@@ -17,6 +17,7 @@
 package io.trivium.extension.task;
 
 import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.query.Query;
 import io.trivium.dep.org.objectweb.asm.ClassReader;
 import io.trivium.dep.org.objectweb.asm.Opcodes;
 import io.trivium.dep.org.objectweb.asm.tree.AbstractInsnNode;
@@ -30,7 +31,6 @@ import io.trivium.extension.annotation.INPUT;
 import io.trivium.extension.annotation.OUTPUT;
 import io.trivium.extension.fact.Fact;
 import io.trivium.extension.Typed;
-import io.trivium.extension.type.Query2;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -70,8 +70,8 @@ public abstract class Task implements Typed {
         return result;
     }
 
-    public HashMap<String,Query2> getInputQueries() {
-        HashMap<String,Query2> list = new HashMap<>();
+    public HashMap<String,Query> getInputQueries() {
+        HashMap<String,Query> list = new HashMap<>();
         try{
             Class<?> c = this.getClass();
             Field[] fields = c.getDeclaredFields();
@@ -86,7 +86,7 @@ public abstract class Task implements Typed {
                             Constructor con = q.getDeclaredConstructors()[0];
                             con.setAccessible(true);
                             Object obj = con.newInstance(new Object[]{this});
-                            Query2<Fact> query = (Query2<Fact>) obj;
+                            Query<Fact> query = (Query<Fact>) obj;
                             list.put(field.getName(), query);
                         }
                     }

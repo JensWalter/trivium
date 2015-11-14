@@ -105,6 +105,11 @@ public class AnyIndex{
         return keyList;
     }
 
+    public static DBIterator iterator(String name){
+        AnyIndex idx = ALL.get(name);
+        return idx.index.iterator();
+    }
+
     public static void process(NVPair pair, ObjectRef ref){
         String name = pair.getName();
         AnyIndex idx = get(name);

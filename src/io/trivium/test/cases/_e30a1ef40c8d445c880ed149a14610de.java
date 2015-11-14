@@ -1,12 +1,9 @@
 package io.trivium.test.cases;
 
-import io.trivium.NVList;
-import io.trivium.NVPair;
 import io.trivium.anystore.AnyServer;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.SortOrder;
-import io.trivium.anystore.query.Value;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.test.Assert;
@@ -33,15 +30,14 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
 
         AnyServer.INSTANCE.storeObject(tvm);
 
-        NVList filter = new NVList();
-        filter.add(new NVPair("id",tvm.getId().toString()));
-        Query q = new Query();
-        for(NVPair pair:filter){
-            q.criteria.add(new Value(pair.getName(), pair.getValue()));
-        }
-        q.partitionOver ="typeId";
-        q.partitionOrderBy ="created";
-        q.partitionSortOrder= SortOrder.DESCENDING;
+        Query<TriviumObject> q = new Query<TriviumObject>(){
+            {
+                condition = (obj) -> obj.getId()==tvm.getId();
+                partitionOver = (obj) -> obj.getTypeId().toString();
+                partitionOrderBy = (obj) -> obj.findMetaValue("created");
+                partitionSortOrder = SortOrder.DESCENDING;
+            }
+        };
         ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
         String str1 = tvm.getMetadataJson();
         String str2 = list.get(0).getMetadataJson();

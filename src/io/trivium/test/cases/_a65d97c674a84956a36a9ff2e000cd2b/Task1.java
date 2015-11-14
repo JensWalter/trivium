@@ -16,12 +16,12 @@
 
 package io.trivium.test.cases._a65d97c674a84956a36a9ff2e000cd2b;
 
+import io.trivium.anystore.query.Query;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.task.Task;
-import io.trivium.extension.type.Query2;
 
 class Task1 extends Task{
-    public TriviumObject input1 = new Query2<TriviumObject>(){}.getObject();
+    public TriviumObject input1 = new Query<TriviumObject>(){}.getObject();
     public TriviumObject input2;
 
     @Override

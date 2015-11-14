@@ -5,7 +5,6 @@ import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
 import io.trivium.anystore.query.SortOrder;
-import io.trivium.anystore.query.Value;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.test.Assert;
@@ -57,14 +56,15 @@ public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
         store.storeObject(tvm);
 
         //search for custom meta tag
-        Query q = new Query();
-        q.criteria.add(new Value("typeId", typeId.toString()));
-        q.partitionOver ="custom";
-        q.partitionOrderBy ="order";
-        q.partitionSortOrder= SortOrder.DESCENDING;
-        q.partitionReduceTo =3;
-
-
+        Query<TriviumObject> q = new Query<TriviumObject>(){
+            {
+                condition = (obj) -> obj.getTypeId()==typeId;
+                partitionOver = (obj) -> obj.findMetaValue("custom");
+                partitionOrderBy = (obj) -> obj.findMetaValue("order");
+                partitionSortOrder = SortOrder.DESCENDING;
+                partitionReduceTo = 3;
+            }
+        };
         Result rslt = store.loadObjects(q);
         HashMap<String,ArrayList<TriviumObject>> list = rslt.partition;
 

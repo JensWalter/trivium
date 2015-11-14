@@ -5,7 +5,6 @@ import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
 import io.trivium.anystore.query.SortOrder;
-import io.trivium.anystore.query.Value;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.test.Assert;
@@ -15,6 +14,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class _9a03753646024475b7c75ab34f76cec2 implements TestCase{
+    static ObjectRef typeId = ObjectRef.getInstance();
+
+    static Query<TriviumObject> query = new Query<TriviumObject>(){
+        {
+            condition = (tvm) -> tvm.getTypeId() == typeId;
+            partitionOver = (tvm) -> tvm.findMetaValue("custom");
+            partitionOrderBy = (tvm) -> tvm.findMetaValue("order");
+            partitionSortOrder = SortOrder.ASCENDING;
+            partitionReduceTo = 3;
+        }
+    };
+
     @Override
     public String getTestName() {
         return "check ascending order on window query";
@@ -23,7 +34,7 @@ public class _9a03753646024475b7c75ab34f76cec2 implements TestCase{
     @Override
     public void run() throws Exception {
         Element el = new Element("node","hallo world");
-        ObjectRef typeId = ObjectRef.getInstance();
+
         AnyServer store = AnyServer.INSTANCE;
 
         //object 1
@@ -56,16 +67,7 @@ public class _9a03753646024475b7c75ab34f76cec2 implements TestCase{
         tvm.setTypeId(typeId);
         store.storeObject(tvm);
 
-        //search for custom meta tag
-        Query q = new Query();
-        q.criteria.add(new Value("typeId", typeId.toString()));
-        q.partitionOver ="custom";
-        q.partitionOrderBy ="order";
-        q.partitionSortOrder= SortOrder.ASCENDING;
-        q.partitionReduceTo =3;
-
-
-        Result rslt = store.loadObjects(q);
+        Result rslt = store.loadObjects(query);
         HashMap<String,ArrayList<TriviumObject>> list = rslt.partition;
 
         Assert.isTrue(list.keySet().size()==1);

@@ -16,16 +16,73 @@
 
 package io.trivium.anystore.query;
 
-import io.trivium.anystore.ObjectRef;
+import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.Fact;
 
-import java.util.ArrayList;
+public class Query<T extends Fact>{
+    /**
+     * get return type for this query
+     * @return
+     */
+    public T castType(TriviumObject fact){
+        try{
+            T instance = (T) fact;
+            return instance;
+        }catch (ClassCastException cast){}
+        try{
+            T instance = (T) fact.getTypedData();
+            return instance;
+        }catch (ClassCastException cast){}
 
-public class Query {
-    public ObjectRef id = ObjectRef.getInstance();
-    public ArrayList<Criteria> criteria = new ArrayList<>();
+        return null;
+    }
 
-    public String partitionOver = "id";
-    public String partitionOrderBy = "created";
-    public SortOrder partitionSortOrder = SortOrder.DESCENDING;
+    /**
+     * evaluates the condition for a query
+     */
+    public BooleanClosure<T> condition;
+
+    /**
+     * provides the context string
+     */
+    public StringClosure<T> context;
+
+    /**
+     * field the result set gets partitioned by
+     */
+    public StringClosure<T> partitionOver;
+
+    /**
+     * define order within the partition
+     */
+    public SortOrder partitionSortOrder =  SortOrder.DESCENDING;
+
+    /**
+     * field the order in the partition is determined by
+     */
+    public StringClosure<T> partitionOrderBy;
+
+    /**
+     * amount of result in one partition
+     */
     public long partitionReduceTo = 1;
+
+    public ConnectClosure<T,? extends Fact> connect;
+
+    /**
+     * dummy return method to ensure compile safety
+     * @return always null
+     */
+    public T getObject() {
+        return null;
+    }
+
+    /**
+     * dummy return method to ensure compile safety
+     * @return always null
+     */
+    public T[] getObjects() {
+        return null;
+    }
+
 }

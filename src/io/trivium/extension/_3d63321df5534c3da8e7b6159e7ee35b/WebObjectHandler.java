@@ -25,7 +25,6 @@ import io.trivium.NVPair;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
-import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
@@ -36,7 +35,6 @@ import io.trivium.glue.om.Json;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,10 +76,17 @@ public class WebObjectHandler extends Binding implements HttpHandler {
             } else if (method.equals("query")) {
                 // read payload
                 NVList criteria = HttpUtils.getInputAsNVList(httpExchange);
-                Query q = new Query();
-                for (NVPair pair : criteria) {
-                    q.criteria.add(new Value(pair.getName(), pair.getValue()));
-                }
+                Query q = new Query<TriviumObject>(){
+                    {
+                        condition = (tvm) -> {
+                            boolean result = true;
+                            for (NVPair pair : criteria) {
+                                result &= tvm.findMetaValue(pair.getName()).equals(pair.getValue());
+                            }
+                            return result;
+                        };
+                    }
+                };
                 ArrayList<String> sb = new ArrayList<>();
                 ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q).getAllAsList();
                 for (TriviumObject po : objects) {

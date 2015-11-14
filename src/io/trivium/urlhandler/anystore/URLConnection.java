@@ -18,7 +18,6 @@ package io.trivium.urlhandler.anystore;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
-import io.trivium.anystore.query.Value;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.File;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 
@@ -53,8 +52,11 @@ public class URLConnection extends java.net.URLConnection {
             throws IOException {
         log.log(Level.FINE,"looking for url {}", url.toString());
         //query anystore
-        Query query = new Query();
-        query.criteria.add(new Value("id", url.getHost()));
+        Query<TriviumObject> query = new Query<TriviumObject>(){
+            {
+                condition = (tvm) -> tvm.findMetaValue("id").equals(url.getHost());
+            }
+        };
         byte[] b = new byte[0];
         ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
         for (TriviumObject po : objects) {

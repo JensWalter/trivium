@@ -18,7 +18,6 @@ package io.trivium;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
-import io.trivium.anystore.query.Value;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.anystore.statics.TypeIds;
 import io.trivium.extension._e53042cbab0b4479958349320e397141.File;
@@ -51,10 +50,14 @@ public class TriviumLoader extends ClassLoader {
             b = loadClassData(file);
             if((b==null || b.length==0 ) && Central.isRunning && name.startsWith("io.trivium.")){
                 //load from anystore
-                Query query = new Query();
-                query.criteria.add(new Value("canonicalName", name));
-                query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-                query.criteria.add(new Value("contentType", MimeTypes.getMimeType("class")));
+                Query<TriviumObject> query = new Query<TriviumObject>(){
+                    {
+                        condition = (tvm) ->
+                            tvm.findMetaValue("canonicalName").equals(name)
+                            && tvm.findMetaValue("typeId").equals(TypeIds.FILE.toString())
+                            && tvm.findMetaValue("contentType").equals(MimeTypes.getMimeType("class"));
+                    }
+                };
                 ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
                 for (TriviumObject po : objects) {
                     File memFile = new File();
@@ -90,9 +93,13 @@ public class TriviumLoader extends ClassLoader {
         //do internal lookup on trivium types
         if(Central.isRunning && name.startsWith("META-INF/services/io.trivium.")){
             //enrich with anystore
-            Query query = new Query();
-            query.criteria.add(new Value("name", name));
-            query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
+            Query<TriviumObject> query = new Query<TriviumObject>(){
+                {
+                    condition = (tvm) ->
+                            tvm.findMetaValue("name").equals(name)
+                            && tvm.findMetaValue("typeId").equals(TypeIds.FILE.toString());
+                }
+            };
             ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
             for (TriviumObject po : objects) {
                 String uri = "anystore://" + po.getId().toString();
@@ -133,10 +140,14 @@ public class TriviumLoader extends ClassLoader {
                     if (classes.containsKey(name)) {
                         return classes.get(name);
                     }
-                    Query query = new Query();
-                    query.criteria.add(new Value("canonicalName", name));
-                    query.criteria.add(new Value("typeId", TypeIds.FILE.toString()));
-                    query.criteria.add(new Value("contentType", "application/java-vm"));
+                    Query<TriviumObject> query = new Query<TriviumObject>(){
+                        {
+                            condition = (tvm) ->
+                                    tvm.findMetaValue("canonicalName").equals(name)
+                                            && tvm.findMetaValue("typeId").equals(TypeIds.FILE.toString())
+                                            && tvm.findMetaValue("contentType").equals(MimeTypes.getMimeType("class"));
+                        }
+                    };
                     ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
                     for (TriviumObject po : objects) {
                         File file = new File();
