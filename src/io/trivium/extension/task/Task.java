@@ -27,7 +27,6 @@ import io.trivium.dep.org.objectweb.asm.tree.InsnList;
 import io.trivium.dep.org.objectweb.asm.tree.MethodInsnNode;
 import io.trivium.dep.org.objectweb.asm.tree.MethodNode;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.extension.annotation.INPUT;
 import io.trivium.extension.annotation.OUTPUT;
 import io.trivium.extension.fact.Fact;
 import io.trivium.extension.Typed;
@@ -47,7 +46,6 @@ import java.util.logging.Logger;
 
 public abstract class Task implements Typed {
     protected Logger log = Logger.getLogger(getClass().getName());
-    public final ObjectRef instanceId = ObjectRef.getInstance();
 
     public abstract boolean eval() throws Exception;
 
@@ -58,16 +56,15 @@ public abstract class Task implements Typed {
         return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
     }
 
-    public boolean isApplicable(TriviumObject po) {
-        boolean result = false;
-        ArrayList<InputType> input = getInputTypes();
-        Fact obj = po.getTypedData();
-        for(InputType it : input){
-            if(it.typeId==obj.getTypeId()) {
-                result |= evalCondition(obj, it);
-            }
+    public boolean isApplicable(TriviumObject tvm) {
+        //TODO only checks for type, not criteria
+        HashMap<String,Query> input = getInputQueries();
+        for(Query query : input.values()){
+            Fact f = query.castType(tvm);
+            if(query.condition!=null && query.condition.invoke(f))
+                return true;
         }
-        return result;
+        return false;
     }
 
     public HashMap<String,Query> getInputQueries() {
@@ -83,11 +80,18 @@ public abstract class Task implements Typed {
                         String queryClass = getFieldAssignment(field.getName());
                         if(queryClass.length()>0) {
                             Class<?> q = Class.forName(queryClass.replace('/', '.'));
-                            Constructor con = q.getDeclaredConstructors()[0];
-                            con.setAccessible(true);
-                            Object obj = con.newInstance(new Object[]{this});
-                            Query<Fact> query = (Query<Fact>) obj;
-                            list.put(field.getName(), query);
+                            if(queryClass.contains("$")){
+                                //inner class
+                                Constructor con = q.getDeclaredConstructors()[0];
+                                con.setAccessible(true);
+                                Object obj = con.newInstance(new Object[]{this});
+                                Query<Fact> query = (Query<Fact>) obj;
+                                list.put(field.getName(), query);
+                            }else{
+                                //normal class
+                                Query<Fact> query = (Query<Fact>) q.newInstance();
+                                list.put(field.getName(), query);
+                            }
                         }
                     }
                 }
@@ -131,33 +135,6 @@ public abstract class Task implements Typed {
         }
         return "";
     }
-    public ArrayList<InputType> getInputTypes() {
-        ArrayList<InputType> inputFields = new ArrayList<>();
-        try {
-            Class<?> taskClass = this.getClass();
-            Field[] fields = taskClass.getDeclaredFields();
-            for (Field field : fields) {
-                INPUT input = field.getAnnotation(INPUT.class);
-                if (input != null) {
-                    String path = field.getType().getCanonicalName();
-                    //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
-                    String[] arr = path.split("\\.");
-                    String typeId = arr[arr.length-2];
-                    String condition = input.condition();
-                    ObjectRef type = ObjectRef.getInstance(typeId);
-                    InputType it = new InputType();
-                    it.condition = condition;
-                    it.typeId = type;
-                    it.field = field;
-                    inputFields.add(it);
-                }
-            }
-        } catch (Exception ex) {
-            log.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
-            log.log(Level.SEVERE,"got exception", ex);
-        }
-        return inputFields;
-    }
 
     public ArrayList<OutputType> getOutputTypes() {
         ArrayList<OutputType> outputFields = new ArrayList<>();
@@ -187,49 +164,16 @@ public abstract class Task implements Typed {
         return outputFields;
     }
 
-    private boolean evalCondition(Fact obj, InputType input){
-        if(input.condition==null || input.condition.length()==0){
-            //no condition present
-            return true;
-        }
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-        String script = "";
-        String fieldName = input.field.getName();
-        try {
-            engine.put(fieldName, obj);
-            script+= "\n if( " + input.condition +" ){ $result=\"true\"; } else { $result=\"false\"; }";
-
-            engine.eval(script);
-            Object returnObject = engine.get("$result");
-            String returnString = returnObject.toString();
-            if(returnString.equals("true")){
-                return true;
-            }else{
-                if(returnString.equals("false")){
-                    return false;
-                }else{
-                    //unknown state
-                    throw new Exception("condition check returned unknown state "+returnString);
-                }
-            }
-        } catch (Exception ex) {
-            log.log(Level.SEVERE,"condition check failed with ",ex);
-        }
-        return false;
-    }
-
     public void populateInput(TriviumObject tvm) {
-        //TODO populate all inputs
-        ArrayList<InputType> input = getInputTypes();
-        for (InputType f : input) {
-            Fact obj = tvm.getTypedData();
-            if (obj.getTypeId() == f.typeId) {
-                try {
-                    f.field.setAccessible(true);
-                    f.field.set(this, obj);
-                } catch (Exception ex) {
-                    log.log(Level.SEVERE, "error population activity input", ex);
-                }
+        HashMap<String,Query> input = getInputQueries();
+        for(String fieldName : input.keySet()){
+            try {
+                Fact obj = tvm.getTypedData();
+                Field field = getClass().getDeclaredField(fieldName);
+                field.setAccessible(true);
+                field.set(this,obj);
+            } catch(NoSuchFieldException | IllegalAccessException e){
+                log.log(Level.SEVERE,"injecting input field failed",e);
             }
         }
     }

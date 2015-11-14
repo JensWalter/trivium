@@ -18,6 +18,7 @@ package io.trivium;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.query.Query;
 import io.trivium.dep.org.apache.commons.io.IOUtils;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
@@ -32,7 +33,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -45,7 +48,6 @@ public enum Registry {
     Logger log = Logger.getLogger(getClass().getName());
 
     public ConcurrentHashMap<ObjectRef, Class<? extends Task>> tasks = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<ObjectRef, ArrayList<Task>> taskSubscription = new ConcurrentHashMap<>();
 
     public ConcurrentHashMap<ObjectRef, Class<? extends Fact>> types = new ConcurrentHashMap<>();
 
@@ -120,21 +122,6 @@ public enum Registry {
                     Task prototype = clazz.newInstance();
                     if (!tasks.containsKey(prototype.getTypeId())) {
                         tasks.put(prototype.getTypeId(), clazz);
-
-                        //register subscription
-                        ArrayList<InputType> inputTypes = prototype.getInputTypes();
-                        for (InputType ref : inputTypes) {
-                            ArrayList<Task> a = taskSubscription.get(ref);
-                            if (a == null) {
-                                ArrayList<Task> all = new ArrayList<>();
-                                all.add(prototype);
-                                taskSubscription.put(ref.typeId, all);
-                            } else {
-                                if (!a.contains(prototype)) {
-                                    a.add(prototype);
-                                }
-                            }
-                        }
                     }
                     log.log(Level.FINE, "registered binding '{0}'", prototype.getName());
                 }
@@ -163,7 +150,7 @@ public enum Registry {
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "dynamically loading testcases failed", ex);
+            log.log(Level.SEVERE, "dynamically loading test cases failed", ex);
         }
     }
 
@@ -187,25 +174,20 @@ public enum Registry {
     }
 
     public void notify(TriviumObject tvm) {
-        ObjectRef ref = tvm.getTypeId();
-        ArrayList<Task> prototypes = taskSubscription.get(ref);
-        //calculate activity
-        if (prototypes != null) {
-            for (Task prototype : prototypes) {
-                if (prototype.isApplicable(tvm)) {
-                    try {
-                        Task task = tasks.get(prototype.getTypeId()).newInstance();
-                        task.populateInput(tvm);
-                        task.eval();
-                        ArrayList<TriviumObject> output = task.extractOutput();
-                        for (TriviumObject o : output) {
-                            AnyClient.INSTANCE.storeObject(o);
-                        }
-                    } catch (Exception ex) {
-                        log.log(Level.SEVERE, "error while running task '{0}'", prototype.getName());
-                        log.log(Level.SEVERE, "got exception", ex);
+        for(Class<? extends Task> taskClass : tasks.values()){
+            try {
+                Task task = taskClass.newInstance();
+                if(task.isApplicable(tvm)){
+                    task.populateInput(tvm);
+                    task.eval();
+                    ArrayList<TriviumObject> output = task.extractOutput();
+                    for (TriviumObject o : output) {
+                        AnyClient.INSTANCE.storeObject(o);
                     }
                 }
+            } catch (Exception ex) {
+                log.log(Level.SEVERE, "error while running task '{0}'", taskClass.getName());
+                log.log(Level.SEVERE, "got exception", ex);
             }
         }
     }

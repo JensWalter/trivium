@@ -33,7 +33,6 @@ public class Query<T extends Fact>{
             T instance = (T) fact.getTypedData();
             return instance;
         }catch (ClassCastException cast){}
-
         return null;
     }
 
