@@ -16,16 +16,19 @@
 
 package io.trivium.glue.binding.http;
 
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.query.Query;
+import io.trivium.anystore.query.Result;
+import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class JsonDataHandler implements HttpHandler{
 
@@ -38,27 +41,43 @@ public class JsonDataHandler implements HttpHandler{
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         Session session = new Session(httpExchange);
-        // read payload
-        String requestData = HttpUtils.getInputAsString(httpExchange);
-
-        //construct persistence object
-        TriviumObject po = new TriviumObject();
-
-        po.addMetadata("contentType", "application/trivium.io");
-
-        // if header starts with trivium - copy value
-        Headers headers = session.getHttpExchange().getRequestHeaders();
-        for (String headerName : headers.keySet()) {
-            if (headerName.startsWith("trivium-")) {
-                po.addMetadata(headerName.substring(8), headers.getFirst(headerName));
+        //only support get parameter for now
+        String queryString = httpExchange.getRequestURI().getQuery();
+        HashMap<String, String> params = new HashMap<>();
+        for (String param : queryString.split("&")) {
+            String pair[] = param.split("=");
+            if (pair.length>1) {
+                params.put(pair[0], pair[1]);
+            }else{
+                params.put(pair[0], "");
             }
         }
 
-        // parse the payload
-        Element el = Json.jsonToElement(requestData);
-        po.setData(el);
-        po.setTypeId(typeId);
-        AnyClient.INSTANCE.storeObject(po);
-        session.ok();
+        Result rslt = AnyClient.INSTANCE.loadObjects(new Query<TriviumObject>(){
+            {
+                condition = (tvm) -> tvm.getTypeId()==typeId;
+            }
+        });
+
+        ArrayList<TriviumObject> all = rslt.getAllAsList();
+
+        if(all.size()==0){
+            //nothing found
+            session.ok();
+        }
+        if(all.size()==1){
+            //one object found
+            session.ok(MimeTypes.getMimeType("json"),Json.elementToJson(all.get(0).getData()));
+        }
+        if(all.size()>1){
+            //multiple objects found
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+            for(TriviumObject tvm : all){
+                sb.append(Json.elementToJson(tvm.getData()));
+            }
+            sb.append("]");
+            session.ok(MimeTypes.getMimeType("json"),sb.toString());
+        }
     }
 }
