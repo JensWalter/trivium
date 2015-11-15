@@ -16,7 +16,6 @@
 
 package io.trivium.extension.task;
 
-import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.dep.org.objectweb.asm.ClassReader;
 import io.trivium.dep.org.objectweb.asm.Opcodes;
@@ -27,17 +26,13 @@ import io.trivium.dep.org.objectweb.asm.tree.InsnList;
 import io.trivium.dep.org.objectweb.asm.tree.MethodInsnNode;
 import io.trivium.dep.org.objectweb.asm.tree.MethodNode;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
-import io.trivium.extension.annotation.OUTPUT;
 import io.trivium.extension.fact.Fact;
 import io.trivium.extension.Typed;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,32 +131,39 @@ public abstract class Task implements Typed {
         return "";
     }
 
-    public ArrayList<OutputType> getOutputTypes() {
-        ArrayList<OutputType> outputFields = new ArrayList<>();
+    public ArrayList<TriviumObject> extractOutput() {
+        ArrayList<TriviumObject> resultList = new ArrayList<>();
+        ArrayList<Field> fieldList = new ArrayList<>();
         try {
-            Class<?> factoryClass = this.getClass();
-            Method method = factoryClass.getMethod("getInstance", TriviumObject.class);
-            Class<?> activityclass = method.getReturnType();
-            Field[] fields = activityclass.getDeclaredFields();
+            Class<?> c = this.getClass();
+            Field[] fields = c.getDeclaredFields();
             for (Field field : fields) {
-                OUTPUT output = field.getAnnotation(OUTPUT.class);
-                if(output != null) {
-                    String path = field.getType().getCanonicalName();
-                    //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
-                    String[] arr = path.split("\\.");
-                    String typeId = arr[arr.length-2];
-                    ObjectRef type = ObjectRef.getInstance(typeId);
-                    OutputType ot = new OutputType();
-                    ot.typeId = type;
-                    ot.field = field;
-                    outputFields.add(ot);
+                Class<?> fieldClass = field.getType();
+                Class<?>[] interfaces = fieldClass.getInterfaces();
+                for (Class<?> iface : interfaces) {
+                    if (iface.isAssignableFrom(Fact.class)) {
+                        String queryClass = getFieldAssignment(field.getName());
+                        if (queryClass.length() == 0) {
+                            fieldList.add(field);
+                        }
+                    }
+                }
+            }
+            for (Field field : fieldList) {
+                try {
+                    field.setAccessible(true);
+                    Fact obj = (Fact) field.get(this);
+                    if (obj != null)
+                        resultList.add(TriviumObject.getTriviumObject(obj));
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "error population activity input", ex);
                 }
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
-            logger.log(Level.SEVERE,"got exception", ex);
+            logger.log(Level.SEVERE, "failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "got exception", ex);
         }
-        return outputFields;
+        return resultList;
     }
 
     public void populateInput(TriviumObject tvm) {
@@ -176,20 +178,5 @@ public abstract class Task implements Typed {
                 logger.log(Level.SEVERE,"injecting input field failed",e);
             }
         }
-    }
-
-    public ArrayList<TriviumObject> extractOutput() {
-        ArrayList<TriviumObject> result = new ArrayList<>();
-        ArrayList<OutputType> outputs = getOutputTypes();
-        for (OutputType f : outputs) {
-            try {
-                f.field.setAccessible(true);
-                Fact obj = (Fact) f.field.get(this);
-                result.add(TriviumObject.getTriviumObject(obj));
-            } catch (Exception ex) {
-                logger.log(Level.SEVERE,"error population activity input", ex);
-            }
-        }
-        return result;
     }
 }
