@@ -86,8 +86,8 @@ public class Hardware {
             isr.close();
             return result.toString().trim();
         } catch (Exception e) {
-            Logger log = Logger.getLogger(Hardware.class.getName());
-            log.log(Level.SEVERE,"error exists with the current command", e);
+            Logger logger = Logger.getLogger(Hardware.class.getName());
+            logger.log(Level.SEVERE,"error exists with the current command", e);
         }
         return "";
     }
@@ -103,8 +103,8 @@ public class Hardware {
             if (i > 0)
                 memSize = i;
         } catch (Exception e) {
-            Logger log = Logger.getLogger(Hardware.class.getName());
-            log.log(Level.SEVERE, "error discovering the mac address", e);
+            Logger logger = Logger.getLogger(Hardware.class.getName());
+            logger.log(Level.SEVERE, "error discovering the mac address", e);
         }
     }
 
@@ -114,7 +114,7 @@ public class Hardware {
 
         // get memory size
         String size = runInOS(new String[] { "/bin/sh", "-c", "/usr/bin/awk '/MemTotal:/ { print $2 }' /proc/meminfo" });
-        Logger log = Logger.getLogger(Hardware.class.getName());
+        Logger logger = Logger.getLogger(Hardware.class.getName());
         
         try {
             try {
@@ -122,7 +122,7 @@ public class Hardware {
                 if (i > 0)
                     memSize = i * 1024L;
             } catch (Exception e) {
-                log.log(Level.SEVERE, "cannot read memory size", e);
+                logger.log(Level.SEVERE, "cannot read memory size", e);
             }
             String basePath = Central.getProperty("basePath");
             // checking filesystem
@@ -130,13 +130,13 @@ public class Hardware {
             fsType = runInOS(new String[] { "/bin/sh", "-c", cmd });
 
             Central.setProperty("fsType", fsType);
-            log.log(Level.INFO, "system is running on linux.");
-            log.log(Level.INFO, "cpu count is {0}", cpuCount);
-            log.log(Level.INFO, "memory size is {0}", memSize);
-            log.log(Level.INFO, "anystore path is {0}", basePath);
-            log.log(Level.INFO, "anystore filesystem type is {0}", fsType);
+            logger.log(Level.INFO, "system is running on linux.");
+            logger.log(Level.INFO, "cpu count is {0}", cpuCount);
+            logger.log(Level.INFO, "memory size is {0}", memSize);
+            logger.log(Level.INFO, "anystore path is {0}", basePath);
+            logger.log(Level.INFO, "anystore filesystem type is {0}", fsType);
         } catch (Exception e) {
-            log.log(Level.SEVERE, "os discovery failed", e);
+            logger.log(Level.SEVERE, "os discovery failed", e);
         }
     }
 }

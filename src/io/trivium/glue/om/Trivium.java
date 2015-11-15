@@ -39,8 +39,8 @@ public class Trivium {
 
 			reader.close();
 		} catch (Exception ex) {
-            Logger log = Logger.getLogger(Trivium.class.getName());
-			log.log(Level.SEVERE,"exception thrown while transforming object to external structure", ex);
+            Logger logger = Logger.getLogger(Trivium.class.getName());
+            logger.log(Level.SEVERE,"exception thrown while transforming object to external structure", ex);
 		}
 		return root;
 	}
@@ -56,8 +56,8 @@ public class Trivium {
 			writer.close();
 			rslt = sw.toString();
 		} catch (Exception ex) {
-            Logger log = Logger.getLogger(Trivium.class.getName());
-			log.log(Level.SEVERE,"exception thrown while transforming object to internal structure",ex);
+            Logger logger = Logger.getLogger(Trivium.class.getName());
+            logger.log(Level.SEVERE,"exception thrown while transforming object to internal structure",ex);
 		}
 		return rslt;
 	}

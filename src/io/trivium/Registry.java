@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 public enum Registry {
     INSTANCE;
 
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
     public ConcurrentHashMap<ObjectRef, Class<? extends Task>> tasks = new ConcurrentHashMap<>();
 
@@ -71,11 +71,11 @@ public enum Registry {
                     if (!types.containsKey(prototype.getTypeId())) {
                         types.put(prototype.getTypeId(), clazz);
                     }
-                    log.log(Level.FINE, "registered type '{0}'", prototype.getFactName());
+                    logger.log(Level.FINE, "registered type '{0}'", prototype.getFactName());
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "dynamically loading types failed", ex);
+            logger.log(Level.SEVERE, "dynamically loading types failed", ex);
         }
 
         //bindings
@@ -96,11 +96,11 @@ public enum Registry {
                         //register prototype
                         bindingInstances.put(prototype.getTypeId(),prototype);
                     }
-                    log.log(Level.FINE, "registered binding '{0}'", prototype.getName());
+                    logger.log(Level.FINE, "registered binding '{0}'", prototype.getName());
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "dynamically loading bindings failed", ex);
+            logger.log(Level.SEVERE, "dynamically loading bindings failed", ex);
         }
 
         //tasks
@@ -119,11 +119,11 @@ public enum Registry {
                     if (!tasks.containsKey(prototype.getTypeId())) {
                         tasks.put(prototype.getTypeId(), clazz);
                     }
-                    log.log(Level.FINE, "registered binding '{0}'", prototype.getName());
+                    logger.log(Level.FINE, "registered binding '{0}'", prototype.getName());
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "dynamically loading bindings failed", ex);
+            logger.log(Level.SEVERE, "dynamically loading bindings failed", ex);
         }
 
         //testcases
@@ -142,11 +142,11 @@ public enum Registry {
                     if (!testcases.containsKey(prototype.getTypeId())) {
                         testcases.put(prototype.getTypeId(), prototype);
                     }
-                    log.log(Level.FINE, "registered testcase '{0}'", prototype.getTypeId());
+                    logger.log(Level.FINE, "registered testcase '{0}'", prototype.getTypeId());
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "dynamically loading test cases failed", ex);
+            logger.log(Level.SEVERE, "dynamically loading test cases failed", ex);
         }
     }
 
@@ -182,8 +182,8 @@ public enum Registry {
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.SEVERE, "error while running task '{0}'", taskClass.getName());
-                log.log(Level.SEVERE, "got exception", ex);
+                logger.log(Level.SEVERE, "error while running task '{0}'", taskClass.getName());
+                logger.log(Level.SEVERE, "got exception", ex);
             }
         }
     }

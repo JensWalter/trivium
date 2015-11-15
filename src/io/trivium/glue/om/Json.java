@@ -135,8 +135,8 @@ public class Json {
 			}
 			reader.close();
 		} catch (Exception ex) {
-            Logger log = Logger.getLogger(Json.class.getName());
-			log.log(Level.SEVERE,"error in json serializer", ex);
+            Logger logger = Logger.getLogger(Json.class.getName());
+            logger.log(Level.SEVERE,"error in json serializer", ex);
 		}
 		return root;
 	}
@@ -148,8 +148,8 @@ public class Json {
             ElementToWriter(jw, el);
 			jw.close();
 		} catch (Exception ex) {
-            Logger log = Logger.getLogger(Json.class.getName());
-			log.log(Level.SEVERE, "error in json serializer", ex);
+            Logger logger = Logger.getLogger(Json.class.getName());
+            logger.log(Level.SEVERE, "error in json serializer", ex);
 		}
 		return sw.toString();
 	}
@@ -275,8 +275,8 @@ public class Json {
 			writer.close();
 			rslt = sw.toString();
 		} catch (Exception e) {
-            Logger log = Logger.getLogger(Json.class.getName());
-			log.log(Level.SEVERE, "exception thrown in json stringify", e);
+            Logger logger = Logger.getLogger(Json.class.getName());
+            logger.log(Level.SEVERE, "exception thrown in json stringify", e);
 		}
 		return rslt;
 	}
@@ -329,8 +329,8 @@ public class Json {
 			}
 			reader.close();
 		} catch (Exception e) {
-            Logger log = Logger.getLogger(Json.class.getName());
-			log.log(Level.SEVERE,"exception thrown in json parse",e);
+            Logger logger = Logger.getLogger(Json.class.getName());
+            logger.log(Level.SEVERE,"exception thrown in json parse",e);
 		}
 		return rslt;
 	}

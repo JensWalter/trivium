@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 public class AnyIndex{
     private static ConcurrentHashMap<String,AnyIndex> ALL = new ConcurrentHashMap<>();
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
     private String name;
     private DB index;
 
@@ -47,7 +47,7 @@ public class AnyIndex{
     }
 
     private AnyIndex(String name){
-        log.log(Level.FINE,"creating index for field {1}", name);
+        logger.log(Level.FINE,"creating index for field {1}", name);
         this.name=name;
 
         String path = Central.getProperty("basePath");
@@ -62,7 +62,7 @@ public class AnyIndex{
             Iq80DBFactory factory = Iq80DBFactory.factory;
             index = factory.open(new File(path + name+".leveldb"), options);
         } catch (Exception e) {
-            log.log(Level.SEVERE,"cannot initialize index " + name, e);
+            logger.log(Level.SEVERE,"cannot initialize index " + name, e);
             System.exit(0);
         }
 

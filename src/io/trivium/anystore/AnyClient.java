@@ -26,14 +26,13 @@ import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class AnyClient {
 
 	public static AnyClient INSTANCE = new AnyClient();
 	private Queue pipeIn;
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
 	public AnyClient() {
 		String locPipeIn = Central.getProperty("basePath") + File.separator + "queues" + File.separator + "ingestQ";

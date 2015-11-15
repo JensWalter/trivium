@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class Http {
     private static ConcurrentHashMap<String,HttpHandler> listeners = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, HttpServer> servers = new ConcurrentHashMap<>();
-    static Logger log = Logger.getLogger(Http.class.getName());
+    static Logger logger = Logger.getLogger(Http.class.getName());
 
     /**
      * registers a http handler under the given URI
@@ -72,7 +72,7 @@ public class Http {
                     server = HttpServer.create(new InetSocketAddress(port),100);
                     server.start();
                 } catch (IOException e) {
-                    log.log(Level.SEVERE,"server could not be initialized",e);
+                    logger.log(Level.SEVERE,"server could not be initialized",e);
                     return false;
                 }
                 servers.put(binding, server);

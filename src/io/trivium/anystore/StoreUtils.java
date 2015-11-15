@@ -30,8 +30,8 @@ public class StoreUtils {
     final static protected String local = "local" + File.separator;
 
     public static void cleanStore() {
-        Logger log = Logger.getLogger(StoreUtils.class.getName());
-        log.info("cleaning persistence store");
+        Logger logger = Logger.getLogger(StoreUtils.class.getName());
+        logger.info("cleaning persistence store");
         String path = Central.getProperty("basePath");
         if (!path.endsWith(File.separator))
             path += File.separator;
@@ -41,27 +41,27 @@ public class StoreUtils {
             if (f.exists())
                 FileUtils.deleteQuietly(f);
         } catch (Exception e1) {
-            log.log(Level.SEVERE,"cleaning meta store failed", e1);
+            logger.log(Level.SEVERE,"cleaning meta store failed", e1);
         }
         try {
             File f = new File(path + data);
             if (f.exists())
                 FileUtils.deleteQuietly(f);
         } catch (Exception e1) {
-            log.log(Level.SEVERE,"cleaning data store failed", e1);
+            logger.log(Level.SEVERE,"cleaning data store failed", e1);
         }
         try {
             File f = new File(path + local);
             if (f.exists())
                 FileUtils.deleteQuietly(f);
         } catch (Exception e1) {
-            log.log(Level.SEVERE,"cleaning local store failed", e1);
+            logger.log(Level.SEVERE,"cleaning local store failed", e1);
         }
     }
 
     public static void cleanQueue() {
-        Logger log = Logger.getLogger(StoreUtils.class.getName());
-        log.info("cleaning queue storage");
+        Logger logger = Logger.getLogger(StoreUtils.class.getName());
+        logger.info("cleaning queue storage");
         String path = Central.getProperty("basePath");
         if (!path.endsWith(File.separator))
             path += File.separator;
@@ -70,16 +70,16 @@ public class StoreUtils {
             if (f.exists())
                 FileUtils.deleteQuietly(f);
         } catch (Exception e1) {
-            log.log(Level.SEVERE,"cleaning queue storage failed", e1);
+            logger.log(Level.SEVERE,"cleaning queue storage failed", e1);
         }
     }
 
     public static void createIfNotExists(String url) {
-        Logger log = Logger.getLogger(StoreUtils.class.getName());
+        Logger logger = Logger.getLogger(StoreUtils.class.getName());
         File m = new File(url);
         if (!m.exists()) {
             m.mkdirs();
-            log.log(Level.FINE,"creating directory {}", url);
+            logger.log(Level.FINE,"creating directory {}", url);
         }
     }
 }

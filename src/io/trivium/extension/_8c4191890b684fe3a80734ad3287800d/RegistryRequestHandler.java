@@ -39,11 +39,11 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class RegistryRequestHandler implements HttpHandler {
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     public void handle(HttpExchange httpexchange) {
-        log.log(Level.FINE, "registry handler");
+        logger.log(Level.FINE, "registry handler");
 
         NVList params = HttpUtils.getInputAsNVList(httpexchange);
         /** list
@@ -131,7 +131,7 @@ public class RegistryRequestHandler implements HttpHandler {
                 s.ok();
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "error while processing registry request", ex);
+            logger.log(Level.SEVERE, "error while processing registry request", ex);
             s.ok();
         }
     }

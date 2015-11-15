@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 public class AnyDB {
     private DB map =null;
-    private Logger log = Logger.getLogger(getClass().getName());
+    private Logger logger = Logger.getLogger(getClass().getName());
     public String path;
     /**
      * valid values are "meta" or "data" or "local"
@@ -53,10 +53,10 @@ public class AnyDB {
                 Iq80DBFactory factory = Iq80DBFactory.factory;
                 map = factory.open(file, options);
             } catch (Exception e) {
-                log.log(Level.SEVERE,"cannot initialize leveldb store "+path, e);
+                logger.log(Level.SEVERE,"cannot initialize leveldb store "+path, e);
             }
         }catch (Exception ex){
-            log.log(Level.SEVERE,"creating file store failed",ex);
+            logger.log(Level.SEVERE,"creating file store failed",ex);
             System.exit(0);
         }
     }

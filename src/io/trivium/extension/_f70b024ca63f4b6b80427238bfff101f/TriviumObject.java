@@ -42,7 +42,7 @@ public class TriviumObject implements Fact {
      * 1 snappy compressed json
      */
     public static byte typeByte = 1;
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
     ObjectRef id;
     ObjectRef typeId;
     NVList metadata;
@@ -214,7 +214,7 @@ public class TriviumObject implements Fact {
                 return obj;
             }
         }catch(Exception ex){
-            log.log(Level.SEVERE,"error constructing object", ex);
+            logger.log(Level.SEVERE,"error constructing object", ex);
             return null;
         }
     }

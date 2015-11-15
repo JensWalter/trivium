@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.LongBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -31,7 +30,7 @@ import java.util.logging.Logger;
 
 public class Queue {
     static HashMap<String,Queue> queueList = new HashMap<>();
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
     PersistentMessageBuffer queue;
     LongBuffer readPointer;
@@ -48,7 +47,7 @@ public class Queue {
             //set size to 100mb
             queue.setMaxSize(100*1024*1024);
         }catch(Exception ex){
-            log.log(Level.SEVERE,"error initializing queue on path "+path,ex);
+            logger.log(Level.SEVERE,"error initializing queue on path "+path,ex);
         }
     }
 
@@ -57,7 +56,7 @@ public class Queue {
             //routing key is empty since it is not used
             queue.append(System.currentTimeMillis(), "", msg);
         } catch (IOException e) {
-            log.log(Level.SEVERE,"error appending message to queue",e);
+            logger.log(Level.SEVERE,"error appending message to queue",e);
         }
     }
 
@@ -67,14 +66,14 @@ public class Queue {
             long pos = readPointer.get();
             return queue.cursor(pos);
         } catch (IllegalArgumentException ex) {
-            log.log(Level.INFO,"cursor position is invalid, resetting to position 0",ex);
+            logger.log(Level.INFO,"cursor position is invalid, resetting to position 0",ex);
             try {
                 return queue.cursor(0);
             }catch(IOException io){
                 //ignore
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE,"error creating cursor",e);
+            logger.log(Level.SEVERE,"error creating cursor",e);
         }
         return null;
     }

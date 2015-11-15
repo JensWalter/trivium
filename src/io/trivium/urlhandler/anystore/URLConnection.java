@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class URLConnection extends java.net.URLConnection {
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
     
     /**
      * Constructs a URL connection to the specified URL. A connection to
@@ -50,7 +50,7 @@ public class URLConnection extends java.net.URLConnection {
 
     synchronized public InputStream getInputStream()
             throws IOException {
-        log.log(Level.FINE,"looking for url {}", url.toString());
+        logger.log(Level.FINE,"looking for url {}", url.toString());
         //query anystore
         Query<TriviumObject> query = new Query<TriviumObject>(){
             {

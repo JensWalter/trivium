@@ -40,7 +40,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -49,7 +48,7 @@ import java.util.logging.Logger;
 public class AnyServer implements Runnable {
 
 	public static AnyServer INSTANCE = new AnyServer();
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
     //TODO size pool after index use not cpu count
     ExecutorService executors = Executors.newWorkStealingPool();
@@ -91,7 +90,7 @@ public class AnyServer implements Runnable {
         //create primary key index - just in case
         new AnyIndex("id", true);
 
-        log.log(Level.FINE,"MapStore initialized on " + path);
+        logger.log(Level.FINE,"MapStore initialized on " + path);
 
         //init profiler
         Profiler.INSTANCE.initTicker(new Ticker(DataPoints.ANYSTORE_QUEUE_OUT));
@@ -103,7 +102,7 @@ public class AnyServer implements Runnable {
 
 	@Override
 	public void run() {
-	    log.log(Level.FINE,"starting anystore server");
+        logger.log(Level.FINE,"starting anystore server");
 	    String locPipeIn = Central.getProperty("basePath") + File.separator + "queues" + File.separator + "ingestQ";
 		StoreUtils.createIfNotExists(locPipeIn);
         Queue pipeIn = Queue.getQueue(locPipeIn);
@@ -131,7 +130,7 @@ public class AnyServer implements Runnable {
 				}
 			}
 		} catch (Exception e1) {
-			log.log(Level.SEVERE, "error while writing to backend", e1);
+            logger.log(Level.SEVERE, "error while writing to backend", e1);
 		}
 	}
 
@@ -146,7 +145,7 @@ public class AnyServer implements Runnable {
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_META_WRITE_DURATION, end - start);
         } catch (Exception e) {
-            log.log(Level.SEVERE, "error while writing to store", e);
+            logger.log(Level.SEVERE, "error while writing to store", e);
         }
         //write data
         try {
@@ -156,7 +155,7 @@ public class AnyServer implements Runnable {
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_DATA_WRITE_DURATION, end - start);
         } catch (Exception e) {
-            log.log(Level.SEVERE, "error while writing to store", e);
+            logger.log(Level.SEVERE, "error while writing to store", e);
         }
         //update indices
         try {
@@ -167,13 +166,13 @@ public class AnyServer implements Runnable {
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_INDEX_WRITE_DURATION, end - start);
         } catch (Exception e) {
-            log.log(Level.SEVERE, "error updating index", e);
+            logger.log(Level.SEVERE, "error updating index", e);
         }
         //trigger notify
         try {
             Registry.INSTANCE.notify(po);
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "error notifying activities", ex);
+            logger.log(Level.SEVERE, "error notifying activities", ex);
         }
     }
 
@@ -230,7 +229,7 @@ public class AnyServer implements Runnable {
             }
             return result;
         } catch (Exception e) {
-            log.log(Level.SEVERE, "query was interrupted", e);
+            logger.log(Level.SEVERE, "query was interrupted", e);
         }
         return new Result();
     }

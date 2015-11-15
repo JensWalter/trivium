@@ -29,11 +29,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TestRequestHandler implements HttpHandler{
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     public void handle(HttpExchange httpexchange) {
-        log.log(Level.FINE,"test request handler");
+        logger.log(Level.FINE,"test request handler");
         NVList test = HttpUtils.getInputAsNVList(httpexchange);
         /**
          var tc = {}

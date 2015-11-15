@@ -37,11 +37,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class UploadRequestHandler implements HttpHandler {
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     public void handle(HttpExchange httpexchange) {
-        log.log(Level.FINE,"upload request handler");
+        logger.log(Level.FINE,"upload request handler");
         NVList upload = HttpUtils.getInputAsNVList(httpexchange);
         /**
          {
@@ -67,7 +67,7 @@ public class UploadRequestHandler implements HttpHandler {
                 processFile(fileName,size,type,lastModified,data);
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE,"error while processing file upload", ex);
+            logger.log(Level.SEVERE,"error while processing file upload", ex);
         }
         s.ok();
     }
@@ -98,7 +98,7 @@ public class UploadRequestHandler implements HttpHandler {
             zis.close();
             bis.close();
         }catch(Exception ex){
-            log.log(Level.SEVERE,"error while processing file upload", ex);
+            logger.log(Level.SEVERE,"error while processing file upload", ex);
         }
     }
 
@@ -138,7 +138,7 @@ public class UploadRequestHandler implements HttpHandler {
         file.addChild(new Element("contentType", type));
         file.addChild(new Element("lastModified", Instant.ofEpochMilli(lastModified).toString()));
 
-        log.log(Level.FINE,"inserting file into anystore {}",fileName);
+        logger.log(Level.FINE,"inserting file into anystore {}",fileName);
 
 
         po.setData(file);

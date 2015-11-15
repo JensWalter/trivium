@@ -122,8 +122,8 @@ public abstract class FormDataHandler implements HttpHandler {
             requestStream.close();
             bos.close();
         } catch (IOException e) {
-            Logger log = Logger.getLogger(HttpUtils.class.getName());
-            log.log(Level.SEVERE, "error while decoding http input stream", e);
+            Logger logger = Logger.getLogger(HttpUtils.class.getName());
+            logger.log(Level.SEVERE, "error while decoding http input stream", e);
         }
         return bos.toByteArray();
     }

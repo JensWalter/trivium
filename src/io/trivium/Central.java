@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 public class Central {
 
     public static HashMap<String, String> properties = new HashMap<>();
-    private static Logger log = Logger.getLogger(Central.class.getName());
+    private static Logger logger = Logger.getLogger(Central.class.getName());
 
     public static ArrayList<String> peers = new ArrayList<>();
     public static AtomicInteger currentPeer = new AtomicInteger(0);
@@ -67,8 +67,8 @@ public class Central {
     }
 
     public static void setLogLevel(String level) {
-        Logger log = Logger.getLogger("");
-        log.setLevel(Level.parse(level.toUpperCase()));
+        Logger logger = Logger.getLogger("");
+        logger.setLevel(Level.parse(level.toUpperCase()));
     }
 
     public static String getPeer() {
@@ -115,7 +115,7 @@ public class Central {
                 Level l = Level.parse(val.toUpperCase());
                 Central.setLogLevel(val);
             }catch(Exception ex){
-                log.log(Level.WARNING,"log level was not recognized, falling back to default value");
+                logger.log(Level.WARNING,"log level was not recognized, falling back to default value");
             }
         }
         if (cmd.hasOption("compress")) {
@@ -213,7 +213,7 @@ public class Central {
             fos.close();
             fis.close();
         } catch (Exception e) {
-            log.log(Level.SEVERE, "error creating script",e);
+            logger.log(Level.SEVERE, "error creating script",e);
         }
     }
 
@@ -230,7 +230,7 @@ public class Central {
             b = Registry.INSTANCE.getBinding(ObjectRef.getInstance("3d63321d-f553-4c3d-a8e7-b6159e7ee35b"));
             b.startBinding();
         }catch (Exception ex){
-            log.log(Level.SEVERE,"error initializing the builtin http handler",ex);
+            logger.log(Level.SEVERE,"error initializing the builtin http handler",ex);
         }
         //start anystore server
         Thread td = new Thread(AnyServer.INSTANCE, "anystore");
@@ -243,6 +243,6 @@ public class Central {
         long start = TimeUtils.getTimeFrameStart(new Date().getTime() + 60000);
         t.schedule(Profiler.INSTANCE, new Date(start), 60000);
 
-        log.log(Level.INFO,"trivium is now running and accessible through the web interface on http://localhost:12345/ui/");
+        logger.log(Level.INFO,"trivium is now running and accessible through the web interface on http://localhost:12345/ui/");
     }
 }

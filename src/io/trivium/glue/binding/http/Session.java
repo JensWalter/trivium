@@ -26,7 +26,7 @@ public class Session {
 
 	HttpExchange httpexchange;
 	ObjectRef id;
-    Logger log = Logger.getLogger(getClass().getName());
+    Logger logger = Logger.getLogger(getClass().getName());
 
 	public Session(HttpExchange httpexchange) {
 		this.httpexchange = httpexchange;
@@ -49,7 +49,7 @@ public class Session {
             httpexchange.getResponseBody().close();
             httpexchange.close();
 		} catch (Exception ex) {
-			log.log(Level.FINE,"error while sending 'error' response",ex);
+            logger.log(Level.FINE,"error while sending 'error' response",ex);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class Session {
             httpexchange.getResponseBody().close();
             httpexchange.close();
 		} catch (Exception ex) {
-            log.log(Level.FINE, "error while sending 'ok' response", ex);
+            logger.log(Level.FINE, "error while sending 'ok' response", ex);
 		}
 	}
 
@@ -73,9 +73,8 @@ public class Session {
             httpexchange.getResponseBody().write(responseData);
             httpexchange.getResponseBody().close();
             httpexchange.close();
-
         } catch (Exception ex) {
-            log.log(Level.FINE, "error while sending 'ok' response", ex);
+            logger.log(Level.FINE, "error while sending 'ok' response", ex);
         }
     }
 }

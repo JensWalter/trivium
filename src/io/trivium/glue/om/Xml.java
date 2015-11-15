@@ -77,8 +77,8 @@ public class Xml {
 				}
 			}
 		} catch (XMLStreamException e) {
-            Logger log = Logger.getLogger(Xml.class.getName());
-			log.log(Level.SEVERE,"error while converting xml to internal structure",e);
+            Logger logger = Logger.getLogger(Xml.class.getName());
+            logger.log(Level.SEVERE,"error while converting xml to internal structure",e);
 		}
 		return root;
 	}
@@ -102,8 +102,8 @@ public class Xml {
             xtw.writeEndElement();
             xtw.writeEndDocument();
         } catch (XMLStreamException e) {
-            Logger log = Logger.getLogger(Xml.class.getName());
-            log.log(Level.SEVERE, "error while converting internal structure to xml", e);
+            Logger logger = Logger.getLogger(Xml.class.getName());
+            logger.log(Level.SEVERE, "error while converting internal structure to xml", e);
         }
         return sw.toString();
     }

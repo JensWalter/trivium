@@ -105,7 +105,7 @@ public class WebObjectHandler extends Binding implements HttpHandler {
                 return;
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE,"error processing object request", ex);
+            logger.log(Level.SEVERE,"error processing object request", ex);
             s.error(/*INTERNAL_SERVER_ERROR*/500,ex.toString());
             return;
         }

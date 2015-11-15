@@ -25,7 +25,7 @@ import io.trivium.extension.Typed;
 import java.util.logging.Logger;
 
 public abstract class Binding implements Typed {
-    protected Logger log = Logger.getLogger(getClass().getName());
+    protected Logger logger = Logger.getLogger(getClass().getName());
     private State state = State.stopped;
     public final ObjectRef instanceId = ObjectRef.getInstance();
 

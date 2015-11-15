@@ -47,8 +47,8 @@ public class HttpUtils {
             bos.close();
             result = bos.toString("UTF-8");
         } catch (IOException e) {
-            Logger log = Logger.getLogger(HttpUtils.class.getName());
-            log.log(Level.SEVERE, "error while decoding http input stream", e);
+            Logger logger = Logger.getLogger(HttpUtils.class.getName());
+            logger.log(Level.SEVERE, "error while decoding http input stream", e);
         }
         return result;
     }
@@ -65,8 +65,8 @@ public class HttpUtils {
             requestStream.close();
             bos.close();
         } catch (IOException e) {
-            Logger log = Logger.getLogger(HttpUtils.class.getName());
-            log.log(Level.SEVERE, "error while decoding http input stream", e);
+            Logger logger = Logger.getLogger(HttpUtils.class.getName());
+            logger.log(Level.SEVERE, "error while decoding http input stream", e);
         }
         return bos.toByteArray();
     }

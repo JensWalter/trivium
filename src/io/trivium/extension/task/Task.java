@@ -45,7 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class Task implements Typed {
-    protected Logger log = Logger.getLogger(getClass().getName());
+    protected Logger logger = Logger.getLogger(getClass().getName());
 
     public abstract boolean eval() throws Exception;
 
@@ -97,8 +97,8 @@ public abstract class Task implements Typed {
                 }
             }
         }catch(Exception ex){
-            log.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
-            log.log(Level.SEVERE,"got exception", ex);
+            logger.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE,"got exception", ex);
         }
         return list;
     }
@@ -158,8 +158,8 @@ public abstract class Task implements Typed {
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
-            log.log(Level.SEVERE,"got exception", ex);
+            logger.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE,"got exception", ex);
         }
         return outputFields;
     }
@@ -173,7 +173,7 @@ public abstract class Task implements Typed {
                 field.setAccessible(true);
                 field.set(this,obj);
             } catch(NoSuchFieldException | IllegalAccessException e){
-                log.log(Level.SEVERE,"injecting input field failed",e);
+                logger.log(Level.SEVERE,"injecting input field failed",e);
             }
         }
     }
@@ -187,7 +187,7 @@ public abstract class Task implements Typed {
                 Fact obj = (Fact) f.field.get(this);
                 result.add(TriviumObject.getTriviumObject(obj));
             } catch (Exception ex) {
-                log.log(Level.SEVERE,"error population activity input", ex);
+                logger.log(Level.SEVERE,"error population activity input", ex);
             }
         }
         return result;
