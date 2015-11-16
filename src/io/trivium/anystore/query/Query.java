@@ -39,7 +39,7 @@ public class Query<T extends Fact>{
     /**
      * evaluates the condition for a query
      */
-    public BooleanClosure<T> condition;
+    public BooleanClosure<T> condition = (item) -> true;
 
     /**
      * provides the context string
