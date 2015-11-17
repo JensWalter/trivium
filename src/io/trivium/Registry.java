@@ -71,7 +71,7 @@ public enum Registry {
                     if (!types.containsKey(prototype.getTypeId())) {
                         types.put(prototype.getTypeId(), clazz);
                     }
-                    logger.log(Level.FINE, "registered type '{0}'", prototype.getFactName());
+                    logger.log(Level.FINE, "registered type {0}", prototype.getFactName());
                 }
             }
         } catch (Exception ex) {
@@ -96,7 +96,7 @@ public enum Registry {
                         //register prototype
                         bindingInstances.put(prototype.getTypeId(),prototype);
                     }
-                    logger.log(Level.FINE, "registered binding '{0}'", prototype.getName());
+                    logger.log(Level.FINE, "registered binding {0}", prototype.getName());
                 }
             }
         } catch (Exception ex) {
@@ -119,7 +119,7 @@ public enum Registry {
                     if (!tasks.containsKey(prototype.getTypeId())) {
                         tasks.put(prototype.getTypeId(), clazz);
                     }
-                    logger.log(Level.FINE, "registered binding '{0}'", prototype.getName());
+                    logger.log(Level.FINE, "registered binding {0}", prototype.getName());
                 }
             }
         } catch (Exception ex) {
@@ -142,7 +142,7 @@ public enum Registry {
                     if (!testcases.containsKey(prototype.getTypeId())) {
                         testcases.put(prototype.getTypeId(), prototype);
                     }
-                    logger.log(Level.FINE, "registered testcase '{0}'", prototype.getTypeId());
+                    logger.log(Level.FINE, "registered testcase {0}", prototype.getTypeId());
                 }
             }
         } catch (Exception ex) {
@@ -173,7 +173,7 @@ public enum Registry {
         for(Class<? extends Task> taskClass : tasks.values()){
             try {
                 Task task = taskClass.newInstance();
-                if(task.isApplicable(tvm)){
+                if(task.checkInputTypes(tvm) && task.isApplicable(tvm)){
                     task.populateInput(tvm);
                     task.eval();
                     ArrayList<TriviumObject> output = task.extractOutput();
@@ -182,7 +182,7 @@ public enum Registry {
                     }
                 }
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "error while running task '{0}'", taskClass.getName());
+                logger.log(Level.SEVERE, "error while running task {0}", taskClass.getName());
                 logger.log(Level.SEVERE, "got exception", ex);
             }
         }

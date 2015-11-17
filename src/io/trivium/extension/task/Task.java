@@ -16,6 +16,8 @@
 
 package io.trivium.extension.task;
 
+import io.trivium.Registry;
+import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.dep.org.objectweb.asm.ClassReader;
 import io.trivium.dep.org.objectweb.asm.Opcodes;
@@ -55,9 +57,37 @@ public abstract class Task implements Typed {
         //TODO only checks for type, not criteria
         HashMap<String,Query> input = getInputQueries();
         for(Query query : input.values()){
-            Fact f = query.castType(tvm);
-            if(query.condition!=null && query.condition.invoke(f))
+            Fact fact;
+            if(query.targetType == TriviumObject.class){
+                fact = tvm;
+            } else {
+                fact = tvm.getTypedData();
+            }
+            //if condition is present, evaluate
+            if(query.condition!=null && query.condition.invoke(fact))
                 return true;
+            //condition is null
+        }
+        return false;
+    }
+
+    public boolean checkInputTypes(TriviumObject tvm) {
+        ObjectRef typeId = tvm.getTypeId();
+        Class<?> typeClass = Registry.INSTANCE.types.get(typeId);
+        try {
+            Class<?> c = this.getClass();
+            Field[] fields = c.getDeclaredFields();
+            for (Field field : fields) {
+                Class<?> fieldClass = field.getType();
+                //check for matching or generic type
+                if (fieldClass == tvm.getClass() || fieldClass == typeClass) {
+                    Query<Fact> query = getInputQuery(field);
+                    return query.condition.invoke(tvm);
+                }
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "got exception", ex);
         }
         return false;
     }
@@ -97,6 +127,36 @@ public abstract class Task implements Typed {
         }
         return list;
     }
+
+    public Query<Fact> getInputQuery(Field inputField) {
+        try {
+            Class<?> fieldClass = inputField.getType();
+            Class<?>[] interfaces = fieldClass.getInterfaces();
+            for (Class<?> iface : interfaces) {
+                if (iface.isAssignableFrom(Fact.class)) {
+                    String queryClass = getFieldAssignment(inputField.getName());
+                    if (queryClass.length() > 0) {
+                        Class<?> q = Class.forName(queryClass.replace('/', '.'));
+                        if (queryClass.contains("$")) {
+                            //inner class
+                            Constructor con = q.getDeclaredConstructors()[0];
+                            con.setAccessible(true);
+                            Object obj = con.newInstance(new Object[]{this});
+                            return (Query<Fact>) obj;
+                        } else {
+                            //normal class
+                            return (Query<Fact>) q.newInstance();
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "got exception", ex);
+        }
+        return new Query<>();
+    }
+
     private String getFieldAssignment(String fieldName) throws IOException {
         String url = "/" + getClass().getName().replace('.', '/') + ".class";
         InputStream in = getClass().getResourceAsStream(url);

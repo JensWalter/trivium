@@ -16,25 +16,13 @@
 
 package io.trivium.anystore.query;
 
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.fact.Fact;
 
 public class Query<T extends Fact>{
     /**
-     * get return type for this query
-     * @return
+     * target type of the query
      */
-    public T castType(TriviumObject fact){
-        try{
-            T instance = (T) fact;
-            return instance;
-        }catch (ClassCastException cast){}
-        try{
-            T instance = (T) fact.getTypedData();
-            return instance;
-        }catch (ClassCastException cast){}
-        return null;
-    }
+    public Class<T> targetType;
 
     /**
      * evaluates the condition for a query

@@ -200,7 +200,8 @@ public class AnyServer implements Runnable {
             }
             for(ObjectRef ref : refs) {
                 TriviumObject tvm = loadObjectById(ref);
-                Fact f = query.castType(tvm);
+                Class<? extends Fact> clazz = query.targetType;
+                Fact f = clazz.cast(tvm);
                 if(query.condition.invoke(f)){
                     //matches, so now determine partition
                     String partitionKey = query.partitionOver.invoke(f);
