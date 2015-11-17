@@ -137,7 +137,7 @@ public class TriviumObject implements Fact {
             if (pair.getName().equals(name))
                 return pair.getValue();
         }
-        return null;
+        return "";
     }
 
     public String getMetadataJson(){

@@ -196,7 +196,7 @@ public class AnyServer implements Runnable {
             }
             //check for partition criteria
             if(query.partitionOver==null){
-                query.partitionOver = (obj) -> "";
+                query.partitionOver = (obj) -> ObjectRef.getInstance().toString();
             }
             for(ObjectRef ref : refs) {
                 TriviumObject tvm = loadObjectById(ref);
