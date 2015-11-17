@@ -32,6 +32,7 @@ public class _2116057b522d4ce2a793a859288e34a8 implements TestCase{
 
         Query<TriviumObject> q = new Query<TriviumObject>(){
             {
+                targetType = TriviumObject.class;
                 condition = (obj) -> obj.getId() == orgId;
             }
         };

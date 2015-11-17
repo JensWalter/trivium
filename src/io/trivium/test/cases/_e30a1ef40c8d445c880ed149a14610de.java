@@ -32,6 +32,7 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
 
         Query<TriviumObject> q = new Query<TriviumObject>(){
             {
+                targetType = TriviumObject.class;
                 condition = (obj) -> obj.getId()==tvm.getId();
                 partitionOver = (obj) -> obj.getTypeId().toString();
                 partitionOrderBy = (obj) -> obj.findMetaValue("created");

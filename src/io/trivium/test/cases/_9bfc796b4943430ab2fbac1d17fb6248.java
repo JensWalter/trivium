@@ -58,6 +58,7 @@ public class _9bfc796b4943430ab2fbac1d17fb6248 implements TestCase{
         //search for custom meta tag
         Query<TriviumObject> q = new Query<TriviumObject>(){
             {
+                targetType = TriviumObject.class;
                 condition = (obj) -> obj.getTypeId()==typeId;
                 partitionOver = (obj) -> obj.findMetaValue("custom");
                 partitionOrderBy = (obj) -> obj.findMetaValue("order");

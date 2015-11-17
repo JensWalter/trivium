@@ -18,6 +18,7 @@ public class _9a03753646024475b7c75ab34f76cec2 implements TestCase{
 
     static Query<TriviumObject> query = new Query<TriviumObject>(){
         {
+            targetType = TriviumObject.class;
             condition = (tvm) -> tvm.getTypeId() == typeId;
             partitionOver = (tvm) -> tvm.findMetaValue("custom");
             partitionOrderBy = (tvm) -> tvm.findMetaValue("order");

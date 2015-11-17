@@ -31,6 +31,7 @@ public class _f18f295e149f4c2084d80f0056bf0ebf implements TestCase{
 
         Query<TriviumObject> q = new Query<TriviumObject>(){
             {
+                targetType = TriviumObject.class;
                 condition = (tvm) -> tvm.findMetaValue("typeId").equals(typeId.toString());
             }
         };
