@@ -82,7 +82,11 @@ public abstract class Task implements Typed {
                 //check for matching or generic type
                 if (fieldClass == tvm.getClass() || fieldClass == typeClass) {
                     Query<Fact> query = getInputQuery(field);
-                    return query.condition.invoke(tvm);
+                    if (query == null) {
+                        return false;
+                    } else {
+                        return query.condition.invoke(tvm);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -154,7 +158,7 @@ public abstract class Task implements Typed {
             logger.log(Level.SEVERE, "failed to reflect on task {}", this.getTypeId().toString());
             logger.log(Level.SEVERE, "got exception", ex);
         }
-        return new Query<>();
+        return null;
     }
 
     private String getFieldAssignment(String fieldName) throws IOException {
