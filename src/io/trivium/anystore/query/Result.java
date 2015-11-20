@@ -16,18 +16,27 @@
 
 package io.trivium.anystore.query;
 
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.Fact;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Result {
-    public HashMap<String, ArrayList<TriviumObject>> partition = new HashMap<>();
+    public HashMap<String, ArrayList<Fact>> partition = new HashMap<>();
 
-    public ArrayList<TriviumObject> getAllAsList(){
-        ArrayList<TriviumObject> list = new ArrayList<>();
-        for(ArrayList<TriviumObject> objects: partition.values()){
+    public ArrayList<Fact> getAllAsList(){
+        ArrayList<Fact> list = new ArrayList<>();
+        for(ArrayList<Fact> objects: partition.values()){
             list.addAll(objects);
+        }
+        return list;
+    }
+
+    public <T> ArrayList<T> getAllAsTypedList(){
+        ArrayList<T> list = new ArrayList<>();
+        for(ArrayList<Fact> objects: partition.values()){
+            list.addAll((Collection<? extends T>) objects);
         }
         return list;
     }

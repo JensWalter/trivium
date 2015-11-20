@@ -201,15 +201,20 @@ public class AnyServer implements Runnable {
             for(ObjectRef ref : refs) {
                 TriviumObject tvm = loadObjectById(ref);
                 Class<? extends Fact> clazz = query.targetType;
-                Fact f = clazz.cast(tvm);
-                if(query.condition.invoke(f)){
+                Fact fact;
+                if(clazz == TriviumObject.class) {
+                    fact = tvm;
+                }else{
+                    fact = tvm.getTypedData();
+                }
+                if(query.condition.invoke(fact)){
                     //matches, so now determine partition
-                    String partitionKey = query.partitionOver.invoke(f);
+                    String partitionKey = query.partitionOver.invoke(fact);
 
                     if (result.partition.containsKey(partitionKey)) {
                         //window already exists
-                        ArrayList<TriviumObject> list = result.partition.get(partitionKey);
-                        list.add(tvm);
+                        ArrayList<Fact> list = result.partition.get(partitionKey);
+                        list.add(fact);
                         list.sort((one,two) -> {
                             if(query.partitionSortOrder== SortOrder.ASCENDING)
                                 return query.partitionOrderBy.invoke(one).compareTo(query.partitionOrderBy.invoke(two));
@@ -222,8 +227,8 @@ public class AnyServer implements Runnable {
                         }
                     } else {
                         //create new window
-                        ArrayList<TriviumObject> list = new ArrayList<>((int)query.partitionReduceTo +1);
-                        list.add(tvm);
+                        ArrayList<Fact> list = new ArrayList<>((int)query.partitionReduceTo +1);
+                        list.add(fact);
                         result.partition.put(partitionKey,list);
                     }
                 }

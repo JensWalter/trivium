@@ -58,7 +58,7 @@ public class TriviumLoader extends ClassLoader {
                             && tvm.findMetaValue("contentType").equals(MimeTypes.getMimeType("class"));
                     }
                 };
-                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsTypedList();
                 for (TriviumObject po : objects) {
                     File memFile = new File();
                     memFile.populate(po);
@@ -100,7 +100,7 @@ public class TriviumLoader extends ClassLoader {
                             && tvm.findMetaValue("typeId").equals(TypeIds.FILE.toString());
                 }
             };
-            ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+            ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsTypedList();
             for (TriviumObject po : objects) {
                 String uri = "anystore://" + po.getId().toString();
                 URL url = new URL(uri);
@@ -148,7 +148,7 @@ public class TriviumLoader extends ClassLoader {
                                             && tvm.findMetaValue("contentType").equals(MimeTypes.getMimeType("class"));
                         }
                     };
-                    ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+                    ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsTypedList();
                     for (TriviumObject po : objects) {
                         File file = new File();
                         file.populate(po);

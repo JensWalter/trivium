@@ -61,7 +61,7 @@ public class _45c1bb4cba834156a83935d23578f4f8 implements TestCase{
         };
 
         Result rslt = store.loadObjects(q);
-        ArrayList<TriviumObject> list = rslt.getAllAsList();
+        ArrayList<TriviumObject> list = rslt.getAllAsTypedList();
 
         //delete created objects
         store.deleteById(object1Id);

@@ -28,6 +28,7 @@ import io.trivium.anystore.query.Query;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.extension.binding.Binding;
+import io.trivium.extension.fact.Fact;
 import io.trivium.glue.Http;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
@@ -88,10 +89,11 @@ public class WebObjectHandler extends Binding implements HttpHandler {
                     }
                 };
                 ArrayList<String> sb = new ArrayList<>();
-                ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(q).getAllAsList();
-                for (TriviumObject po : objects) {
-                    if (po != null) {
-                        sb.add(Json.elementToJson(po.getData()));
+                ArrayList<Fact> objects = AnyClient.INSTANCE.loadObjects(q).getAllAsList();
+                for (Fact fact : objects) {
+                    TriviumObject tvm = (TriviumObject) fact;
+                    if (tvm != null) {
+                        sb.add(Json.elementToJson(tvm.getData()));
                     }
                 }
                 String str = Joiner.on(",").join(sb);

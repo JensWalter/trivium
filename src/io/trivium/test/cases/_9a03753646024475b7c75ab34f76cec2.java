@@ -6,6 +6,7 @@ import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
 import io.trivium.anystore.query.SortOrder;
 import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.Fact;
 import io.trivium.glue.om.Element;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
@@ -69,17 +70,17 @@ public class _9a03753646024475b7c75ab34f76cec2 implements TestCase{
         store.storeObject(tvm);
 
         Result rslt = store.loadObjects(query);
-        HashMap<String,ArrayList<TriviumObject>> list = rslt.partition;
+        HashMap<String,ArrayList<Fact>> list = rslt.partition;
 
         Assert.isTrue(list.keySet().size()==1);
 
-        ArrayList<TriviumObject> all = list.get("element1");
+        ArrayList<Fact> all = list.get("element1");
 
         Assert.isTrue(all.size()==3);
 
-        TriviumObject first = all.get(0);
-        TriviumObject second = all.get(1);
-        TriviumObject third = all.get(2);
+        TriviumObject first = (TriviumObject)all.get(0);
+        TriviumObject second = (TriviumObject)all.get(1);
+        TriviumObject third = (TriviumObject)all.get(2);
 
         int erster = Integer.parseInt(first.findMetaValue("order"));
         int zweiter = Integer.parseInt(second.findMetaValue("order"));

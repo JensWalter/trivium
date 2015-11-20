@@ -59,7 +59,7 @@ public class JsonDataHandler implements HttpHandler{
             }
         });
 
-        ArrayList<TriviumObject> all = rslt.getAllAsList();
+        ArrayList<TriviumObject> all = rslt.getAllAsTypedList();
 
         if(all.size()==0){
             //nothing found

@@ -35,7 +35,7 @@ public class _f18f295e149f4c2084d80f0056bf0ebf implements TestCase{
                 condition = (tvm) -> tvm.findMetaValue("typeId").equals(typeId.toString());
             }
         };
-        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
+        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsTypedList();
 
         Assert.isTrue(typeId==list.get(0).getTypeId());
     }

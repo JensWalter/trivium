@@ -58,7 +58,7 @@ public class URLConnection extends java.net.URLConnection {
             }
         };
         byte[] b = new byte[0];
-        ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsList();
+        ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsTypedList();
         for (TriviumObject po : objects) {
             File file = new File();
             file.populate(po);

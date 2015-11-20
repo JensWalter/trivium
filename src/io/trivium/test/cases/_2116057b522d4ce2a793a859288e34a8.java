@@ -36,7 +36,7 @@ public class _2116057b522d4ce2a793a859288e34a8 implements TestCase{
                 condition = (obj) -> obj.getId() == orgId;
             }
         };
-        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
+        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsTypedList();
 
         AnyServer.INSTANCE.deleteById(orgId);
 

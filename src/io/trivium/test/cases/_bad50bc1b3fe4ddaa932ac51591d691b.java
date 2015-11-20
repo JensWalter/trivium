@@ -48,7 +48,7 @@ public class _bad50bc1b3fe4ddaa932ac51591d691b implements TestCase{
                             && tvm.getData().getChild(0).getValue().equals("hallo world");
             }
         };
-        ArrayList<TriviumObject> list1 = store.loadObjects(query1).getAllAsList();
+        ArrayList<TriviumObject> list1 = store.loadObjects(query1).getAllAsTypedList();
         Assert.isTrue(list1.size()==1);
 
         TriviumObject result1 = list1.get(0);
@@ -60,7 +60,7 @@ public class _bad50bc1b3fe4ddaa932ac51591d691b implements TestCase{
                         && tvm.getId()!=result1.getId();
             }
         };
-        ArrayList<TriviumObject> list2 = store.loadObjects(query2).getAllAsList();
+        ArrayList<TriviumObject> list2 = store.loadObjects(query2).getAllAsTypedList();
         Assert.isTrue(list2.size()==1);
         Assert.isTrue(list1.get(0).getId()!=list2.get(0).getId());
 

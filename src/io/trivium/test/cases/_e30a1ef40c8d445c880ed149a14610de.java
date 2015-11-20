@@ -39,7 +39,7 @@ public class _e30a1ef40c8d445c880ed149a14610de implements TestCase{
                 partitionSortOrder = SortOrder.DESCENDING;
             }
         };
-        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsList();
+        ArrayList<TriviumObject> list = AnyServer.INSTANCE.loadObjects(q).getAllAsTypedList();
         String str1 = tvm.getMetadataJson();
         String str2 = list.get(0).getMetadataJson();
         Assert.equalsString(str1,str2);

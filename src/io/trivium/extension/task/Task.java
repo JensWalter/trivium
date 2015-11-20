@@ -17,8 +17,10 @@
 package io.trivium.extension.task;
 
 import io.trivium.Registry;
+import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
+import io.trivium.anystore.query.Result;
 import io.trivium.dep.org.objectweb.asm.ClassReader;
 import io.trivium.dep.org.objectweb.asm.Opcodes;
 import io.trivium.dep.org.objectweb.asm.tree.AbstractInsnNode;
@@ -38,6 +40,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,24 +54,6 @@ public abstract class Task implements Typed {
     public String getName(){
         String name = this.getClass().getCanonicalName();
         return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
-    }
-
-    public boolean isApplicable(TriviumObject tvm) {
-        //TODO only checks for type, not criteria
-        HashMap<String,Query> input = getInputQueries();
-        for(Query query : input.values()){
-            Fact fact;
-            if(query.targetType == TriviumObject.class){
-                fact = tvm;
-            } else {
-                fact = tvm.getTypedData();
-            }
-            //if condition is present, evaluate
-            if(query.condition!=null && query.condition.invoke(fact))
-                return true;
-            //condition is null
-        }
-        return false;
     }
 
     public boolean checkInputTypes(TriviumObject tvm) {
@@ -90,7 +75,7 @@ public abstract class Task implements Typed {
                 }
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeId().toString());
             logger.log(Level.SEVERE, "got exception", ex);
         }
         return false;
@@ -126,7 +111,7 @@ public abstract class Task implements Typed {
                 }
             }
         }catch(Exception ex){
-            logger.log(Level.SEVERE,"failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE,"failed to reflect on task {0}", this.getTypeId().toString());
             logger.log(Level.SEVERE,"got exception", ex);
         }
         return list;
@@ -155,7 +140,7 @@ public abstract class Task implements Typed {
                 }
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeId().toString());
             logger.log(Level.SEVERE, "got exception", ex);
         }
         return null;
@@ -224,22 +209,37 @@ public abstract class Task implements Typed {
                 }
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "failed to reflect on task {}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeId().toString());
             logger.log(Level.SEVERE, "got exception", ex);
         }
         return resultList;
     }
 
     public void populateInput(TriviumObject tvm) {
-        HashMap<String,Query> input = getInputQueries();
-        for(String fieldName : input.keySet()){
-            try {
-                Fact obj = tvm.getTypedData();
-                Field field = getClass().getDeclaredField(fieldName);
-                field.setAccessible(true);
-                field.set(this,obj);
-            } catch(NoSuchFieldException | IllegalAccessException e){
-                logger.log(Level.SEVERE,"injecting input field failed",e);
+        //tvm only need if task only has one input
+        //default is to query all data
+        Field[] fields = this.getClass().getDeclaredFields();
+        for(Field field : fields){
+            Query query = getInputQuery(field);
+            if(query!=null){
+                //run query and set input
+                Result result = AnyClient.INSTANCE.loadObjects(query);
+                if(! result.partition.isEmpty()) {
+                    field.setAccessible(true);
+                    if (field.getType().isArray()) {
+                        Fact[] facts = result.getAllAsList().toArray(new Fact[1]);
+                        try {
+                            field.set(this, facts);
+                        } catch (IllegalAccessException e) {
+                        }
+                    } else {
+                        Fact fact = result.getAllAsList().get(0);
+                        try {
+                            field.set(this, fact);
+                        } catch (IllegalAccessException e) {
+                        }
+                    }
+                }
             }
         }
     }
