@@ -22,6 +22,7 @@ import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
 public interface Fact extends Typed {
@@ -55,6 +56,8 @@ public interface Fact extends Typed {
                         field.setShort(this, Short.parseShort(el.getFirstChild(name).getValue()));
                     } else if (field.getType() == char.class) {
                         field.setChar(this, el.getFirstChild(name).getValue().charAt(0));
+                    } else if (field.getType() == AtomicLong.class) {
+                        field.set(this, new AtomicLong(Long.parseLong(el.getFirstChild(name).getValue())));
                     } else {
                         //try String
                         field.set(this, el.getFirstChild(name).getValue());
