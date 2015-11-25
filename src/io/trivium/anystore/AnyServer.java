@@ -198,40 +198,42 @@ public class AnyServer implements Runnable {
             if(query.partitionOver==null){
                 query.partitionOver = (obj) -> ObjectRef.getInstance().toString();
             }
-            for(ObjectRef ref : refs) {
+            for (ObjectRef ref : refs) {
                 TriviumObject tvm = loadObjectById(ref);
                 Class<?> typeClass = Registry.INSTANCE.types.get(tvm.getTypeId());
-                if(typeClass.equals(query.targetType)) {
-                    Fact fact;
-                    if (query.targetType == TriviumObject.class) {
-                        fact = tvm;
-                    } else {
-                        fact = tvm.getTypedData();
-                    }
-                    if (query.condition.invoke(fact)) {
-                        //matches, so now determine partition
-                        String partitionKey = query.partitionOver.invoke(fact);
 
-                        if (result.partition.containsKey(partitionKey)) {
-                            //window already exists
-                            ArrayList<Fact> list = result.partition.get(partitionKey);
-                            list.add(fact);
-                            list.sort((one, two) -> {
-                                if (query.partitionSortOrder == SortOrder.ASCENDING)
-                                    return query.partitionOrderBy.invoke(one).compareTo(query.partitionOrderBy.invoke(two));
-                                else
-                                    //negate the value
-                                    return -1 * query.partitionOrderBy.invoke(one).compareTo(query.partitionOrderBy.invoke(two));
-                            });
-                            if (list.size() > query.partitionReduceTo) {
-                                list.remove(list.size() - 1);
-                            }
-                        } else {
-                            //create new window
-                            ArrayList<Fact> list = new ArrayList<>((int) query.partitionReduceTo + 1);
-                            list.add(fact);
-                            result.partition.put(partitionKey, list);
+                if (typeClass != null && !typeClass.equals(query.targetType)) {
+                    continue;
+                }
+                Fact fact;
+                if (query.targetType == TriviumObject.class) {
+                    fact = tvm;
+                } else {
+                    fact = tvm.getTypedData();
+                }
+                if (query.condition.invoke(fact)) {
+                    //matches, so now determine partition
+                    String partitionKey = query.partitionOver.invoke(fact);
+
+                    if (result.partition.containsKey(partitionKey)) {
+                        //window already exists
+                        ArrayList<Fact> list = result.partition.get(partitionKey);
+                        list.add(fact);
+                        list.sort((one, two) -> {
+                            if (query.partitionSortOrder == SortOrder.ASCENDING)
+                                return query.partitionOrderBy.invoke(one).compareTo(query.partitionOrderBy.invoke(two));
+                            else
+                                //negate the value
+                                return -1 * query.partitionOrderBy.invoke(one).compareTo(query.partitionOrderBy.invoke(two));
+                        });
+                        if (list.size() > query.partitionReduceTo) {
+                            list.remove(list.size() - 1);
                         }
+                    } else {
+                        //create new window
+                        ArrayList<Fact> list = new ArrayList<>((int) query.partitionReduceTo + 1);
+                        list.add(fact);
+                        result.partition.put(partitionKey, list);
                     }
                 }
             }
