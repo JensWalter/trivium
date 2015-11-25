@@ -70,7 +70,14 @@ public abstract class Task implements Typed {
                     if (query == null) {
                         return false;
                     } else {
-                        return query.condition.invoke(tvm);
+                        Class<? extends Fact> clazz = query.targetType;
+                        Fact fact;
+                        if(clazz == TriviumObject.class) {
+                            fact = tvm;
+                        }else{
+                            fact = tvm.getTypedData();
+                        }
+                        return query.condition.invoke(fact);
                     }
                 }
             }
