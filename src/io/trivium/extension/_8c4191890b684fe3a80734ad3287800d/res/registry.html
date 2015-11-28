@@ -55,7 +55,7 @@
                         that.setState({state:data.state});
                     }
                 });
-      	  	return {};
+      	  	return {logmessage:''};
       	  },
       	  start: function(){
       	  var that = this;
@@ -65,8 +65,9 @@
                 data: JSON.stringify({id:this.props.id,command:"start"}),
                 success: function(data){
                         console.log(data.trim());
-                        if(data.trim()=="true")
-                             that.setState({state:"running"});
+                        if(data.length>0)
+                             that.setState({state:"running",
+                                    logmessage:data});
                     }
                 });
 
@@ -85,14 +86,11 @@
                 });
       	  },
       	  render: function() {
-            //var entry = this.props.id.map(function(e){ return <li key={e}>{all[e]}</li>; });
-            //<div style={{marginLeft:'50px'}}>
-            //{this.state.state=="stopped"?<button onClick={this.start}>start</button>:''}
-            //{this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
-            //</div>
             return (<li>{all[this.props.id]} =&gt;
                 {this.state.state=="stopped"?<button onClick={this.start}>start</button>:''}
                 {this.state.state=="running"?<button onClick={this.stop}>stop</button>:''}
+                {this.state.logmessage.length>0?<p style={{border:'1px solid grey',backgroundColor:'lightgrey',
+                    marginLeft:'10px',marginRight:'10px'}}>{this.state.logmessage}</p>:''}
                     </li>);
           }
       });
