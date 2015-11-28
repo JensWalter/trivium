@@ -223,7 +223,7 @@ public abstract class Task implements Typed {
     }
 
     public void populateInput(TriviumObject tvm) {
-        //tvm only need if task only has one input
+        //tvm only needed if task only has one input
         //default is to query all data
         Field[] fields = this.getClass().getDeclaredFields();
         for(Field field : fields){
