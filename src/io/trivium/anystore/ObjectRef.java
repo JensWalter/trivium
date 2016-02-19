@@ -82,7 +82,7 @@ public class ObjectRef {
     }
 
     /**
-     * returns a string represnting the uuid,
+     * returns a string representing the uuid,
      * but differs in form so it can be used in other environments (code generators)
      * sample: "_00000000000000000000000000000000"
      * @return
