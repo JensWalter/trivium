@@ -20,8 +20,8 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import io.trivium.anystore.AnyClient;
-import io.trivium.anystore.ObjectRef;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.anystore.TypeRef;
+import io.trivium.extension.fact.TriviumObject;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Xml;
 
@@ -29,10 +29,10 @@ import java.io.IOException;
 
 public class XmlDataHandler implements HttpHandler{
 
-    private ObjectRef typeId;
+    private TypeRef typeRef;
 
-    public XmlDataHandler(ObjectRef typeId){
-        this.typeId = typeId;
+    public XmlDataHandler(TypeRef typeRef){
+        this.typeRef = typeRef;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class XmlDataHandler implements HttpHandler{
         // parse the payload
         Element el = Xml.xmlToElement(requestData);
         po.setData(el);
-        po.setTypeId(typeId);
+        po.setTypeRef(typeRef);
         AnyClient.INSTANCE.storeObject(po);
         session.ok();
     }

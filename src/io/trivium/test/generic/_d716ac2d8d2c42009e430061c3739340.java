@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Jens Walter
+ * Copyright 2016 Jens Walter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package io.trivium.extension;
+package io.trivium.test.generic;
 
-import io.trivium.anystore.TypeRef;
+import io.trivium.Central;
+import io.trivium.test.Assert;
+import io.trivium.test.TestCase;
 
-import java.util.logging.Logger;
-
-public interface Typed {
-    default Logger getLogger() {
-        return Logger.getLogger(getClass().getName());
+public class _d716ac2d8d2c42009e430061c3739340 implements TestCase{
+    @Override
+    public String getTestName() {
+        return "Central set property";
     }
 
-    default TypeRef getTypeRef(){
-        String name = this.getClass().getCanonicalName();
-        return TypeRef.getInstance(name);
+    @Override
+    public void run() throws Exception {
+        String value1 = "value";
+        String key1 = "key";
+        Central.setProperty(key1,value1);
+        String value2 = Central.getProperty(key1);
+        Assert.equalsString(value1,value2);
     }
 }
+

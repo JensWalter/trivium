@@ -18,7 +18,7 @@ package io.trivium.extension.task;
 
 import io.trivium.Registry;
 import io.trivium.anystore.AnyClient;
-import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.TypeRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
 import io.trivium.dep.org.objectweb.asm.ClassReader;
@@ -29,7 +29,7 @@ import io.trivium.dep.org.objectweb.asm.tree.FieldInsnNode;
 import io.trivium.dep.org.objectweb.asm.tree.InsnList;
 import io.trivium.dep.org.objectweb.asm.tree.MethodInsnNode;
 import io.trivium.dep.org.objectweb.asm.tree.MethodNode;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.TriviumObject;
 import io.trivium.extension.fact.Fact;
 import io.trivium.extension.Typed;
 
@@ -40,7 +40,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,8 +56,8 @@ public abstract class Task implements Typed {
     }
 
     public boolean checkInputTypes(TriviumObject tvm) {
-        ObjectRef typeId = tvm.getTypeId();
-        Class<?> typeClass = Registry.INSTANCE.types.get(typeId);
+        TypeRef typeRef = tvm.getTypeRef();
+        Class<?> typeClass = Registry.INSTANCE.types.get(typeRef);
         try {
             Class<?> c = this.getClass();
             Field[] fields = c.getDeclaredFields();
@@ -82,7 +81,7 @@ public abstract class Task implements Typed {
                 }
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeRef().toString());
             logger.log(Level.SEVERE, "got exception", ex);
         }
         return false;
@@ -118,7 +117,7 @@ public abstract class Task implements Typed {
                 }
             }
         }catch(Exception ex){
-            logger.log(Level.SEVERE,"failed to reflect on task {0}", this.getTypeId().toString());
+            logger.log(Level.SEVERE,"failed to reflect on task {0}", this.getTypeRef().toString());
             logger.log(Level.SEVERE,"got exception", ex);
         }
         return list;
@@ -147,7 +146,7 @@ public abstract class Task implements Typed {
                 }
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeRef().toString());
             logger.log(Level.SEVERE, "got exception", ex);
         }
         return null;
@@ -216,7 +215,7 @@ public abstract class Task implements Typed {
                 }
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeId().toString());
+            logger.log(Level.SEVERE, "failed to reflect on task {0}", this.getTypeRef().toString());
             logger.log(Level.SEVERE, "got exception", ex);
         }
         return resultList;

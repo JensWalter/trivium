@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Jens Walter
+ * Copyright 2016 Jens Walter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package io.trivium.extension;
+package io.trivium.test.tranform;
 
-import io.trivium.anystore.TypeRef;
+import io.trivium.glue.om.Element;
+import io.trivium.glue.om.Xml;
+import io.trivium.test.Assert;
+import io.trivium.test.TestCase;
 
-import java.util.logging.Logger;
-
-public interface Typed {
-    default Logger getLogger() {
-        return Logger.getLogger(getClass().getName());
+public class _dffff67e7c9f44fbb880194500e111e0 implements TestCase{
+    @Override
+    public String getTestName() {
+        return "simple xml test";
     }
 
-    default TypeRef getTypeRef(){
-        String name = this.getClass().getCanonicalName();
-        return TypeRef.getInstance(name);
+    @Override
+    public void run() throws Exception {
+        //TODO make work
+        String str= "<a><b>blah</b><c>blah2</c></a>";
+        Element root = Xml.xmlToElement(str);
+        Assert.equalsString(str,root.toString());
     }
 }
+

@@ -17,9 +17,9 @@
 package io.trivium;
 
 import io.trivium.anystore.AnyClient;
-import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.TypeRef;
 import io.trivium.dep.org.apache.commons.io.IOUtils;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.TriviumObject;
 import io.trivium.extension.binding.Binding;
 import io.trivium.extension.fact.Fact;
 import io.trivium.extension.task.Task;
@@ -43,14 +43,14 @@ public enum Registry {
 
     Logger logger = Logger.getLogger(getClass().getName());
 
-    public ConcurrentHashMap<ObjectRef, Class<? extends Task>> tasks = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<TypeRef, Class<? extends Task>> tasks = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<ObjectRef, Class<? extends Fact>> types = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<TypeRef, Class<? extends Fact>> types = new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<ObjectRef, Class<? extends Binding>> bindings = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<ObjectRef, Binding> bindingInstances = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<TypeRef, Class<? extends Binding>> bindings = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<TypeRef, Binding> bindingInstances = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<ObjectRef, TestCase> testcases = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<TypeRef, TestCase> testcases = new ConcurrentHashMap<>();
 
     public void reload() {
         final String PREFIX = "META-INF/services/";
@@ -68,8 +68,8 @@ public enum Registry {
                 for (String line : lines) {
                     Class<? extends Fact> clazz = (Class<? extends Fact>) Class.forName(line);
                     Fact prototype = clazz.newInstance();
-                    if (!types.containsKey(prototype.getTypeId())) {
-                        types.put(prototype.getTypeId(), clazz);
+                    if (!types.containsKey(prototype.getTypeRef())) {
+                        types.put(prototype.getTypeRef(), clazz);
                     }
                     logger.log(Level.FINE, "registered type {0}", prototype.getFactName());
                 }
@@ -91,10 +91,10 @@ public enum Registry {
                 for (String line : lines) {
                     Class<? extends Binding> clazz = (Class<? extends Binding>) Class.forName(line);
                     Binding prototype = clazz.newInstance();
-                    if (!bindings.containsKey(prototype.getTypeId())) {
-                        bindings.put(prototype.getTypeId(), clazz);
+                    if (!bindings.containsKey(prototype.getTypeRef())) {
+                        bindings.put(prototype.getTypeRef(), clazz);
                         //register prototype
-                        bindingInstances.put(prototype.getTypeId(),prototype);
+                        bindingInstances.put(prototype.getTypeRef(),prototype);
                     }
                     logger.log(Level.FINE, "registered binding {0}", prototype.getName());
                 }
@@ -116,8 +116,8 @@ public enum Registry {
                 for (String line : lines) {
                     Class<? extends Task> clazz = (Class<? extends Task>) Class.forName(line);
                     Task prototype = clazz.newInstance();
-                    if (!tasks.containsKey(prototype.getTypeId())) {
-                        tasks.put(prototype.getTypeId(), clazz);
+                    if (!tasks.containsKey(prototype.getTypeRef())) {
+                        tasks.put(prototype.getTypeRef(), clazz);
                     }
                     logger.log(Level.FINE, "registered binding {0}", prototype.getName());
                 }
@@ -139,10 +139,10 @@ public enum Registry {
                 for (String line : lines) {
                     Class<? extends TestCase> clazz = (Class<? extends TestCase>) Class.forName(line);
                     TestCase prototype = clazz.newInstance();
-                    if (!testcases.containsKey(prototype.getTypeId())) {
-                        testcases.put(prototype.getTypeId(), prototype);
+                    if (!testcases.containsKey(prototype.getTypeRef())) {
+                        testcases.put(prototype.getTypeRef(), prototype);
                     }
-                    logger.log(Level.FINE, "registered testcase {0}", prototype.getTypeId());
+                    logger.log(Level.FINE, "registered testcase {0}", prototype.getTypeRef());
                 }
             }
         } catch (Exception ex) {
@@ -150,8 +150,8 @@ public enum Registry {
         }
     }
 
-    public ArrayList<LogRecord> startBinding(ObjectRef bindingTypeId){
-        Logger logger = Logger.getLogger("io.trivium.extension."+bindingTypeId.toMangledString());
+    public ArrayList<LogRecord> startBinding(TypeRef bindingTypeRef){
+        Logger logger = Logger.getLogger(bindingTypeRef.toString());
         ArrayList<LogRecord> logs = new ArrayList<>();
         Handler handler = new Handler() {
             @Override
@@ -164,7 +164,7 @@ public enum Registry {
             public void close() throws SecurityException {}
         };
         logger.addHandler(handler);
-        Registry.INSTANCE.getBinding(bindingTypeId).startBinding();
+        Registry.INSTANCE.getBinding(bindingTypeRef).startBinding();
         logger.removeHandler(handler);
         return logs;
     }
@@ -188,8 +188,8 @@ public enum Registry {
         }
     }
 
-    public Binding getBinding(ObjectRef typeId){
-        return bindingInstances.get(typeId);
+    public Binding getBinding(TypeRef typeRef){
+        return bindingInstances.get(typeRef);
     }
 
     public Collection<Binding> getAllBindings(){

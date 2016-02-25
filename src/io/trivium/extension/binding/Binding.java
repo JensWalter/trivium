@@ -17,7 +17,7 @@
 package io.trivium.extension.binding;
 
 import io.trivium.anystore.AnyClient;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.TriviumObject;
 import io.trivium.extension.fact.Fact;
 import io.trivium.extension.Typed;
 

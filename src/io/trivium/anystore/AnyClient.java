@@ -19,9 +19,9 @@ package io.trivium.anystore;
 import io.trivium.Central;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
-import io.trivium.extension._14ee6f6fceec4d209be942b21fcc4732.Ticker;
-import io.trivium.extension._2a4a0814f16c4f2b8c9ab1f51289b00c.Differential;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.TriviumObject;
+import io.trivium.extension.fact.differential.Differential;
+import io.trivium.extension.fact.ticker.Ticker;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 

@@ -55,13 +55,13 @@ public class Tester {
         while(iter.hasNext()){
             count++;
             TestCase tc = iter.next();
-            logger.log(Level.INFO,"{0} -> test {1}",new String[]{tc.getTypeId().toString(),tc.getTestName()});
+            logger.log(Level.INFO,"{0} -> test {1}",new String[]{tc.getTypeRef().toString(),tc.getTestName()});
             try {
                 tc.run();
                 success++;
-                logger.log(Level.INFO,"test {0}: succeeded", tc.getTypeId().toString());
+                logger.log(Level.INFO,"test {0}: succeeded", tc.getTypeRef().toString());
             }catch(Exception ex){
-                logger.log(Level.SEVERE,"test "+tc.getTypeId().toString()+": failed with exception", ex);
+                logger.log(Level.SEVERE,"test "+tc.getTypeRef().toString()+": failed with exception", ex);
             }
         }
         logger.log(Level.INFO,"tests completed with {0}/{1} successful",

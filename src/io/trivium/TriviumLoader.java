@@ -19,9 +19,8 @@ package io.trivium;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.statics.MimeTypes;
-import io.trivium.anystore.statics.TypeIds;
-import io.trivium.extension._e53042cbab0b4479958349320e397141.File;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.TriviumObject;
+import io.trivium.extension.fact.file.File;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -54,7 +53,7 @@ public class TriviumLoader extends ClassLoader {
                     {
                         condition = (tvm) ->
                             tvm.findMetaValue("canonicalName").equals(name)
-                            && tvm.findMetaValue("typeId").equals(TypeIds.FILE.toString())
+                            && tvm.findMetaValue("typeId").equals(File.class.getCanonicalName())
                             && tvm.findMetaValue("contentType").equals(MimeTypes.getMimeType("class"));
                     }
                 };
@@ -97,7 +96,7 @@ public class TriviumLoader extends ClassLoader {
                 {
                     condition = (tvm) ->
                             tvm.findMetaValue("name").equals(name)
-                            && tvm.findMetaValue("typeId").equals(TypeIds.FILE.toString());
+                            && tvm.findMetaValue("typeId").equals(File.class.getCanonicalName());
                 }
             };
             ArrayList<TriviumObject> objects = AnyClient.INSTANCE.loadObjects(query).getAllAsTypedList();
@@ -144,7 +143,7 @@ public class TriviumLoader extends ClassLoader {
                         {
                             condition = (tvm) ->
                                     tvm.findMetaValue("canonicalName").equals(name)
-                                            && tvm.findMetaValue("typeId").equals(TypeIds.FILE.toString())
+                                            && tvm.findMetaValue("typeId").equals(File.class.getCanonicalName())
                                             && tvm.findMetaValue("contentType").equals(MimeTypes.getMimeType("class"));
                         }
                     };

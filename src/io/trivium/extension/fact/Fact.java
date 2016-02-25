@@ -16,9 +16,8 @@
 
 package io.trivium.extension.fact;
 
-import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.TypeRef;
 import io.trivium.extension.Typed;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.lang.reflect.Field;
@@ -76,11 +75,7 @@ public interface Fact extends Typed {
         Field[] fields = aClass.getDeclaredFields();
         TriviumObject tvm = new TriviumObject();
 
-        String path = aClass.getCanonicalName();
-        //eg: io.trivium.extension._e53042cbab0b4479958349320e397141.FileType
-        String[] arr = path.split("\\.");
-        String typeId = arr[arr.length-2];
-        tvm.setTypeId(ObjectRef.getInstance(typeId));
+        tvm.setTypeRef(TypeRef.getInstance(aClass.getCanonicalName()));
         Element root = new Element("dummy");
         for(Field field : fields){
             String name = field.getName();

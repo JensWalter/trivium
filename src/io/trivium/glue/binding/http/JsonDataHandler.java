@@ -19,11 +19,11 @@ package io.trivium.glue.binding.http;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import io.trivium.anystore.AnyClient;
-import io.trivium.anystore.ObjectRef;
+import io.trivium.anystore.TypeRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
 import io.trivium.anystore.statics.MimeTypes;
-import io.trivium.extension._f70b024ca63f4b6b80427238bfff101f.TriviumObject;
+import io.trivium.extension.fact.TriviumObject;
 import io.trivium.glue.om.Json;
 
 import java.io.IOException;
@@ -32,10 +32,10 @@ import java.util.HashMap;
 
 public class JsonDataHandler implements HttpHandler{
 
-    private ObjectRef typeId;
+    private TypeRef typeRef;
 
-    public JsonDataHandler(ObjectRef typeId){
-        this.typeId = typeId;
+    public JsonDataHandler(TypeRef typeRef){
+        this.typeRef = typeRef;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class JsonDataHandler implements HttpHandler{
 
         Result rslt = AnyClient.INSTANCE.loadObjects(new Query<TriviumObject>(){
             {
-                condition = (tvm) -> tvm.getTypeId()==typeId;
+                condition = (tvm) -> tvm.getTypeRef()==typeRef;
             }
         });
 
