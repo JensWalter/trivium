@@ -22,6 +22,7 @@ import io.trivium.extension.task.Task;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 
 public class _a65d97c674a84956a36a9ff2e000cd2b implements TestCase{
@@ -34,7 +35,7 @@ public class _a65d97c674a84956a36a9ff2e000cd2b implements TestCase{
     @Override
     public void run() throws Exception {
         Task1 t = new Task1();
-        HashMap<String,Query> queries = t.getInputQueries();
+        HashMap<Field,Query> queries = t.getInputQueries();
 
         Assert.isTrue(queries.size()==1);
     }

@@ -173,8 +173,7 @@ public enum Registry {
         for(Class<? extends Task> taskClass : tasks.values()){
             try {
                 Task task = taskClass.newInstance();
-                if(task.checkInputTypes(tvm)){
-                    task.populateInput(tvm);
+                if(task.checkInputTypes(tvm) && task.populateInput(tvm)){
                     task.eval();
                     ArrayList<TriviumObject> output = task.extractOutput();
                     for (TriviumObject o : output) {

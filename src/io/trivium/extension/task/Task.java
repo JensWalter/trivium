@@ -40,21 +40,43 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class Task implements Typed {
     protected Logger logger = Logger.getLogger(getClass().getName());
 
+    /**
+     * implementation of the actual task
+     * @return return the success of the evaluation.
+     *      If false is return, no data will be persisted.
+     * @throws Exception
+     */
     public abstract boolean eval() throws Exception;
 
+    /**
+     * every task is allowed to bring its own check method.
+     * In here the developer should place all external dependency check the task needs to fulfill its job.
+     * this method is called regularly, but not for every invocation.
+     * @throws Exception
+     */
     public void check() throws Exception{}
 
+    /**
+     * name of the task, defaults to its class name.
+     * @return task name
+     */
     public String getName(){
         String name = this.getClass().getCanonicalName();
         return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
     }
 
+    /**
+     * checks whether the given type is applicable to this task
+     * @param tvm type to check against
+     * @return success if type is applicable
+     */
     public boolean checkInputTypes(TriviumObject tvm) {
         TypeRef typeRef = tvm.getTypeRef();
         Class<?> typeClass = Registry.INSTANCE.types.get(typeRef);
@@ -87,14 +109,23 @@ public abstract class Task implements Typed {
         return false;
     }
 
-    public HashMap<String,Query> getInputQueries() {
-        HashMap<String,Query> list = new HashMap<>();
+    /**
+     * return all necesasry input queries to actually trigger this task
+     * @return list of all fields with their corresponding queries.
+     */
+    public HashMap<Field,Query> getInputQueries() {
+        HashMap<Field,Query> list = new HashMap<>();
         try{
             Class<?> c = this.getClass();
             Field[] fields = c.getDeclaredFields();
             for(Field field : fields){
                 Class<?> fieldClass = field.getType();
-                Class<?>[] interfaces = fieldClass.getInterfaces();
+                Class<?>[] interfaces = null;
+                if(fieldClass.isArray()){
+                    interfaces = fieldClass.getComponentType().getInterfaces();
+                }else{
+                    interfaces = fieldClass.getInterfaces();
+                }
                 for(Class<?> iface : interfaces){
                     if(iface.isAssignableFrom(Fact.class)){
                         String queryClass = getFieldAssignment(field.getName());
@@ -106,11 +137,11 @@ public abstract class Task implements Typed {
                                 con.setAccessible(true);
                                 Object obj = con.newInstance(new Object[]{this});
                                 Query<Fact> query = (Query<Fact>) obj;
-                                list.put(field.getName(), query);
+                                list.put(field, query);
                             }else{
                                 //normal class
                                 Query<Fact> query = (Query<Fact>) q.newInstance();
-                                list.put(field.getName(), query);
+                                list.put(field, query);
                             }
                         }
                     }
@@ -123,10 +154,20 @@ public abstract class Task implements Typed {
         return list;
     }
 
-    public Query<Fact> getInputQuery(Field inputField) {
+    /**
+     * return an input query for the given field
+     * @param inputField field to get the query from
+     * @return query for the given field
+     */
+    private Query<Fact> getInputQuery(Field inputField) {
         try {
             Class<?> fieldClass = inputField.getType();
-            Class<?>[] interfaces = fieldClass.getInterfaces();
+            Class<?>[] interfaces = null;
+            if(fieldClass.isArray()){
+                interfaces = fieldClass.getComponentType().getInterfaces();
+            }else{
+                interfaces = fieldClass.getInterfaces();
+            }
             for (Class<?> iface : interfaces) {
                 if (iface.isAssignableFrom(Fact.class)) {
                     String queryClass = getFieldAssignment(inputField.getName());
@@ -152,6 +193,38 @@ public abstract class Task implements Typed {
         return null;
     }
 
+    /**
+     * check the given field, if it can be assigned by the given trivium object
+     * @param field field to check against
+     * @param tvm input to be assigned
+     * @return tvm can safely be assigned to field
+     */
+    private static boolean isTypeMatching(Field field, TriviumObject tvm){
+        Class<?> fieldClass = field.getType();
+        Class<?> effectiveClass = fieldClass;
+        if(fieldClass.isArray()){
+            effectiveClass = fieldClass.getComponentType();
+        }
+        Class targetType = null;
+        try {
+            targetType = Class.forName(tvm.getTypeRef().toString());
+        } catch (ClassNotFoundException e) {
+            Logger.getLogger(Task.class.getCanonicalName()).log(Level.SEVERE,"could not resolve type",e);
+        }
+        if(effectiveClass.equals(targetType)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * if a field has a default assignment, this method will find the source within the byte code
+     * and returns the name of the class.
+     * @param fieldName
+     * @return
+     * @throws IOException
+     */
     private String getFieldAssignment(String fieldName) throws IOException {
         String url = "/" + getClass().getName().replace('.', '/') + ".class";
         InputStream in = getClass().getResourceAsStream(url);
@@ -186,6 +259,10 @@ public abstract class Task implements Typed {
         return "";
     }
 
+    /**
+     * extract the output a task and return all objects as serialized list
+     * @return
+     */
     public ArrayList<TriviumObject> extractOutput() {
         ArrayList<TriviumObject> resultList = new ArrayList<>();
         ArrayList<Field> fieldList = new ArrayList<>();
@@ -221,32 +298,53 @@ public abstract class Task implements Typed {
         return resultList;
     }
 
-    public void populateInput(TriviumObject tvm) {
-        //tvm only needed if task only has one input
-        //default is to query all data
-        Field[] fields = this.getClass().getDeclaredFields();
-        for(Field field : fields){
-            Query query = getInputQuery(field);
-            if(query!=null){
-                //run query and set input
-                Result result = AnyClient.INSTANCE.loadObjects(query);
-                if(! result.partition.isEmpty()) {
+    /**
+     * populates a necessary inputs of the current task,
+     * if not sufficient data is available, the method returns false
+     * @return success of the population
+     */
+    public boolean populateInput(TriviumObject tvm) {
+        HashMap<Field, Query> all = getInputQueries();
+        //TODO make this more error resilient
+        if(all.size()==1 && ! all.keySet().iterator().next().getType().isArray()){
+            //only one input needed -> use the provided tvm
+            Field field = all.keySet().iterator().next();
+            field.setAccessible(true);
+            try {
+                field.set(this,tvm.getTypedData());
+            } catch (IllegalAccessException e) {}
+        }else {
+            //more than one field found
+            for(Map.Entry<Field,Query> one : all.entrySet()){
+                //check if field macthes tvm
+                if(isTypeMatching(one.getKey(),tvm)){
+                    Field field = one.getKey();
                     field.setAccessible(true);
-                    if (field.getType().isArray()) {
-                        Fact[] facts = result.getAllAsList().toArray(new Fact[1]);
+                    try {
+                        field.set(this,tvm.getTypedData());
+                    } catch (IllegalAccessException e) {}
+                }else {
+                    //run query and set input
+                    Result result = AnyClient.INSTANCE.loadObjects(one.getValue());
+                    if (!result.partition.isEmpty()) {
+                        Field field = one.getKey();
+                        field.setAccessible(true);
                         try {
-                            field.set(this, facts);
-                        } catch (IllegalAccessException e) {
-                        }
-                    } else {
-                        Fact fact = result.getAllAsList().get(0);
-                        try {
-                            field.set(this, fact);
+                            if (field.getType().isArray()) {
+                                Fact[] facts = result.getAllAsList().toArray(new Fact[1]);
+                                field.set(this, facts);
+                            } else {
+                                Fact fact = result.getAllAsList().get(0);
+                                field.set(this, fact);
+                            }
+                            continue;
                         } catch (IllegalAccessException e) {
                         }
                     }
+                    return false;
                 }
             }
         }
+        return true;
     }
 }
