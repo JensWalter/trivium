@@ -8,9 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="bnd-TaskRunner" />
-    <orderEntry type="module" module-name="bnd-timer" />
-    <orderEntry type="module" module-name="tpe-timertick" />
-    <orderEntry type="module" module-name="tsk-TimerTick2LogEntryMapper" />
     <orderEntry type="module" module-name="BondoraPortfolioStats" />
+    <orderEntry type="module" module-name="TimerSample" />
   </component>
 </module>

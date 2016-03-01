@@ -123,6 +123,7 @@ public class RegistryRequestHandler implements HttpHandler {
                 if (bind != null) {
                     BindingState state = bind.getState();
                     NVList list = new NVList();
+                    list.add(new NVPair("id",id));
                     switch (state) {
                         case stopped:
                             list.add(new NVPair("state", "stopped"));

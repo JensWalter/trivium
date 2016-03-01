@@ -7,42 +7,6 @@
     <script type="text/javascript" src="js/rivets.bundled.min.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
-      var all = {};
-      var ExtensionList = React.createClass({
-          getInitialState: function () {
-            var that = this;
-            $.ajax({
-                type: "POST",
-                url: '/ui/RegistryRequestHandler',
-                data: JSON.stringify({"command":"list"}),
-                success: function(data){
-        all=data;
-                        that.setState({task: data.task});
-                        that.setState({binding: data.binding});
-                        that.setState({type: data.type});
-                    }
-                });
-            return {};
-          },
-          render: function() {
-            return (<div>
-                    {this.state.task ? <Task id={this.state.task} /> : ''}
-                    {this.state.binding ? <Binding id={this.state.binding} /> :''}
-                    {this.state.type ? <Type id={this.state.type} /> : ''}
-                    </div>);
-          }
-      });
-      var Type = React.createClass({
-      	  getInitialState: function(){
-      	  	return {};
-      	  },
-          render: function() {
-          var elements = this.props.id.map(function(e){
-                return (<li key={e}>{all[e]}</li>);
-            });
-            return (<div>Type: <ul>{elements}</ul></div>);
-          }
-      });
       var BindingEntry = React.createClass({
         getInitialState: function(){
       	    var that = this;
@@ -111,19 +75,6 @@
             return (<div>Binding: <ul>{entries}</ul></div>);
           }
       });
-      var Task = React.createClass({
-      	  getInitialState: function(){
-      	  	return {};
-      	  },
-          render: function() {
-            var elements = this.props.id.map(function(e){
-                return (<li key={e}>{all[e]}</li>);
-            });
-            return (<div>Task: <ul>{elements}</ul></div>);
-          }
-      });
-
-  //    React.render(<ExtensionList />, document.getElementById("container"));
     </script>
 </head>
 <body>
@@ -149,25 +100,23 @@
         <tr>
             <td class="bindingName"></td>
             <td class="bindingAction">
-                <a href="#">start</a>
-                <a href="#">stop</a>
+                <a href="#" style="display:none;">start</a>
+                <a href="#" style="display:none;">stop</a>
             </td>
         </tr>
     </template>
 	<h1>trivium registry</h1>
-	<div id="container">
-        <div>Type:
-            <table id="typeList">
-            </table>
-        </div>
-        <div>Task:
-            <table id="taskList">
-            </table>
-        </div>
-        <div>Binding:
-            <table id="bindingList">
-            </table>
-        </div>
+    <div><h3>Type:</h3>
+        <table id="typeList">
+        </table>
+    </div>
+    <div><h3>Task:</h3>
+        <table id="taskList">
+        </table>
+    </div>
+    <div><h3>Binding:</h3>
+        <table id="bindingList">
+        </table>
     </div>
 </body>
 <script>
@@ -193,7 +142,7 @@
                     var t = document.querySelector('#taskListElement');
                     for(var idx in data){
                         var clone = t.content.cloneNode(true);
-                        clone.querySelector('.taskName').textContent = data[idx];
+                        clone.querySelector('.taskName').textContent = data[idx]+" ["+idx+"]";
                         document.querySelector('#taskList').appendChild(clone);
                     }
                     }
@@ -207,7 +156,23 @@
                     for(var idx in data){
                         var clone = t.content.cloneNode(true);
                         clone.querySelector('.bindingName').textContent = data[idx];
+                        clone.querySelectorAll('.bindingAction a')[0].id=idx+'start';
+                        clone.querySelectorAll('.bindingAction a')[1].id=idx+'stop';
                         document.querySelector('#bindingList').appendChild(clone);
+                        //check state
+                        $.ajax({
+                            type: "POST",
+                            url: '/ui/RegistryRequestHandler',
+                            data: JSON.stringify({id:idx,command:"status"}),
+                            success: function(data){
+                                var id = data.id.replace(/\./g,'\\.');
+                                if(data.state=='running'){
+                                    $('#'+id+'stop').show();
+                                }else{
+                                    $('#'+id+'start').show();
+                                }
+                            }
+                        });
                     }
                     }
                 });
