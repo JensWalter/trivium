@@ -21,15 +21,14 @@ import com.sun.net.httpserver.HttpHandler;
 import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.anystore.TypeRef;
-import io.trivium.extension.binding.Binding;
-import io.trivium.extension.binding.State;
-import io.trivium.extension.fact.Fact;
-import io.trivium.extension.task.Task;
+import io.trivium.extension.Binding;
+import io.trivium.extension.BindingState;
+import io.trivium.extension.Fact;
+import io.trivium.extension.Task;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Json;
 import io.trivium.Registry;
-import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.statics.MimeTypes;
 
 import java.util.ArrayList;
@@ -122,7 +121,7 @@ public class RegistryRequestHandler implements HttpHandler {
                 TypeRef ref = TypeRef.getInstance(id);
                 Binding bind = Registry.INSTANCE.getBinding(ref);
                 if (bind != null) {
-                    State state = bind.getState();
+                    BindingState state = bind.getState();
                     NVList list = new NVList();
                     switch (state) {
                         case stopped:

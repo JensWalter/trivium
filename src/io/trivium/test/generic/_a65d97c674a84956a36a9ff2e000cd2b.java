@@ -18,7 +18,7 @@ package io.trivium.test.generic;
 
 import io.trivium.anystore.query.Query;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.task.Task;
+import io.trivium.extension.Task;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 

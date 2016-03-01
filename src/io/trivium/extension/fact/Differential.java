@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.fact.differential;
+package io.trivium.extension.fact;
 
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.Fact;
+import io.trivium.extension.Fact;
 import io.trivium.glue.om.Element;
 
 import java.time.Instant;

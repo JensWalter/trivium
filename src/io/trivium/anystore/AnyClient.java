@@ -20,8 +20,8 @@ import io.trivium.Central;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.differential.Differential;
-import io.trivium.extension.fact.ticker.Ticker;
+import io.trivium.extension.fact.Differential;
+import io.trivium.extension.fact.Ticker;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 

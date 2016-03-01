@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.binding;
+package io.trivium.extension;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.Fact;
-import io.trivium.extension.Typed;
 
 import java.util.logging.Logger;
 
 public abstract class Binding implements Typed {
     protected Logger logger = Logger.getLogger(getClass().getName());
-    private State state = State.stopped;
+    private BindingState state = BindingState.stopped;
 
     public void startBinding(){
         start();
-        setState(State.running);
+        setState(BindingState.running);
     }
 
     protected abstract void start();
 
     public void stopBinding(){
         stop();
-        setState(State.stopped);
+        setState(BindingState.stopped);
     }
 
     protected abstract void stop();
 
     public void check() throws Exception{}
 
-    public State getState(){
+    public BindingState getState(){
         return state;
     }
 
-    protected void setState(State newState){
+    protected void setState(BindingState newState){
         state=newState;
     }
 

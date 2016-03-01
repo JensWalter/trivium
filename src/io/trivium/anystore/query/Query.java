@@ -16,7 +16,7 @@
 
 package io.trivium.anystore.query;
 
-import io.trivium.extension.fact.Fact;
+import io.trivium.extension.Fact;
 
 public class Query<T extends Fact>{
     /**

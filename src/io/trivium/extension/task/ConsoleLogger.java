@@ -14,9 +14,23 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.binding;
+package io.trivium.extension.task;
 
-public enum State {
-    stopped,
-    running
+import io.trivium.anystore.query.Query;
+import io.trivium.extension.Task;
+import io.trivium.extension.fact.LogEntry;
+
+public class ConsoleLogger extends Task {
+
+    LogEntry logEntry = new Query<LogEntry>(){
+        {
+            targetType = LogEntry.class;
+        }
+    }.getObject();
+
+    @Override
+    public boolean eval() throws Exception {
+        System.out.println(logEntry.message);
+        return true;
+    }
 }

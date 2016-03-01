@@ -23,7 +23,7 @@ import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.TypeRef;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.file.File;
+import io.trivium.extension.fact.File;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Element;

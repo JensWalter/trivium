@@ -18,9 +18,9 @@ package io.trivium.profile;
 
 import io.trivium.anystore.AnyClient;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.differential.Differential;
-import io.trivium.extension.fact.ticker.Ticker;
-import io.trivium.extension.fact.weightedaverage.WeightedAverage;
+import io.trivium.extension.fact.Differential;
+import io.trivium.extension.fact.Ticker;
+import io.trivium.extension.fact.WeightedAverage;
 
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;

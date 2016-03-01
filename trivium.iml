@@ -11,7 +11,6 @@
     <orderEntry type="module" module-name="bnd-timer" />
     <orderEntry type="module" module-name="tpe-error" />
     <orderEntry type="module" module-name="tpe-timertick" />
-    <orderEntry type="module" module-name="tsk-consoleLogger" />
     <orderEntry type="module" module-name="tsk-TimerTick2LogEntryMapper" />
     <orderEntry type="module" module-name="BondoraPortfolioStats" />
   </component>

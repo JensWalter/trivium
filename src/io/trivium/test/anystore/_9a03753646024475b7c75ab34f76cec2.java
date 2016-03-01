@@ -23,7 +23,7 @@ import io.trivium.anystore.query.Query;
 import io.trivium.anystore.query.Result;
 import io.trivium.anystore.query.SortOrder;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.Fact;
+import io.trivium.extension.Fact;
 import io.trivium.glue.om.Element;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;

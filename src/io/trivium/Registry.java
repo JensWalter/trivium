@@ -20,9 +20,9 @@ import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.TypeRef;
 import io.trivium.dep.org.apache.commons.io.IOUtils;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.binding.Binding;
-import io.trivium.extension.fact.Fact;
-import io.trivium.extension.task.Task;
+import io.trivium.extension.Binding;
+import io.trivium.extension.Fact;
+import io.trivium.extension.Task;
 import io.trivium.test.TestCase;
 
 import java.io.InputStream;
@@ -57,7 +57,7 @@ public enum Registry {
         ClassLoader tvmLoader = ClassLoader.getSystemClassLoader();
         //types
         try {
-            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.fact.Fact");
+            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.Fact");
             while (resUrl.hasMoreElements()) {
                 URL url = resUrl.nextElement();
                 URLConnection connection = url.openConnection();
@@ -80,7 +80,7 @@ public enum Registry {
 
         //bindings
         try {
-            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.binding.Binding");
+            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.Binding");
             while (resUrl.hasMoreElements()) {
                 URL url = resUrl.nextElement();
                 URLConnection connection = url.openConnection();
@@ -105,7 +105,7 @@ public enum Registry {
 
         //tasks
         try {
-            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.task.Task");
+            Enumeration<URL> resUrl = tvmLoader.getResources(PREFIX + "io.trivium.extension.Task");
             while (resUrl.hasMoreElements()) {
                 URL url = resUrl.nextElement();
                 URLConnection connection = url.openConnection();

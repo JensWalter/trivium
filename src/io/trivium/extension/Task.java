@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.task;
+package io.trivium.extension;
 
 import io.trivium.Registry;
 import io.trivium.anystore.AnyClient;
@@ -30,8 +30,6 @@ import io.trivium.dep.org.objectweb.asm.tree.InsnList;
 import io.trivium.dep.org.objectweb.asm.tree.MethodInsnNode;
 import io.trivium.dep.org.objectweb.asm.tree.MethodNode;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.Fact;
-import io.trivium.extension.Typed;
 
 import java.io.IOException;
 import java.io.InputStream;

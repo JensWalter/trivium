@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.fact;
+package io.trivium.extension;
 
 import io.trivium.anystore.TypeRef;
 import io.trivium.extension.Typed;
+import io.trivium.extension.fact.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.lang.reflect.Field;

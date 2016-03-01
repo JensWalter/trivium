@@ -7,11 +7,21 @@
 </head>
 <body>
 <script>
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+var typeId = getParameterByName("type");
 $.ajax({
     type: "POST",
-    url: '/ui/RegistryRequestHandler',
-    data: JSON.stringify({"command":"listTypes"}),
-    success: function(data){
+        url: '/object/source',
+        data: JSON.stringify({"typeId":typeId}),
+        success: function(data){
         var t = document.querySelector('#typeListElement');
         for(var idx in data){
             var clone = t.content.cloneNode(true);

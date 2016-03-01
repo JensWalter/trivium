@@ -16,7 +16,7 @@
 
 package io.trivium;
 
-import io.trivium.extension.fact.weightedaverage.WeightedAverage;
+import io.trivium.extension.fact.WeightedAverage;
 import io.trivium.profile.DataPoints;
 import io.trivium.profile.Profiler;
 

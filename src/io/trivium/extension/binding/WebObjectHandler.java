@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.trivium.extension.binding.webobjecthandler;
+package io.trivium.extension.binding;
 
 import io.trivium.dep.com.google.common.base.Joiner;
 import com.sun.net.httpserver.Headers;
@@ -27,14 +27,15 @@ import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.query.Query;
 import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.binding.Binding;
-import io.trivium.extension.fact.Fact;
+import io.trivium.extension.Binding;
+import io.trivium.extension.Fact;
 import io.trivium.glue.Http;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
 import io.trivium.glue.om.Json;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -101,7 +102,17 @@ public class WebObjectHandler extends Binding implements HttpHandler {
                 String responseText = "[" + str + "]";
                 s.ok(MimeTypes.getMimeType("json"), responseText);
                 return;
-            } else {
+            } else if (method.equals("source")) {
+                // read payload
+                NVList criteria = HttpUtils.getInputAsNVList(httpExchange);
+                //ask classloader for source code
+                String type = criteria.findValue("typeId");
+                InputStream is1 = ClassLoader.getSystemClassLoader().getResourceAsStream(type.replace('.','/'));
+                InputStream is2 = this.getClass().getResourceAsStream(type.replace('.','/'));
+                String responseText = "source found";
+                s.ok(MimeTypes.getMimeType("json"), responseText);
+                return;
+            } else{
                 // unknown method
                 s.error(/*BAD_REQUEST*/400,
                         "method unknown\nplease use the following pattern\nhttp://{server}:{port}/object/{upsert|query}/{id}\n");

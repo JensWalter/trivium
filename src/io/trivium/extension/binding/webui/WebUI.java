@@ -17,7 +17,7 @@
 package io.trivium.extension.binding.webui;
 
 import com.sun.net.httpserver.HttpHandler;
-import io.trivium.extension.binding.Binding;
+import io.trivium.extension.Binding;
 import io.trivium.glue.Http;
 import io.trivium.glue.binding.http.StaticResourceHandler;
 

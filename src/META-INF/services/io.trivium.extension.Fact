@@ -1,0 +1,6 @@
+io.trivium.extension.fact.File
+io.trivium.extension.fact.Ticker
+io.trivium.extension.fact.WeightedAverage
+io.trivium.extension.fact.Differential
+io.trivium.extension.fact.TriviumObject
+io.trivium.extension.fact.LogEntry

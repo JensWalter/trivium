@@ -22,6 +22,7 @@ import io.trivium.NVList;
 import io.trivium.NVPair;
 import io.trivium.Registry;
 import io.trivium.anystore.ObjectRef;
+import io.trivium.extension.Fact;
 import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 import io.trivium.glue.om.Trivium;

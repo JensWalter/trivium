@@ -16,10 +16,9 @@
 
 package io.trivium;
 
-import io.trivium.anystore.ObjectRef;
 import io.trivium.anystore.TypeRef;
-import io.trivium.extension.binding.Binding;
-import io.trivium.extension.binding.webobjecthandler.WebObjectHandler;
+import io.trivium.extension.Binding;
+import io.trivium.extension.binding.WebObjectHandler;
 import io.trivium.extension.binding.webui.WebUI;
 import io.trivium.profile.Profiler;
 import io.trivium.profile.TimeUtils;

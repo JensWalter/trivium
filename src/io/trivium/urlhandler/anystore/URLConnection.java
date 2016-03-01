@@ -19,7 +19,7 @@ package io.trivium.urlhandler.anystore;
 import io.trivium.anystore.AnyClient;
 import io.trivium.anystore.query.Query;
 import io.trivium.extension.fact.TriviumObject;
-import io.trivium.extension.fact.file.File;
+import io.trivium.extension.fact.File;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

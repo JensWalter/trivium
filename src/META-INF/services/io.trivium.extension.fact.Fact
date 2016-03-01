@@ -1,5 +1,0 @@
-io.trivium.extension.fact.file.File
-io.trivium.extension.fact.ticker.Ticker
-io.trivium.extension.fact.weightedaverage.WeightedAverage
-io.trivium.extension.fact.differential.Differential
-io.trivium.extension.fact.TriviumObject
