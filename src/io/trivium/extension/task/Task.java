@@ -68,8 +68,7 @@ public abstract class Task implements Typed {
      * @return task name
      */
     public String getName(){
-        String name = this.getClass().getCanonicalName();
-        return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
+        return this.getClass().getSimpleName();
     }
 
     /**

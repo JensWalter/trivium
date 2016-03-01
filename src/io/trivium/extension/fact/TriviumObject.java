@@ -52,7 +52,8 @@ public class TriviumObject implements Fact {
 
     public TriviumObject(){
         id = ObjectRef.getInstance();
-        typeRef = TypeRef.INVALID;
+        //init with tvm but overwrite if real type is present
+        typeRef = TypeRef.getInstance(getClass().getCanonicalName());
         metadata = new NVList();
         replaceMeta("id", id.toString());
         data = Element.EMPTY;
@@ -61,7 +62,8 @@ public class TriviumObject implements Fact {
 
     public TriviumObject(ObjectRef id){
         this.id = id;
-        typeRef = TypeRef.INVALID;
+        //init with tvm but overwrite if real type is present
+        typeRef = TypeRef.getInstance(getClass().getCanonicalName());
         metadata = new NVList();
         replaceMeta("id",id.toString());
         data = Element.EMPTY;

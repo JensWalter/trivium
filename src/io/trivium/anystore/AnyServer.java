@@ -134,13 +134,13 @@ public class AnyServer implements Runnable {
 		}
 	}
 
-    public void storeObject(TriviumObject po) {
-        ObjectRef refid = po.getId();
+    public void storeObject(TriviumObject tvm) {
+        ObjectRef refid = tvm.getId();
         byte[] id = refid.toBytes();
         //write metadata
         try {
             long start = System.nanoTime();
-            byte[] data = po.getMetadataBinary();
+            byte[] data = tvm.getMetadataBinary();
             metaMap.put(id, data);
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_META_WRITE_DURATION, end - start);
@@ -150,7 +150,7 @@ public class AnyServer implements Runnable {
         //write data
         try {
             long start = System.nanoTime();
-            byte[] data = po.getDataBinary();
+            byte[] data = tvm.getDataBinary();
             dataMap.put(id, data);
             long end = System.nanoTime();
             Profiler.INSTANCE.avg(DataPoints.ANYSTORE_DATA_WRITE_DURATION, end - start);
@@ -160,7 +160,7 @@ public class AnyServer implements Runnable {
         //update indices
         try {
             long start = System.nanoTime();
-            for (NVPair pair : po.getMetadata()) {
+            for (NVPair pair : tvm.getMetadata()) {
                 AnyIndex.process(pair, refid);
             }
             long end = System.nanoTime();
@@ -170,7 +170,7 @@ public class AnyServer implements Runnable {
         }
         //trigger notify
         try {
-            Registry.INSTANCE.notify(po);
+            Registry.INSTANCE.notify(tvm);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "error notifying activities", ex);
         }

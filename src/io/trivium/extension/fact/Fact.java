@@ -26,8 +26,7 @@ import java.util.logging.Level;
 
 public interface Fact extends Typed {
     default String getFactName(){
-        String name = this.getClass().getCanonicalName();
-        return name.substring(name.lastIndexOf('.')+1)+" ["+name+"]";
+        return this.getClass().getSimpleName();
     }
 
     default void populate(TriviumObject tvm){
