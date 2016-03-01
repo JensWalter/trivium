@@ -4,3 +4,4 @@ io.trivium.extension.fact.WeightedAverage
 io.trivium.extension.fact.Differential
 io.trivium.extension.fact.TriviumObject
 io.trivium.extension.fact.LogEntry
+io.trivium.extension.fact.Error
