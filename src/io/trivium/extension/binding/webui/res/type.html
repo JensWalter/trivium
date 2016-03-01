@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<body>
+<script>
+$.ajax({
+    type: "POST",
+    url: '/ui/RegistryRequestHandler',
+    data: JSON.stringify({"command":"listTypes"}),
+    success: function(data){
+        var t = document.querySelector('#typeListElement');
+        for(var idx in data){
+            var clone = t.content.cloneNode(true);
+            clone.querySelector('.typeName').textContent = data[idx]+" ["+idx+"]";
+            clone.querySelector('.typeAction a').href = 'type.html?type='+idx;
+            document.querySelector('#typeList').appendChild(clone);
+        }
+        }
+    });
+</script>
+</body>
+</html>

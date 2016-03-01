@@ -88,6 +88,35 @@ public class RegistryRequestHandler implements HttpHandler {
                 String json = Json.NVPairsToJson(list);
 
                 s.ok(MimeTypes.getMimeType("json"), json);
+            } else if (cmd.equals("listTypes")) {
+                Registry.INSTANCE.reload();
+                NVList list = new NVList();
+                ConcurrentHashMap<TypeRef, Class<?extends Fact>> types = Registry.INSTANCE.types;
+                for (Class<? extends Fact> clazz : types.values()) {
+                    Fact prototype = clazz.newInstance();
+                    list.add(new NVPair(prototype.getTypeRef().toString(), prototype.getFactName()));
+                }
+                String json = Json.NVPairsToJson(list);
+                s.ok(MimeTypes.getMimeType("json"), json);
+            } else if (cmd.equals("listTasks")) {
+                Registry.INSTANCE.reload();
+                NVList list = new NVList();
+                ConcurrentHashMap<TypeRef, Class<? extends Task>> tasks = Registry.INSTANCE.tasks;
+                for (Class<? extends Task> clazz : tasks.values()) {
+                    Task prototype = clazz.newInstance();
+                    list.add(new NVPair(prototype.getTypeRef().toString(), prototype.getName()));
+                }
+                String json = Json.NVPairsToJson(list);
+                s.ok(MimeTypes.getMimeType("json"), json);
+            } else if (cmd.equals("listBindings")) {
+                Registry.INSTANCE.reload();
+                NVList list = new NVList();
+                Collection<Binding> bindings = Registry.INSTANCE.getAllBindings();
+                for (Binding binding : bindings) {
+                    list.add(new NVPair(binding.getTypeRef().toString(), binding.getName()));
+                }
+                String json = Json.NVPairsToJson(list);
+                s.ok(MimeTypes.getMimeType("json"), json);
             } else if (cmd.equals("status")) {
                 String id = params.findValue("id");
                 TypeRef ref = TypeRef.getInstance(id);

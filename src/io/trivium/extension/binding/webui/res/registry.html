@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>trivium registry</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/JSXTransformer-0.13.3.js"></script>
-    <script type="text/javascript" src="js/react-with-addons-0.13.3.js"></script>
+    <script type="text/javascript" src="js/rivets.bundled.min.js"></script>
     <script type="text/jsx">
       /** @jsx React.DOM */
       var all = {};
@@ -124,11 +123,93 @@
           }
       });
 
-      React.render(<ExtensionList />, document.getElementById("container"));
+  //    React.render(<ExtensionList />, document.getElementById("container"));
     </script>
 </head>
 <body>
+    <template id="typeListElement">
+        <style>
+        </style>
+        <tr>
+            <td class="typeName"></td>
+            <td class="typeAction"><a href="#">show source</a></td>
+        </tr>
+    </template>
+    <template id="taskListElement">
+        <style>
+        </style>
+        <tr>
+            <td class="taskName"></td>
+            <td class="taskAction"><a href="#">show source</a></td>
+        </tr>
+    </template>
+    <template id="bindingListElement">
+        <style>
+        </style>
+        <tr>
+            <td class="bindingName"></td>
+            <td class="bindingAction">
+                <a href="#">start</a>
+                <a href="#">stop</a>
+            </td>
+        </tr>
+    </template>
 	<h1>trivium registry</h1>
-	<div id="container"></div>
+	<div id="container">
+        <div>Type:
+            <table id="typeList">
+            </table>
+        </div>
+        <div>Task:
+            <table id="taskList">
+            </table>
+        </div>
+        <div>Binding:
+            <table id="bindingList">
+            </table>
+        </div>
+    </div>
 </body>
+<script>
+        $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({"command":"listTypes"}),
+                success: function(data){
+                    var t = document.querySelector('#typeListElement');
+                    for(var idx in data){
+                        var clone = t.content.cloneNode(true);
+                        clone.querySelector('.typeName').textContent = data[idx]+" ["+idx+"]";
+                        clone.querySelector('.typeAction a').href = 'type.html?type='+idx;
+                        document.querySelector('#typeList').appendChild(clone);
+                    }
+                    }
+                });
+            $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({"command":"listTasks"}),
+                success: function(data){
+                    var t = document.querySelector('#taskListElement');
+                    for(var idx in data){
+                        var clone = t.content.cloneNode(true);
+                        clone.querySelector('.taskName').textContent = data[idx];
+                        document.querySelector('#taskList').appendChild(clone);
+                    }
+                    }
+                });
+            $.ajax({
+                type: "POST",
+                url: '/ui/RegistryRequestHandler',
+                data: JSON.stringify({"command":"listBindings"}),
+                success: function(data){
+                    var t = document.querySelector('#bindingListElement');
+                    for(var idx in data){
+                        var clone = t.content.cloneNode(true);
+                        clone.querySelector('.bindingName').textContent = data[idx];
+                        document.querySelector('#bindingList').appendChild(clone);
+                    }
+                    }
+                });
+</script>
 </html>
