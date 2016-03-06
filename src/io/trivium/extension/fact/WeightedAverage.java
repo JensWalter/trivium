@@ -16,9 +16,7 @@
 
 package io.trivium.extension.fact;
 
-import io.trivium.anystore.statics.MimeTypes;
 import io.trivium.dep.com.google.common.util.concurrent.AtomicDouble;
-import io.trivium.extension.fact.TriviumObject;
 import io.trivium.extension.Fact;
 import io.trivium.glue.om.Element;
 
@@ -56,31 +54,10 @@ public class WeightedAverage implements Fact {
 
     @Override
     public TriviumObject toTriviumObject() {
-        Instant now = Instant.now();
-        TriviumObject po = new TriviumObject();
-
-        po.addMetadata("contentType", MimeTypes.getMimeType("trivium"));
-        po.addMetadata("type", "object");
-        po.addMetadata("created", now.toString());
-        po.addMetadata("datapoint", this.getDatapoint());
-
-        Element el_root = new Element("statisticData");
-        Element el_datapoint = new Element("datapoint", this.getDatapoint());
-        Element el_timestamp = new Element("timestamp", now.toString());
-        Element el_value = new Element("value", String.format("%.2f", this.getAverage()));
-        Element el_rawValue = new Element("RawValue");
-        Element el_avg = new Element("average", String.format("%.2f", avg.get()));
-        Element el_count = new Element("count", String.valueOf(count.get()));
-        el_rawValue.addChild(el_avg);
-        el_rawValue.addChild(el_count);
-
-        el_root.addChild(el_datapoint);
-        el_root.addChild(el_timestamp);
-        el_root.addChild(el_value);
-        el_root.addChild(el_rawValue);
-        po.setData(el_root);
-        po.setTypeRef(getTypeRef());
-
-        return po;
+        TriviumObject tvm = Fact.super.toTriviumObject();
+        Element el = tvm.getData();
+        el.addChild(new Element("timestamp", Instant.now().toString()));
+        tvm.setData(el);
+        return tvm;
     }
 }

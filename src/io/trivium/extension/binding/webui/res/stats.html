@@ -364,12 +364,12 @@ var CpuUsage = React.createClass({
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  if(data[i].timestamp)
+                      var ts = new Date(data[i].timestamp).getTime();
                   else
-                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                      var ts = new Date(data[i].timeFrameStart).getTime();
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)];
+                                   Number(data[i].avg)];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"data":arr});
@@ -413,12 +413,12 @@ var AnystoreWriteDuration = React.createClass({
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = Math.round(new Date(data[i].statisticData.timestamp).getTime() /60000)*60000;
+                  if(data[i].timestamp)
+                      var ts = Math.round(new Date(data[i].timestamp).getTime() /60000)*60000;
                   else
-                      var ts = Math.round(new Date(data[i].statisticData.timeFrameStart).getTime()/60000)*60000;
+                      var ts = Math.round(new Date(data[i].timeFrameStart).getTime()/60000)*60000;
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)];
+                                   Number(data[i].avg)];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"index":arr});
@@ -432,12 +432,12 @@ var AnystoreWriteDuration = React.createClass({
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = Math.round(new Date(data[i].statisticData.timestamp).getTime()/60000)*60000;
+                  if(data[i].timestamp)
+                      var ts = Math.round(new Date(data[i].timestamp).getTime()/60000)*60000;
                   else
-                      var ts = Math.round(new Date(data[i].statisticData.timeFrameStart).getTime()/60000)*60000;
+                      var ts = Math.round(new Date(data[i].timeFrameStart).getTime()/60000)*60000;
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)];
+                                   Number(data[i].avg)];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"data":arr});
@@ -451,12 +451,12 @@ var AnystoreWriteDuration = React.createClass({
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = Math.round(new Date(data[i].statisticData.timestamp).getTime()/60000)*60000;
+                  if(data[i].timestamp)
+                      var ts = Math.round(new Date(data[i].timestamp).getTime()/60000)*60000;
                   else
-                      var ts = Math.round(new Date(data[i].statisticData.timeFrameStart).getTime()/60000)*60000;
+                      var ts = Math.round(new Date(data[i].timeFrameStart).getTime()/60000)*60000;
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)];
+                                   Number(data[i].avg)];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"meta":arr});
