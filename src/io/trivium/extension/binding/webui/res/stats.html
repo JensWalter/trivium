@@ -168,12 +168,12 @@ var AnystoreSize = React.createClass({
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  if(data[i].timestamp)
+                      var ts = new Date(data[i].timestamp).getTime();
                   else
-                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                      var ts = new Date(data[i].timeFrameStart).getTime();
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)];
+                                   Number(data[i].value)];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"data":arr});
@@ -217,12 +217,12 @@ var AnystoreQueueSize = React.createClass({
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  if(data[i].timestamp)
+                      var ts = new Date(data[i].timestamp).getTime();
                   else
-                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                      var ts = new Date(data[i].timeFrameStart).getTime();
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)];
+                                   Number(data[i].value)];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"data":arr});

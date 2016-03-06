@@ -57,24 +57,10 @@ public class Differential implements Fact{
 
     @Override
     public TriviumObject toTriviumObject(){
-        TriviumObject po = new TriviumObject();
-        Instant now = Instant.now();
-        po.addMetadata("contentType", MimeTypes.getMimeType("trivium"));
-        po.addMetadata("type", "object");
-        po.addMetadata("created", now.toString());
-        po.addMetadata("datapoint", this.getDatapoint());
-
-        Element el_root = new Element("statisticData");
-        Element el_datapoint = new Element("datapoint", this.getDatapoint());
-        Element el_timestamp = new Element("timestamp", now.toString());
-        Element el_value = new Element("value", String.valueOf(this.getValue()));
-
-        el_root.addChild(el_datapoint);
-        el_root.addChild(el_timestamp);
-        el_root.addChild(el_value);
-
-        po.setData(el_root);
-        po.setTypeRef(getTypeRef());
-        return po;
+        TriviumObject tvm = Fact.super.toTriviumObject();
+        Element el = tvm.getData();
+        el.addChild(new Element("timestamp", Instant.now().toString()));
+        tvm.setData(el);
+        return tvm;
     }
 }
