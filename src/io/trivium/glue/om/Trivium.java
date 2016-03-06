@@ -42,7 +42,8 @@ public class Trivium {
             Logger logger = Logger.getLogger(Trivium.class.getName());
             logger.log(Level.SEVERE,"exception thrown while transforming object to external structure", ex);
 		}
-		return root;
+        //get first child after the dummy root
+		return root.getChild(0);
 	}
 
 	public static String elementToTriviumJson(Element in) {

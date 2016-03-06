@@ -16,6 +16,7 @@
 
 package io.trivium.extension.binding;
 
+import io.trivium.anystore.TypeRef;
 import io.trivium.dep.com.google.common.base.Joiner;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -32,6 +33,7 @@ import io.trivium.extension.Fact;
 import io.trivium.glue.Http;
 import io.trivium.glue.binding.http.HttpUtils;
 import io.trivium.glue.binding.http.Session;
+import io.trivium.glue.om.Element;
 import io.trivium.glue.om.Json;
 
 import java.io.IOException;
@@ -78,15 +80,27 @@ public class WebObjectHandler extends Binding implements HttpHandler {
             } else if (method.equals("query")) {
                 // read payload
                 NVList criteria = HttpUtils.getInputAsNVList(httpExchange);
+                TypeRef typeRef = TypeRef.getInstance(criteria.findValue("typeId"));
                 Query q = new Query<TriviumObject>(){
                     {
                         targetType = TriviumObject.class;
                         condition = (tvm) -> {
-                            boolean result = true;
-                            for (NVPair pair : criteria) {
-                                result &= tvm.findMetaValue(pair.getName()).equals(pair.getValue());
+                            if(tvm.getTypeRef()==typeRef) {
+                                boolean result = true;
+                                for (NVPair pair : criteria) {
+                                    Element el = tvm.getData().walkPath(pair.getName());
+                                    if (el != Element.EMPTY && el.getValue() != null) {
+                                        //check payload
+                                        result &= el.getValue().equals(pair.getValue());
+                                    } else {
+                                        //check header
+                                        result &= tvm.findMetaValue(pair.getName()).equals(pair.getValue());
+                                    }
+                                }
+                                return result;
+                            }else{
+                                return false;
                             }
-                            return result;
                         };
                     }
                 };

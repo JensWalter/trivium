@@ -164,7 +164,7 @@ var AnystoreSize = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.differential.Differential","datapoint":"anystore_size"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.Differential","datapoint":"anystore_size"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
@@ -213,7 +213,7 @@ var AnystoreQueueSize = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.differential.Differential","datapoint":"anystore_queue_size"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.Differential","datapoint":"anystore_queue_size"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
@@ -262,16 +262,16 @@ var AnystoreQueueIn = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.ticker.Ticker","datapoint":"anystore_queue_in"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.Ticker","datapoint":"anystore_queue_in"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  if(data[i].timestamp)
+                      var ts = new Date(data[i].timestamp).getTime();
                   else
-                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                      var ts = new Date(data[i].timeFrameStart).getTime();
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)/60];
+                                   Number(data[i].value)/60];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"data":arr});
@@ -311,16 +311,16 @@ var AnystoreQueueOut = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.ticker.Ticker","datapoint":"anystore_queue_out"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.Ticker","datapoint":"anystore_queue_out"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
-                  if(data[i].statisticData.timestamp)
-                      var ts = new Date(data[i].statisticData.timestamp).getTime();
+                  if(data[i].timestamp)
+                      var ts = new Date(data[i].timestamp).getTime();
                   else
-                      var ts = new Date(data[i].statisticData.timeFrameStart).getTime();
+                      var ts = new Date(data[i].timeFrameStart).getTime();
                   arr[arr.length]=[ts,
-                                   Number(data[i].statisticData.value)/60];
+                                   Number(data[i].value)/60];
               }
               arr.sort(function(a,b){return a[0]-b[0];});
               that.setState({"data":arr});
@@ -360,7 +360,7 @@ var CpuUsage = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.weightedaverage.WeightedAverage","datapoint":"os_cpu_usage"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.WeightedAverage","datapoint":"os_cpu_usage"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
@@ -409,7 +409,7 @@ var AnystoreWriteDuration = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.weightedaverage.WeightedAverage","datapoint":"anystore_index_write_duration"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.WeightedAverage","datapoint":"anystore_index_write_duration"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
@@ -428,7 +428,7 @@ var AnystoreWriteDuration = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.weightedaverage.WeightedAverage","datapoint":"anystore_data_write_duration"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.WeightedAverage","datapoint":"anystore_data_write_duration"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){
@@ -447,7 +447,7 @@ var AnystoreWriteDuration = React.createClass({
           $.ajax({
             type: "POST",
             url: '/object/query',
-            data: JSON.stringify({"typeId":"io.trivium.extension.fact.weightedaverage.WeightedAverage","datapoint":"anystore_meta_write_duration"}),
+            data: JSON.stringify({"typeId":"io.trivium.extension.fact.WeightedAverage","datapoint":"anystore_meta_write_duration"}),
             success: function(data){ 
               var arr=[];
               for(var i=0;i<data.length;i++){

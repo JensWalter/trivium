@@ -76,7 +76,7 @@ public interface Fact extends Typed {
         TriviumObject tvm = new TriviumObject();
 
         tvm.setTypeRef(TypeRef.getInstance(aClass.getCanonicalName()));
-        Element root = new Element("dummy");
+        Element root = new Element(this.getTypeRef().toString());
         for(Field field : fields){
             String name = field.getName();
             field.setAccessible(true);

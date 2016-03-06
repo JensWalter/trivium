@@ -156,7 +156,18 @@
                     for(var idx in data){
                         var clone = t.content.cloneNode(true);
                         clone.querySelector('.bindingName').textContent = data[idx];
-                        clone.querySelectorAll('.bindingAction a')[0].id=idx+'start';
+                        var start = clone.querySelectorAll('.bindingAction a')[0];
+                        start.id=idx+'start';
+                        start.addEventListener('click',function(){
+                          $.ajax({
+                            type: "POST",
+                            url: '/ui/RegistryRequestHandler',
+                            data: JSON.stringify({id:idx,command:"start"}),
+                            success: function(data){
+                                console.log('done');
+                            }
+                          });
+                        });
                         clone.querySelectorAll('.bindingAction a')[1].id=idx+'stop';
                         document.querySelector('#bindingList').appendChild(clone);
                         //check state

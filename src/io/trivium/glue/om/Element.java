@@ -190,4 +190,13 @@ public class Element implements Iterator<ElementToken> {
             return null;
         }
     }
+
+    public Element walkPath(String path){
+        String[] steps = path.split("\\.");
+        Element current = this;
+        for(String step : steps){
+            current = current.getFirstChild(step);
+        }
+        return current;
+    }
 }

@@ -16,8 +16,6 @@
 
 package io.trivium.extension.fact;
 
-import io.trivium.anystore.statics.MimeTypes;
-import io.trivium.extension.fact.TriviumObject;
 import io.trivium.extension.Fact;
 import io.trivium.glue.om.Element;
 import io.trivium.profile.TimeUtils;
@@ -75,6 +73,9 @@ public class Ticker implements Fact {
 
     @Override
     public TriviumObject toTriviumObject() {
+        TriviumObject tvm = Fact.super.toTriviumObject();
+        Element dummyRoot = tvm.getData();
+
         long ts = TimeUtils.getTimeFrameStart(this.getInterval()) - 1;
         long timeframestart = TimeUtils.getTimeFrameStart(this.getInterval(), ts);
         long timeframeend = TimeUtils.getTimeFrameEnd(this.getInterval(), ts);
@@ -83,29 +84,17 @@ public class Ticker implements Fact {
         AtomicLong value = this.getValues().remove(timeframestart);
         if (value != null) {
             long val = value.get();
-            TriviumObject po = new TriviumObject();
-            po.addMetadata("contentType", MimeTypes.getMimeType("infinup"));
-            po.addMetadata("type", "object");
-            po.addMetadata("timeFrameStart", start.toString());
-            po.addMetadata("timeFrameEnd", end.toString());
-            po.addMetadata("created", end.toString());
-            po.addMetadata("datapoint", this.getDatapoint());
-
-            Element el_root = new Element("statisticData");
-            Element el_datapoint = new Element("datapoint", this.getDatapoint());
             Element el_timeFrameStart = new Element("timeFrameStart", start.toString());
             Element el_timeFrameEnd = new Element("timeFrameEnd", end.toString());
             Element el_value = new Element("value", String.valueOf(val));
-
-            el_root.addChild(el_datapoint);
-            el_root.addChild(el_timeFrameStart);
-            el_root.addChild(el_timeFrameEnd);
-            el_root.addChild(el_value);
-
-            po.setData(el_root);
-            po.setTypeRef(getTypeRef());
-            return po;
+            dummyRoot.addChild(el_timeFrameStart);
+            dummyRoot.addChild(el_timeFrameEnd);
+            dummyRoot.addChild(el_value);
+            //dummy set to retrigger serialisation
+            tvm.setData(dummyRoot);
+            return tvm;
+        }else{
+            return null;
         }
-        return null;
     }
 }
