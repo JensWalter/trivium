@@ -22,6 +22,7 @@ import io.trivium.extension.fact.TriviumObject;
 import io.trivium.glue.om.Element;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,7 +37,6 @@ public interface Fact extends Typed {
         try {
             Field[] fields = this.getClass().getDeclaredFields();
             Element el = tvm.getData();
-            el = el.getChild(0);
             for (Field field : fields) {
                 String name = field.getName();
                 field.setAccessible(true);
@@ -65,6 +65,8 @@ public interface Fact extends Typed {
                         field.set(this, new AtomicBoolean(Boolean.parseBoolean(el.getFirstChild(name).getValue())));
                     } else if (field.getType() == AtomicDouble.class) {
                         field.set(this, new AtomicDouble(Double.parseDouble(el.getFirstChild(name).getValue())));
+                    } else if (field.getType() == Instant.class) {
+                        field.set(this, Instant.parse(el.getFirstChild(name).getValue()));
                     } else {
                         //try String
                         field.set(this, el.getFirstChild(name).getValue());
@@ -93,7 +95,8 @@ public interface Fact extends Typed {
                         || field.getType() == boolean.class || field.getType() == byte.class || field.getType() == float.class
                         || field.getType() == double.class || field.getType() == short.class || field.getType() == char.class
                         || field.getType() == String.class || field.getType() == AtomicLong.class || field.getType() == AtomicBoolean.class
-                        || field.getType() == AtomicInteger.class || field.getType() == AtomicDouble.class) {
+                        || field.getType() == AtomicInteger.class || field.getType() == AtomicDouble.class
+                        || field.getType() == Instant.class) {
                     Object obj = field.get(this);
                     if(obj != null) {
                         root.addChild(new Element(name, obj.toString()));
