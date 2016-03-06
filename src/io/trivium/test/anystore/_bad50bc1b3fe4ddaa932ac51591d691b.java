@@ -62,7 +62,7 @@ public class _bad50bc1b3fe4ddaa932ac51591d691b implements TestCase{
             {
                 targetType = TriviumObject.class;
                 condition = (tvm) ->  tvm.findMetaValue("custom").equals("element1")
-                            && tvm.getData().getChild(0).getValue().equals("hallo world");
+                            && tvm.getData().getValue().equals("hallo world");
             }
         };
         ArrayList<TriviumObject> list1 = store.loadObjects(query1).getAllAsTypedList();
