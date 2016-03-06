@@ -32,7 +32,8 @@ public class _dffff67e7c9f44fbb880194500e111e0 implements TestCase{
         //TODO make work
         String str= "<a><b>blah</b><c>blah2</c></a>";
         Element root = Xml.xmlToElement(str);
-        Assert.equalsString(str,root.toString());
+        String str2 = Xml.elementToString(root);
+        Assert.equalsString(str,str2);
     }
 }
 
