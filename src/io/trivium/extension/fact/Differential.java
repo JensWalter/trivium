@@ -16,8 +16,6 @@
 
 package io.trivium.extension.fact;
 
-import io.trivium.anystore.statics.MimeTypes;
-import io.trivium.extension.fact.TriviumObject;
 import io.trivium.extension.Fact;
 import io.trivium.glue.om.Element;
 
