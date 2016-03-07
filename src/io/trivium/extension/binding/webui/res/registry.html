@@ -155,14 +155,20 @@
                     var t = document.querySelector('#bindingListElement');
                     for(var idx in data){
                         var clone = t.content.cloneNode(true);
-                        clone.querySelector('.bindingName').textContent = data[idx];
+                        clone.querySelector('.bindingName').textContent = data[idx]+" ["+idx+"]";
                         var start = clone.querySelectorAll('.bindingAction a')[0];
                         start.id=idx+'start';
-                        start.addEventListener('click',function(){
+                        start.addEventListener('click',function(e){
+                          var id = this.id;
+                          if(/start/g.test(id)){
+                            id=id.substr(0,id.length-5);
+                          }else{
+                            id=id.substr(0,id.length-4);
+                          }
                           $.ajax({
                             type: "POST",
                             url: '/ui/RegistryRequestHandler',
-                            data: JSON.stringify({id:idx,command:"start"}),
+                            data: JSON.stringify({id:id,command:"start"}),
                             success: function(data){
                                 console.log('done');
                             }
