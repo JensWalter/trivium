@@ -91,11 +91,16 @@ public class Xml {
             XMLStreamWriter xtw = xof.createXMLStreamWriter(sw);
             xtw.writeStartDocument();
             xtw.writeStartElement(root.getName());
-            //check for attribute
             if(root.getChildren().size()>0){
                 for(Element child : root.getChildren()){
+                    //check for attribute
                     if(child.getMetadata().hasKey("xml:attribute")){
                         xtw.writeAttribute(child.getName(),child.getValue());
+                    }else {
+                        //write element
+                        xtw.writeStartElement(child.getName());
+                        xtw.writeCharacters(child.getValue());
+                        xtw.writeEndElement();
                     }
                 }
             }

@@ -29,10 +29,11 @@ public class _dffff67e7c9f44fbb880194500e111e0 implements TestCase{
 
     @Override
     public void run() throws Exception {
-        //TODO make work
         String str= "<a><b>blah</b><c>blah2</c></a>";
         Element root = Xml.xmlToElement(str);
         String str2 = Xml.elementToString(root);
+        //cut the initial <?xml verion...
+        str2 = str2.substring(22);
         Assert.equalsString(str,str2);
     }
 }
