@@ -29,8 +29,7 @@ public class _9755bc3af75e45b1836acce70e2154ab implements TestCase{
 
     @Override
     public void run() throws Exception {
-        //TODO make work
-        String str= "<a xmlns=\"urn://ns1\" xmlns:b=\"urn://urn2\"><b>blah</b><b:c>blah2</b:c></a>";
+        String str = "<?xml version=\"1.0\" ?><ns0:a xmlns:ns0=\"urn://ns1\"><ns0:b>blah</ns0:b><ns1:c xmlns:ns1=\"urn://urn2\">blah2</ns1:c></ns0:a>";
         Element root = Xml.xmlToElement(str);
         String str2 = Xml.elementToString(root);
         Assert.equalsString(str,str2);

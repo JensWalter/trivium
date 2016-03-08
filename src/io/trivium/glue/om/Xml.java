@@ -18,6 +18,7 @@ package io.trivium.glue.om;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,11 +87,29 @@ public class Xml {
     public static String elementToString(Element el){
         StringWriter sw = new StringWriter();
         Element root = el.getChild(0);
+        ArrayList<String> prefixes = new ArrayList<>();
         XMLOutputFactory xof = XMLOutputFactory.newInstance();
         try {
             XMLStreamWriter xtw = xof.createXMLStreamWriter(sw);
             xtw.writeStartDocument();
-            xtw.writeStartElement(root.getName());
+            //check for namespace
+            String namespace = root.getMetadata().findValue("xml:namespace");
+            if(namespace!=null){
+                String prefix = xtw.getPrefix(namespace);
+                boolean isNewPrefix = false;
+                if(prefix ==null) {
+                    prefix = "ns"+prefixes.size();
+                    prefixes.add(prefix);
+                    xtw.setPrefix(prefix, namespace);
+                    isNewPrefix=true;
+                }
+                xtw.writeStartElement(namespace,root.getName());
+                if(isNewPrefix) {
+                    xtw.writeNamespace(prefix, namespace);
+                }
+            }else {
+                xtw.writeStartElement(root.getName());
+            }
             if(root.getChildren().size()>0){
                 for(Element child : root.getChildren()){
                     //check for attribute
@@ -98,7 +117,25 @@ public class Xml {
                         xtw.writeAttribute(child.getName(),child.getValue());
                     }else {
                         //write element
-                        xtw.writeStartElement(child.getName());
+
+                        //check for namespace
+                        String childNamespace = child.getMetadata().findValue("xml:namespace");
+                        if(childNamespace!=null) {
+                            String prefix = xtw.getPrefix(childNamespace);
+                            boolean isNewPrefix = false;
+                            if (prefix == null) {
+                                prefix = "ns" + prefixes.size();
+                                prefixes.add(prefix);
+                                xtw.setPrefix(prefix, childNamespace);
+                                isNewPrefix = true;
+                            }
+                            xtw.writeStartElement(childNamespace, child.getName());
+                            if (isNewPrefix) {
+                                xtw.writeNamespace(prefix, childNamespace);
+                            }
+                        } else {
+                            xtw.writeStartElement(child.getName());
+                        }
                         xtw.writeCharacters(child.getValue());
                         xtw.writeEndElement();
                     }
