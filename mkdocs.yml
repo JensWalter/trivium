@@ -15,7 +15,7 @@ pages:
   - Overview: task.md
   - builtin:
     - ConsoleLogger: task/consolelogger.md
--Binding:
+- Binding:
   - Overview: binding.md
   - builtin:
     - WebObjectHandler: binding/webobjecthandler.md
