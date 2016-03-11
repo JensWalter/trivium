@@ -11,10 +11,12 @@ pages:
   - builtin:
     - File: fact/file.md
     - LogEntry: fact/logentry.md
-- Task: task.md
+- Task:
+  - Overview: task.md
   - builtin:
     - ConsoleLogger: task/consolelogger.md
--Binding: binding.md
+-Binding:
+  - Overview: binding.md
   - builtin:
     - WebObjectHandler: binding/webobjecthandler.md
     - WebUI: binding/webui.md
