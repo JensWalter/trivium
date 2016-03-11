@@ -2,8 +2,20 @@ site_name: trivium
 site_url: http://www.trivium.io
 
 site_description: trivium project documentation
-
 repo_url: https://github.com/trivium-io/trivium/
 
 pages:
 - Home: index.md
+- Fact: fact.md
+  - builtin:
+    - File: fact/file.md
+    - LogEntry: fact/logentry.md
+- Task: task.md
+  - builtin:
+    - ConsoleLogger: task/consolelogger.md
+-Binding: binding.md
+  - builtin:
+    - WebObjectHandler: binding/webobjecthandler.md
+    - WebUI: binding/webui.md
+- Samples:
+  - TimerSample: samples/timersample.md
