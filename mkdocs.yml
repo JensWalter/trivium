@@ -6,7 +6,8 @@ repo_url: https://github.com/trivium-io/trivium/
 
 pages:
 - Home: index.md
-- Fact: fact.md
+- Fact:
+  - Overview: fact.md
   - builtin:
     - File: fact/file.md
     - LogEntry: fact/logentry.md
