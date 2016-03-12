@@ -32,7 +32,7 @@ java  -Djava.protocol.handler.pkgs=io.trivium.urlhandler -jar trivium.jar
 ## Contact
 
 If you are having issues or general feedback, please let us know.
-We have a mailing list located at: project@google-groups.com
+We have a mailing list located at: trivium-io@google-groups.com
 
 ## License
 

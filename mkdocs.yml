@@ -8,16 +8,16 @@ pages:
 - Home: index.md
 - Fact:
   - Overview: fact.md
-  - builtin:
+  - builtin facts:
     - File: fact/file.md
     - LogEntry: fact/logentry.md
 - Task:
   - Overview: task.md
-  - builtin:
+  - builtin tasks:
     - ConsoleLogger: task/consolelogger.md
 - Binding:
   - Overview: binding.md
-  - builtin:
+  - builtin bindings:
     - WebObjectHandler: binding/webobjecthandler.md
     - WebUI: binding/webui.md
 - Samples:
