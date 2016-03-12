@@ -1,12 +1,12 @@
 # trivium [![Build Status](https://travis-ci.org/trivium-io/trivium.svg)](https://travis-ci.org/trivium-io/trivium) [![Documentation Status](https://readthedocs.org/projects/trivium/badge/?version=latest)](http://trivium.readthedocs.org/en/latest/?badge=latest)
 
-Trivium is a platform which follows the rules of SEDA ([staged event-driven architectur](https://en.wikipedia.org/wiki/Staged_event-driven_architecture)).
+Trivium is a platform which follows the rules of SEDA ([staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture)).
 So the whole information processing can be broken down into little steps and the runtime determines the best way to invoke those peaces.
 
 ## features
 
 * free from external dependencies
-* unites stream and ad'hoc information processing
+* unites in-flight and at-rest information processing
 * configuration free object persistence
 * java-based object store query syntax
 
