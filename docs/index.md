@@ -17,6 +17,7 @@ So the whole information processing can be broken down into little steps and the
     * bindings
     * tasks
 
+
 1. There is no configuration - just code.
 
 1. All persistent data must exist as fact.
