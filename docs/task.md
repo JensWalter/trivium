@@ -1,5 +1,3 @@
-# Task
-
 ## description
 
 A task is piece of code which basically brings you from A to B.

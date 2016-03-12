@@ -1,5 +1,3 @@
-# Fact
-
 ## description
 
 A fact is abstract definition of aa data structure. Facts can be serialized to different representation. By default, every fact is available as JSON, XML and JavaType.

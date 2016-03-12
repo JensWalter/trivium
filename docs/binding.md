@@ -1,5 +1,3 @@
-# Binding
-
 ##description
 
 Bindings, like Tasks, carry code. The difference lies in the lifecycle of the object. Tasks are instantiated and destroyed on demand.
