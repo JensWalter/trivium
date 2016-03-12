@@ -1,6 +1,6 @@
 site_name: trivium
 site_url: http://www.trivium.io
-
+site_favicon: favicon.ico
 site_description: trivium project documentation
 repo_url: https://github.com/trivium-io/trivium/
 
