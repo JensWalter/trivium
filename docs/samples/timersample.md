@@ -1,5 +1,3 @@
-# TimerSample
-
 ## description
 
 This sample shows a basic implementation of a Timer which triggers every ten seconds. Every triggered Event contains a timestamp which is then printed out to the log file.
