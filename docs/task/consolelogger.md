@@ -19,7 +19,9 @@ Prints the given LogEntry message to the console.
 <script src='https://code.jquery.com/jquery-2.2.1.js'></script>
 <script>
 var url = 'https://github.com/trivium-io/trivium/blob/master/src/io/trivium/extension/task/ConsoleLogger.java';
-$.ajax({'url':url,success: function(data){
+$.ajax({type:'GET',
+        url:url,
+        success: function(data){
   var root = $(data);
 	var el = $('.file',root);
   var css = $('link[rel="stylesheet"]',root);
