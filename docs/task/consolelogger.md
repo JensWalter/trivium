@@ -18,7 +18,7 @@ Prints the given LogEntry message to the console.
 
 [ConsoleLogger.java](https://github.com/trivium-io/trivium/blob/master/src/io/trivium/extension/task/ConsoleLogger.java)
 
-**last changes**
+**last commits**
 
-<div id='changes'></div>
+<div id='commits' data-path='src/io/trivium/extension/task/ConsoleLogger.java'></div>
 <script src='../../js/commits.js' data-path='src/io/trivium/extension/task/ConsoleLogger.java'></script>
