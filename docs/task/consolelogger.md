@@ -14,11 +14,13 @@ Prints the given LogEntry message to the console.
 
 (no output)
 
-# code reference
+# github reference
+
+**link**
 
 [ConsoleLogger.java](https://github.com/trivium-io/trivium/blob/master/src/io/trivium/extension/task/ConsoleLogger.java)
 
-# last changes
+**last changes**
 
 <div id='changes'></div>
 <script>
