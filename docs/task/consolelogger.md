@@ -15,18 +15,26 @@ Prints the given LogEntry message to the console.
 (no output)
 
 # code reference
-<div id='code'></div>
+
+[ConsoleLogger.java](https://github.com/trivium-io/trivium/blob/master/src/io/trivium/extension/task/ConsoleLogger.java)
+
+# last changes
+
+<div id='changes'></div>
 <script>
-var url =
-'https://api.github.com/repos/trivium-io/trivium/contents//src/io/trivium/extension/task/ConsoleLogger.java';
-//'https://github.com/trivium-io/trivium/raw/master/src/io/trivium/extension/task/ConsoleLogger.java';
+var url = 'https://api.github.com/repos/trivium-io/trivium/commits?path=src/io/trivium/extension/task/ConsoleLogger.java';
 $.ajax({type:'GET',
         url:url,
         success: function(data){
-  var root = $(data);
-	var el = $('.file',root);
-  var css = $('link[rel="stylesheet"]',root);
-  $('#code').add(el);
-  $('#code').add(css);
+    var str="<table><tr><td>message</td><td>date</td><td>author</td><td>link</td></tr>";
+    for(var idx=0;idx<data.length;idx++){
+      var one = data[idx];
+      str+="<tr><td>"+one.commit.message+"</td><td>"
+          +one.commit.author.date+"</td><td>"
+          +one.commit.author.name+"</td><td>"
+          +one.commit.url+"</td></tr>";
+    }
+    str+="</table>";
+    $('#changes').html(str);
 }});
 </script>
