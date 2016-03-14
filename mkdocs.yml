@@ -15,6 +15,7 @@ pages:
   - Overview: task.md
   - builtin tasks:
     - ConsoleLogger: task/consolelogger.md
+    - empty task template: task/template.md
 - Binding:
   - Overview: binding.md
   - builtin bindings:
