@@ -21,4 +21,4 @@ Prints the given LogEntry message to the console.
 **last changes**
 
 <div id='changes'></div>
-<script src='../js/commits.js' data-path='src/io/trivium/extension/task/ConsoleLogger.java'></script>
+<script src='../../js/commits.js' data-path='src/io/trivium/extension/task/ConsoleLogger.java'></script>
