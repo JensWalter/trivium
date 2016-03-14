@@ -1,5 +1,5 @@
-console.log($('#commits').data('path'));
-var url = 'https://api.github.com/repos/trivium-io/trivium/commits?path=src/io/trivium/extension/task/ConsoleLogger.java';
+var path = $('#commits').data('path');
+var url = 'https://api.github.com/repos/trivium-io/trivium/commits?path='+path;
 $.ajax({type:'GET',
         url:url,
         success: function(data){
