@@ -34,7 +34,7 @@ $.ajax({type:'GET',
       str+="<tr><td>"+one.commit.message+"</td><td>"
           +d+" "+t+"</td><td>"
           +one.commit.author.name+"</td><td>"
-          +"<a href='"+one.commit.url+"'>link</a></td></tr>";
+          +"<a href='"+one.html_url+"'>"+one.sha.substr(0,7)+"</a></td></tr>";
     }
     str+="</table>";
     $('#changes').html(str);
