@@ -14,5 +14,5 @@ $.ajax({type:'GET',
           +"<a href='"+one.html_url+"'>"+one.sha.substr(0,7)+"</a></td></tr>";
     }
     str+="</tbody></table>";
-    document.write(str);
+    $('script[src="../js/commits.js"]').append(str);
 }});
