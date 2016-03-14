@@ -1,4 +1,4 @@
-console.log($('script[src="../js/commits.js"]').data(path));
+console.log($('script[src="../js/commits.js"]').data('path'));
 var url = 'https://api.github.com/repos/trivium-io/trivium/commits?path=src/io/trivium/extension/task/ConsoleLogger.java';
 $.ajax({type:'GET',
         url:url,
@@ -14,5 +14,5 @@ $.ajax({type:'GET',
           +"<a href='"+one.html_url+"'>"+one.sha.substr(0,7)+"</a></td></tr>";
     }
     str+="</tbody></table>";
-    $('#changes').html(str);
+    document.write(str);
 }});
