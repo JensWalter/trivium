@@ -26,11 +26,13 @@ var url = 'https://api.github.com/repos/trivium-io/trivium/commits?path=src/io/t
 $.ajax({type:'GET',
         url:url,
         success: function(data){
-    var str="<table class='docutils'><th><td>message</td><td>date</td><td>author</td><td>link</td></th>";
+    var str="<table class='docutils'><tr><th>message</th><th>date</th><th>author</th><th>link</th></tr>";
     for(var idx=0;idx<data.length;idx++){
       var one = data[idx];
+      var d = one.commit.author.date.substr(0,10);
+      var t = one.commit.author.date.substr(11,10);
       str+="<tr><td>"+one.commit.message+"</td><td>"
-          +one.commit.author.date+"</td><td>"
+          +d+" "+t+"</td><td>"
           +one.commit.author.name+"</td><td>"
           +"<a href='"+one.commit.url+"'>link</a></td></tr>";
     }
