@@ -17,7 +17,7 @@ Prints the given LogEntry message to the console.
 # code reference
 <div id='code'></div>
 <script>
-var url = 'https://github.com/trivium-io/trivium/blob/master/src/io/trivium/extension/task/ConsoleLogger.java';
+var url = 'https://github.com/trivium-io/trivium/raw/master/src/io/trivium/extension/task/ConsoleLogger.java';
 $.ajax({type:'GET',
         url:url,
         success: function(data){
