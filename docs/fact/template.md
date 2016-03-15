@@ -1,20 +1,12 @@
 # description
 
-A short description of the task.
+short description
 
-# 入 (input)
+# fields
 
-| type | query |
-|------|-------|
+| type | name | description |
+|------|------|-------------|
 |  |  |
-
-# 变 (transform)
-
-whatever this task does.
-
-# 出 (output)
-
-(no output)
 
 # github reference
 

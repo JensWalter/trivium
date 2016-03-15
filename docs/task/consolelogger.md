@@ -1,3 +1,7 @@
+# description
+
+Prints the given LogEntry message to the console.
+
 # 入 (input)
 
 | type | query |

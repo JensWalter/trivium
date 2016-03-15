@@ -11,6 +11,7 @@ pages:
   - builtin facts:
     - File: fact/file.md
     - LogEntry: fact/logentry.md
+    - empty fact template: fact/template.md
 - Task:
   - Overview: task.md
   - builtin tasks:
@@ -21,5 +22,11 @@ pages:
   - builtin bindings:
     - WebObjectHandler: binding/webobjecthandler.md
     - WebUI: binding/webui.md
+- how-tos:
+  - custom fact serializer: customfactserializer.md
+- internal stuff:
+  - TriviumObject: triviumobject.md
+  - Element: element.md
+  - Serializer: serlializer.md
 - Samples:
   - TimerSample: samples/timersample.md
