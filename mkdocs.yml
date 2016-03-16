@@ -9,6 +9,8 @@ pages:
 - Fact:
   - Overview: fact.md
   - builtin facts:
+    - Differential: fact/differential.md
+    - Error: fact/error.md
     - File: fact/file.md
     - LogEntry: fact/logentry.md
 - Task:
