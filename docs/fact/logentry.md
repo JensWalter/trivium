@@ -6,7 +6,7 @@ Representation of a LogEntry.
 
 | type | name | description |
 |------|------|-------------|
-| String | name | |
+| String | message | Message to be logged. |
 
 # sample
 
