@@ -1,6 +1,6 @@
 # description
 
-short description
+Representation of a Error within trivium.
 
 # fields
 

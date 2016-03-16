@@ -8,8 +8,7 @@ Contains a object which implements increment and decrement functionality to keep
 |------|------|-------------|
 | String | datapoint | name of the datapoint |
 | AtomicLong | value | actual value |
-| *Instant* | *timestamp* | *injected during serialization, not part or the object*<br>
-*contains the instant that the object was serialized* |
+| *Instant* | *timestamp* | *injected during serialization, not part or the object<br>contains the instant that the object was serialized* |
 
 # github reference
 
