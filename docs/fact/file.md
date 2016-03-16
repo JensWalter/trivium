@@ -21,7 +21,7 @@ Representation of a File within trivium.
          "name": "io\/trivium\/test\/NjamsTestData.java",
          "size": "814",
          "contentType": "text\/x-java-source",
-         "lastModified": "2014-11-11T15:33:14Z"
+         "lastModified": "2014-11-11T15:33:14Z",
          "metadata": []
             }
 }
