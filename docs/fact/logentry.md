@@ -2,7 +2,7 @@
 
 Representation of a LogEntry.
 
-#fields
+# fields
 
 | type | name | description |
 |------|------|-------------|

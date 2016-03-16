@@ -11,12 +11,10 @@ pages:
   - builtin facts:
     - File: fact/file.md
     - LogEntry: fact/logentry.md
-    - empty fact template: fact/template.md
 - Task:
   - Overview: task.md
   - builtin tasks:
     - ConsoleLogger: task/consolelogger.md
-    - empty task template: task/template.md
 - Binding:
   - Overview: binding.md
   - builtin bindings:
@@ -28,5 +26,7 @@ pages:
   - TriviumObject: triviumobject.md
   - Element: element.md
   - Serializer: serlializer.md
+  - empty task template: tasktemplate.md
+  - empty fact template: facttemplate.md
 - Samples:
   - TimerSample: samples/timersample.md
