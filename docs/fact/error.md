@@ -10,6 +10,17 @@ Representation of a Error within trivium.
 | ErrorCategory | category | error category (either: TRANSIENT,PERSISTENT) |
 | Class<? extends Typed> | sourceModule | class reference of the error source |
 
+# sample
+
+```json
+{"io.trivium.extension.fact.Error": {
+         "message": "an error has occured",
+         "category": "TRANSIENT",
+         "sourceModule": "io.trivium.task.ConsoleLogger"
+            }
+}
+```
+
 # github reference
 
 **link**

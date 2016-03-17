@@ -13,6 +13,8 @@ pages:
     - Error: fact/error.md
     - File: fact/file.md
     - LogEntry: fact/logentry.md
+    - Ticker: fact/ticker.md
+    - WeightedAverage: fact/weightedaverage.md
 - Task:
   - Overview: task.md
   - builtin tasks:

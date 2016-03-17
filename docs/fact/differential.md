@@ -10,6 +10,17 @@ Contains a object which implements increment and decrement functionality to keep
 | AtomicLong | value | actual value |
 | *Instant* | *timestamp* | *injected during serialization, not part or the object<br>contains the instant that the object was serialized* |
 
+# sample
+
+```json
+{"io.trivium.extension.fact.Differential": {
+         "datapoint": "dp1",
+         "value": 5,
+         "timestamp": "2016-01-01T18:00:00Z"
+            }
+}
+```
+
 # github reference
 
 **link**
