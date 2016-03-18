@@ -15,18 +15,30 @@ A TriviumObject is an object that is used to serialize and transport any fact wi
 | Element | data | content of the fact |
 | byte[] | b_data | content of the fact in binary form |
 
-These fields are not serialized by the default serializer. A TriviumObject has a different kind of Layout to support various usage approaches.
+These fields are not serialized by the default serializer. A TriviumObject has a different kind of Layout to support various applications.
 
 # sample
 
 ** metadata **
 ```json
-{}
+{
+  id: "1db571be-dfa2-4fab-929c-7e036295a3a8",
+  typeRef: "io.trivium.extension.fact.File",
+  size: 12345
+}
 ```
 
 ** data **
 ```json
-{}
+{"io.trivium.extension.fact.File": {
+         "data": "cGFja2F...",
+         "name": "io\/trivium\/test\/NjamsTestData.java",
+         "size": "814",
+         "contentType": "text\/x-java-source",
+         "lastModified": "2014-11-11T15:33:14Z",
+         "metadata": []
+            }
+}
 ```
 
 # github reference
