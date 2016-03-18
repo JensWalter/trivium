@@ -43,7 +43,7 @@ public class TriviumObject implements Fact {
      * 1 snappy compressed json
      */
     public static byte typeByte = 1;
-    Logger logger = Logger.getLogger(getClass().getName());
+    Logger logger = getLogger();
     ObjectRef id;
     TypeRef typeRef;
     NVList metadata;
