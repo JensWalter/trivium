@@ -38,4 +38,4 @@ These fields are not serialized by the default serializer. A TriviumObject has a
 **last commits**
 
 <div id='commits' data-path='src/io/trivium/extension/fact/TriviumObject.java'></div>
-<script src='../../js/commits.js' async></script>
+<script src='../js/commits.js' async></script>
