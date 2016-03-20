@@ -4,13 +4,14 @@ Element is a special type which carries all Fact information. It it used as data
 
 # basic Layout
 
-An Element contains the following fields:
+An element contains the following fields.
+
 | field | type | description |
 |-------|------|-------------|
 | name | String | Name of the element. In special cases, this can be null (see special rules). |
 | value | String | Value of the element. |
 | metadata | NVList | additional metadata for this element. |
-| children | ArrayList<Element> | contains all sub elements. |
+| children | ArrayList&lt;Element&gt; | contains all sub elements. |
 | parent | Element | Back reference for tree traversal. |
 
 # special rules
