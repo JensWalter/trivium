@@ -2,7 +2,7 @@
 
 Element is a special type which carries all Fact information. It it used as data element of an TriviumObject and represents the content.
 
-# basic Layout
+# basic layout
 
 An element contains the following fields.
 
