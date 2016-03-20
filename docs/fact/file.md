@@ -17,10 +17,10 @@ Representation of a File within trivium.
 
 ```json
 {"io.trivium.extension.fact.File": {
-         "data": "cGFja2F...",
-         "name": "io\/trivium\/test\/NjamsTestData.java",
-         "size": "814",
-         "contentType": "text\/x-java-source",
+         "data": "aGVsbG8=",
+         "name": "hello.txt",
+         "size": "5",
+         "contentType": "text\/plain",
          "lastModified": "2014-11-11T15:33:14Z",
          "metadata": []
             }
