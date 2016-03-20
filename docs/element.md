@@ -14,6 +14,23 @@ An element contains the following fields.
 | children | ArrayList&lt;Element&gt; | contains all sub elements. |
 | parent | Element | Back reference for tree traversal. |
 
+# toString layout
+
+The toString method return the element structure as custom string. Here a short intruduction to the layout.
+
+** constructs **
+
+| operator | meaning |
+|----------|---------|
+| [] | enclosing for metadata attached to the element |
+| =&gt; | separator between name and value |
+| {} | enclosing for value or children |
+| :: | metadata name value separator |
+
+** samples **
+
+> io.trivium.extension.fact.File => {name => {"testFile1.txt"}, size => {"6"}, contentType => {"text/plain"}, lastModified => {"2016-03-20T14:25:15.097Z"}, data => {"abc123"}}
+
 # special rules
 
 ** How arrays are implemented? **
