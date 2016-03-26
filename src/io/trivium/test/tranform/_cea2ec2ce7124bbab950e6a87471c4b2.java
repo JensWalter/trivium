@@ -17,24 +17,33 @@
 package io.trivium.test.tranform;
 
 import io.trivium.glue.om.Element;
+import io.trivium.glue.om.Trivium;
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
 
-public class _edf4efa27b874e9a82b66f35be116429 implements TestCase{
+public class _cea2ec2ce7124bbab950e6a87471c4b2 implements TestCase{
     @Override
     public String getTestName() {
-        return "multiple values for one element";
+        return "element metadata serialization";
     }
 
     @Override
     public void run() throws Exception {
-        String key = "key";
-        String value = "value1";
-        String value2 = "value2";
-        Element pair = new Element(key);
-        pair.setValue(value);
-        pair.addValue(value2);
-        Assert.isTrue(pair.isArray());
+        Element el = new Element("test");
+
+        Element meta = el.getMetadata();
+        meta.addChild(new Element("e1","v1"));
+        meta.addChild(new Element("e2","v2"));
+        Element arr = new Element("arr");
+        arr.addValue("v1");
+        arr.addValue("v2");
+        meta.addChild(arr);
+
+        String str = Trivium.elementToTriviumJson(el);
+
+        Element rslt = Trivium.triviumJsonToElement(str);
+
+        Assert.equalsString(el.getName(),rslt.getName());
     }
 }
 

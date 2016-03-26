@@ -1,7 +1,7 @@
 #!/bin/bash
 id=`uuidgen | tr '[:upper:]' '[:lower:]'`;
 name="_`echo $id | tr -d '-'`";
-echo "package io.trivium.test.cases;
+echo "package io.trivium.test;
 
 import io.trivium.test.Assert;
 import io.trivium.test.TestCase;
