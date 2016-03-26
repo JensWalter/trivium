@@ -96,8 +96,8 @@ public class Central {
         opts.addOption("hp", "http", true, "port for the http interface, defaults to port 12345");
         opts.addOption("cs", "cleanStore", false, "re-initializes the local store (all information will be lost)");
         opts.addOption("cq", "cleanQueue", false, "re-initializes the local ingestion queue");
-        opts.addOption("t", "test", true, "starts test mode with {x} dummy messages");
-        opts.addOption("c", "compress", true, "enable/disbale snappy comrepssion (default=true)");
+        opts.addOption("t", "test", true, "starts test mode with target scope (default core)");
+        opts.addOption("c", "compress", true, "enable/disable snappy compression (default=true)");
         opts.addOption("b", "build", false, "generate executable shell script");
 
         CommandLine cmd = parser.parse(opts, args);
